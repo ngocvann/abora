@@ -3,7 +3,7 @@ spring:
     url: ${DB_URL:jdbc:mysql://localhost:3306/abora?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
     username: ${DB_USERNAME:abora}
 
-    password: ${DB_PASSWORD}
+    password: ${DB_PASSWORD:1306}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -21,8 +21,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${GMAIL_USERNAME}
-    password: ${GMAIL_APP_PASSWORD}
+    username: ${GMAIL_USERNAME:ngcvan04@gmail.com}
+    password: ${GMAIL_APP_PASSWORD:newGmailPass123!@#}
     properties:
       mail:
         smtp:
@@ -36,13 +36,13 @@ server:
 
 app:
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:SuperSecretJwtKeyChange2023!ExtraCharsForLength}
     access-token-expiration-minutes: 1440
-  frontend-url: ${FRONTEND_URL}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
   google:
-    client-id: ${GOOGLE_CLIENT_ID}
+    client-id: ${GOOGLE_CLIENT_ID:426028933949-d82gdpajo4cvd8c511t5kse0ujl0jj06.apps.googleusercontent.com}
 
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME}
-  api-key: ${CLOUDINARY_API_KEY}
-  api-secret: ${CLOUDINARY_API_SECRET}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:abora-dummy}
+  api-key: ${CLOUDINARY_API_KEY:1234567890}
+  api-secret: ${CLOUDINARY_API_SECRET:abcdefgh}
