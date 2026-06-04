@@ -1,19 +1,28 @@
 package com.abora.backend.auth;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class EmailServiceImpl implements EmailSender {
 
-    private final JavaMailSender mailSender;
+    @Value("${spring.resend.api-key}")
+    private String resendApiKey;
+
+    @Value("${spring.resend.from}")
+    private String mailFrom;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public void sendVerificationEmail(String toEmail, String otp) {
@@ -39,21 +48,28 @@ public class EmailServiceImpl implements EmailSender {
 
     private void sendHtmlEmail(String toEmail, String subject, String htmlContent) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(resendApiKey);
 
-            helper.setTo(toEmail);
-            helper.setSubject(subject);
-            helper.setText(htmlContent, true);
-            helper.setFrom("ngcvan04@gmail.com", "Abora");
+            Map<String, Object> body = new HashMap<>();
+            body.put("from", mailFrom);
+            body.put("to", toEmail);
+            body.put("subject", subject);
+            body.put("html", htmlContent);
 
-            mailSender.send(message);
-            log.info("Email sent successfully to {}", toEmail);
-        } catch (MessagingException e) {
-            log.error("Failed to send email to {}: {}", toEmail, e.getMessage());
-            throw new RuntimeException("Lỗi gửi email: " + e.getMessage());
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+            String url = "https://api.resend.com/emails";
+
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("Email sent successfully to via Resend: {}", toEmail);
+            } else {
+                log.error("Failed to send email to {} via Resend. Status code: {}, Response: {}", toEmail, response.getStatusCode(), response.getBody());
+                throw new RuntimeException("Resend API error status: " + response.getStatusCode());
+            }
         } catch (Exception e) {
-            log.error("Failed to send email to {} due to unexpected error: {}", toEmail, e.getMessage());
+            log.error("Failed to send email to {} due to error: {}", toEmail, e.getMessage());
             throw new RuntimeException("Lỗi hệ thống khi gửi email.");
         }
     }

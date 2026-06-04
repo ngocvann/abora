@@ -18,18 +18,9 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${GMAIL_USERNAME:ngcvan04@gmail.com}
-    password: ${GMAIL_APP_PASSWORD:nlvf nsuk bbhs lpqy}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
+  resend:
+    api-key: ${RESEND_API_KEY:re_123456789}
+    from: ${MAIL_FROM:onboarding@resend.dev}
 
 server:
   port: ${PORT:8080}
