@@ -9,6 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { ReportModal } from '../../components/ui/ReportModal';
 import { getImageUrl } from '../../utils/image';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './ProfilePage.css';
 
 
@@ -120,6 +121,11 @@ export const ProfilePage: React.FC = () => {
     },
     enabled: !!(username || currentUser)
   });
+
+  const pageTitle = profile 
+    ? `Hồ sơ của ${profile.displayName} (@${profile.username}) - Abora`
+    : 'Hồ sơ người dùng - Abora';
+  useDocumentTitle(pageTitle);
 
   console.log('ProfilePage render:', { params: useParams(), username, isMe, profileUsername: profile?.username });
 

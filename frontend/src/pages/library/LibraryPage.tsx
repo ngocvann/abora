@@ -8,6 +8,7 @@ import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { toast } from 'react-hot-toast';
 import { useAuthStore } from '../../store/authStore';
 import { getImageUrl } from '../../utils/image';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './Library.css';
 
 interface LibraryItem {
@@ -38,6 +39,7 @@ const fetchLibrary = async (status?: string): Promise<LibraryItem[]> => {
 };
 
 export const LibraryPage: React.FC = () => {
+  useDocumentTitle("Thư Viện Của Tôi - Abora");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
