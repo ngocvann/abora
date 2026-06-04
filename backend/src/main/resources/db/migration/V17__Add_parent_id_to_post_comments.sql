@@ -1,0 +1,1 @@
+ALTER TABLE post_comments ADD COLUMN parent_id BIGINT; ALTER TABLE post_comments ADD CONSTRAINT fk_post_comments_parent FOREIGN KEY (parent_id) REFERENCES post_comments(id);

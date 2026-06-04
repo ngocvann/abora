@@ -1,0 +1,116 @@
+.legal-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem 2rem;
+  font-family: var(--font-body, var(--font-sans));
+}
+
+.legal-card {
+  background: var(--bg-panel, rgba(14, 18, 33, 0.65));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-light, rgba(255, 255, 255, 0.06));
+  border-radius: 24px;
+  padding: 3.5rem 3rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.legal-title {
+  font-family: var(--font-heading, var(--font-sans));
+  font-size: 2.4rem;
+  font-weight: 800;
+  text-align: center;
+  background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.legal-subtitle {
+  text-align: center;
+  color: var(--text-muted, #a3b8cc);
+  font-size: 0.9rem;
+  margin-bottom: 3rem;
+  opacity: 0.8;
+}
+
+.legal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+}
+
+.legal-section h2 {
+  font-family: var(--font-heading, var(--font-sans));
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+.legal-section h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 50px;
+  background: var(--primary-color, #9d4edd);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--primary-glow, rgba(157, 78, 221, 0.5));
+}
+
+.legal-section p {
+  color: rgba(248, 250, 252, 0.85); /* high readability white */
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+.legal-section ul {
+  padding-left: 1.25rem;
+  margin: 0.8rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.legal-section li {
+  color: rgba(248, 250, 252, 0.85);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.legal-section strong {
+  color: white;
+}
+
+.legal-email {
+  color: var(--secondary, #3a86ff);
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.legal-email:hover {
+  color: #60a5fa;
+}
+
+@media (max-width: 768px) {
+  .legal-card {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+  
+  .legal-title {
+    font-size: 1.8rem;
+  }
+  
+  .legal-section h2 {
+    font-size: 1.15rem;
+  }
+}

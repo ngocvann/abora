@@ -1,0 +1,80 @@
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.statHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  background: var(--bg-surface-hover);
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+}
+
+.statTrend {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trendUp {
+  color: var(--success-color);
+}
+
+.trendNeutral {
+  color: var(--text-muted);
+}
+
+.trendDown {
+  color: var(--danger-color);
+}
+
+.pageTitle {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-family: var(--font-heading);
+}
+
+/* Specific Card Colors */
+.cardUsers .statIcon {
+  color: var(--primary-color);
+  background: var(--primary-glow);
+}
+
+.cardStories .statIcon {
+  color: var(--accent-color);
+  background: rgba(14, 165, 233, 0.2);
+}
+
+.cardReports .statIcon {
+  color: var(--danger-color);
+  background: rgba(239, 68, 68, 0.2);
+}

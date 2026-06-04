@@ -1,0 +1,1219 @@
+/* LibraryPage CSS style sheet */
+
+.library-page {
+  min-height: calc(100vh - 80px);
+  padding: 2.5rem 1rem 4rem;
+  background: transparent;
+  color: var(--text-main, #f8fafc);
+}
+
+.library-container {
+  max-width: 1280px; /* Aligned with home-container max-width */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0 3.1rem; /* Aligned with home-container padding */
+}
+
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 1.5rem;
+}
+
+.library-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff, #a78bfa, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.library-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted, #a3b8cc);
+}
+
+/* View Toggle */
+.library-view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #a3b8cc);
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-btn:hover {
+  color: var(--text-main, #ffffff);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.toggle-btn.active {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Tabs Bar */
+.library-tabs-bar {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.library-tabs {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #a3b8cc);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.75rem 0.25rem 1rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--text-main, #ffffff);
+}
+
+.tab-btn.active {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #a78bfa, #60a5fa);
+  border-radius: 2px;
+}
+
+/* Loading state */
+.library-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+/* Empty state */
+.library-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5rem 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  gap: 1rem;
+}
+
+.library-empty h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main, #ffffff);
+  margin: 0;
+}
+
+.library-empty p {
+  color: var(--text-muted, #a3b8cc);
+  max-width: 320px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Grid View - 5 Columns */
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2rem 2.1875rem;
+}
+
+.library-grid-card {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  transition: none;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Cover Wrapper & Hover Overlay (Image 3 style) */
+.card-cover-wrapper {
+  position: relative;
+  aspect-ratio: 2/3;
+  width: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  background: #0f1221;
+  border-radius: 12px; /* bo góc ảnh bìa */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.card-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  display: block;
+}
+
+.card-cover-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-muted, #a3b8cc);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.card-cover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(14, 18, 33, 0.88);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  padding: 1rem;
+  z-index: 10;
+}
+
+.card-cover-wrapper:hover .card-cover-overlay {
+  opacity: 1;
+}
+
+.card-cover-wrapper:hover .card-cover {
+  transform: scale(1.04);
+}
+
+/* Overlay Buttons & Icons */
+.overlay-trash-btn {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 0.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay-trash-btn:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.overlay-buttons {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.55rem;
+}
+
+.overlay-action-btn {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay-action-btn.primary-btn {
+  background: var(--primary-color, #9d4edd);
+  border-color: var(--primary-color, #9d4edd);
+  color: white;
+}
+
+.overlay-action-btn.primary-btn:hover {
+  background: var(--primary-hover, #7b2cbf);
+  border-color: var(--primary-hover, #7b2cbf);
+  box-shadow: 0 0 10px rgba(157, 78, 221, 0.4);
+}
+
+.overlay-action-btn.secondary-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+}
+
+.overlay-action-btn.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Reading Progress Bar (under cover image) */
+.card-progress-bar-container {
+  height: 4px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 8px;
+  margin-bottom: 2px;
+}
+
+.card-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary, #9d4edd), var(--secondary, #3a86ff));
+  border-radius: 99px;
+}
+
+/* Card details (3 rows layout) */
+.card-info {
+  padding: 0.5rem 0 0 0; /* aligned straight with cover margins */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.card-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin: 0 0 0.15rem 0;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  display: block;
+}
+
+.card-title:hover {
+  color: var(--primary-color, #9d4edd);
+}
+
+/* Restructured header with right avatar */
+.card-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.card-info-left {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* important for text-truncation */
+}
+
+.card-author-name {
+  font-size: 0.78rem;
+  color: rgba(163, 184, 204, 0.5); /* small & muted */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.card-author-avatar-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  flex-shrink: 0;
+}
+
+.card-author-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-author-avatar-fallback {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Row 3: Views and Hearts (Tim) */
+.card-stats-row {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: auto; /* pushes to the bottom of the card info */
+}
+
+.library-stat-item-view, .library-stat-item-heart {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: rgba(163, 184, 204, 0.6);
+}
+
+.library-stat-item-view svg {
+  color: #a78bfa; /* soft purple/lavender */
+}
+
+.library-stat-item-heart svg {
+  color: #a78bfa; /* soft purple/lavender */
+}
+
+/* List View - 2 columns grid */
+.library-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.25rem 2.5rem;
+  align-items: start;
+}
+
+.library-list-item {
+  display: flex;
+  gap: 1.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.25rem 0;
+  align-items: stretch;
+  transition: all 0.25s ease;
+}
+
+.library-list-item:hover {
+  background: transparent;
+  border: none;
+}
+
+.list-cover-wrapper {
+  width: 95px;
+  align-self: stretch;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: #0f1221;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s ease;
+}
+
+.list-cover-wrapper:hover {
+  transform: scale(1.03);
+}
+
+.list-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.list-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #a3b8cc);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.list-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.list-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.list-title-author {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.list-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.list-title:hover {
+  color: #c084fc;
+}
+
+.list-author {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-stats {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.library-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.library-stat-item-view svg, .library-stat-item-heart svg, .library-stat-item-chapters svg {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.list-description {
+  font-size: 0.82rem;
+  color: rgba(163, 184, 204, 0.7);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: italic;
+  margin: 0.15rem 0;
+}
+
+.list-progress-section {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+.progress-text-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: rgba(163, 184, 204, 0.65);
+  margin-bottom: 6px;
+}
+
+.progress-chapters-text {
+  font-weight: 500;
+}
+
+.list-read-btn {
+  background: transparent;
+  border: none;
+  color: #a78bfa;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.list-read-btn:hover {
+  color: #c084fc;
+  text-shadow: 0 0 8px rgba(192, 132, 252, 0.4);
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #9d4edd, #3a86ff);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* Delete button in list view - clean, no borders/bg, icon only lights up */
+.action-btn-delete {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 0.4rem;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-btn-delete:hover {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.95);
+  transform: scale(1.1);
+}
+
+/* Modal Thêm vào danh sách đọc (YouTube style) */
+.reading-list-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(3, 6, 18, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.reading-list-modal-content {
+  background: #0f1221;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.reading-list-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.75rem;
+}
+
+.reading-list-modal-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: white;
+}
+
+.reading-list-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.reading-list-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.reading-list-checkbox-label:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.reading-list-checkbox-label input {
+  display: none;
+}
+
+.checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.reading-list-checkbox-label input:checked + .checkbox-custom {
+  background: var(--primary-color, #9d4edd);
+  border-color: var(--primary-color, #9d4edd);
+}
+
+.reading-list-checkbox-label input:checked + .checkbox-custom::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 4px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.list-name-text {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.create-new-list-trigger-btn {
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  color: var(--primary-color, #9d4edd);
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.create-new-list-trigger-btn:hover {
+  background: rgba(157, 78, 221, 0.05);
+  border-color: var(--primary-color, #9d4edd);
+}
+
+.create-new-list-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1rem;
+}
+
+.new-list-input {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  color: white;
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  outline: none;
+  width: 100%;
+}
+
+.new-list-input:focus {
+  border-color: var(--primary-color, #9d4edd);
+}
+
+.new-list-privacy-row {
+  display: flex;
+  align-items: center;
+}
+
+.privacy-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+
+.new-list-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.new-list-buttons button {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.new-list-buttons .cancel-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.new-list-buttons .cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.new-list-buttons .confirm-btn {
+  background: var(--primary-color, #9d4edd);
+  color: white;
+}
+
+.new-list-buttons .confirm-btn:hover {
+  background: var(--primary-hover, #7b2cbf);
+}
+
+/* Responsive grid layouts */
+@media (max-width: 1200px) {
+  .library-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 960px) {
+  .library-container {
+    padding: 0 1.5rem;
+  }
+  .library-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem 1.9375rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .library-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .library-view-toggle {
+    align-self: flex-end;
+  }
+
+  .library-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .library-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem 0.85rem;
+  }
+  .library-container {
+    padding: 0 1rem;
+  }
+}
+
+/* Modal Tạo danh sách đọc (YouTube/Premium style) */
+.create-list-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(3, 6, 18, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100; /* above standard modals */
+  animation: fadeIn 0.2s ease-out;
+}
+
+.create-list-modal-content {
+  background: #0f1221;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  width: 95%;
+  max-width: 440px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.create-list-modal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+  width: 100%;
+}
+
+.create-list-modal-input {
+  background: #070913;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  border-radius: 12px;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.95rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.create-list-modal-input:focus {
+  border-color: #a78bfa;
+}
+
+.create-list-modal-counter {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.4);
+  width: 100%;
+  text-align: left;
+  margin-top: -0.5rem;
+  padding-left: 0.25rem;
+}
+
+.create-list-modal-privacy {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.create-list-privacy-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.create-list-privacy-option input[type="radio"] {
+  display: none;
+}
+
+.create-list-radio-circle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.create-list-privacy-option input[type="radio"]:checked + .create-list-radio-circle {
+  border-color: #a78bfa;
+  background: transparent;
+}
+
+.create-list-privacy-option input[type="radio"]:checked + .create-list-radio-circle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  background-color: #a78bfa;
+  border-radius: 50%;
+}
+
+.create-list-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.create-list-modal-btn {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 9999px; /* pill shape matching image */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  border: none;
+}
+
+.create-list-modal-btn.cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.create-list-modal-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.create-list-modal-btn.submit {
+  background: #27272a;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+}
+
+.create-list-modal-btn.submit:not(.disabled) {
+  background: #a78bfa;
+  color: white;
+  cursor: pointer;
+}
+
+.create-list-modal-btn.submit:not(.disabled):hover {
+  background: #8b5cf6;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+/* Context Menu for Reading List Cards */
+.list-menu-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-menu-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.list-context-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #0f1221;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 140px;
+  z-index: 100;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.list-context-item {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: left;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.15s ease;
+}
+
+.list-context-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.list-context-item.delete {
+  color: #f87171; /* red for delete */
+}
+
+.list-context-item.delete:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+/* Back Button inside reading list detail view */
+.list-back-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.list-back-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Floating context menu for grid card in mobile view */
+.card-mobile-menu-wrapper {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .card-mobile-menu-wrapper {
+    display: block;
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    z-index: 20;
+  }
+
+  .card-cover-overlay {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .card-cover-wrapper:hover .card-cover {
+    transform: none !important;
+  }
+}
+
+.card-mobile-menu-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85));
+}
+
+.card-mobile-menu-btn:hover, .card-mobile-menu-btn:active {
+  transform: scale(1.12);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.95));
+}
+
+.card-context-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #0f1221;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 160px;
+  z-index: 50;
+  animation: fadeIn 0.12s ease-out;
+}
+
+.card-context-item {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: left;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.15s ease;
+}
+
+.card-context-item:hover, .card-context-item:active {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.card-context-item.delete {
+  color: #f87171;
+}
+
+.card-context-item.delete:hover, .card-context-item.delete:active {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+
+
+

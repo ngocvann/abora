@@ -1,0 +1,1 @@
+ALTER TABLE chapters ADD COLUMN slug VARCHAR(255);
