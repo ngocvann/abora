@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/abora?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: abora
-    password: 1306
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -20,8 +20,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${GMAIL_USERNAME:ngcvan04@gmail.com}
-    password: ${GMAIL_APP_PASSWORD:faakdebegbsaptay}
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_APP_PASSWORD}
     properties:
       mail:
         smtp:
@@ -35,9 +35,9 @@ server:
 
 app:
   jwt:
-    secret: your-very-long-secret-key-change-this-in-real-env-1234567890
+    secret: ${JWT_SECRET}
     access-token-expiration-minutes: 1440
-  frontend-url: http://localhost:5173
+  frontend-url: ${FRONTEND_URL}
   google:
     client-id: ${GOOGLE_CLIENT_ID:426028933949-d82gdpajo4cvd8c511t5kse0ujl0jj06.apps.googleusercontent.com}
 
