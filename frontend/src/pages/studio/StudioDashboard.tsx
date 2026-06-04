@@ -9,6 +9,7 @@ import { PlusCircle, BookOpen, Menu, Eye, Heart, MessageCircle, BarChart2, Share
 import toast from "react-hot-toast";
 import { AnalyticsModal } from "./AnalyticsModal";
 import { getImageUrl } from "../../utils/image";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import "./Studio.css";
 
 const fetchManagementStories = async (): Promise<Story[]> => {
@@ -66,6 +67,7 @@ const renderChapterStatusLine = (story: Story) => {
 };
 
 export const StudioDashboard: React.FC = () => {
+  useDocumentTitle("Studio Sáng Tác - Abora");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("all");

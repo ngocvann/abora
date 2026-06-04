@@ -12,6 +12,7 @@ import { ReportModal } from "../../components/ui/ReportModal";
 import { ChevronDown, Plus, Heart, Type, MessageCircle, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getImageUrl } from "../../utils/image";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import "./ReaderPage.css";
 
 const fetchChapter = async (
@@ -96,6 +97,11 @@ export const ReaderPage: React.FC = () => {
     queryFn: () => api.get(`/chapters/${chapter?.id}/comments`).then(res => res.data),
     enabled: !!chapter?.id,
   });
+
+  const pageTitle = chapter && story 
+    ? `Chương ${chapter.chapterNumber}: ${chapter.title || 'Chưa đặt tiêu đề'} - ${story.title} - Abora`
+    : 'Đang tải... - Abora';
+  useDocumentTitle(pageTitle);
 
   // Mutation to save history
   const saveHistoryMutation = useMutation({

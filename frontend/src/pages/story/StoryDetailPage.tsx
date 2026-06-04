@@ -9,6 +9,7 @@ import { Button } from "../../components/ui/Button";
 import { Library, BookOpen, Plus, List, Flag, Check, Globe, Lock, ChevronLeft, ChevronRight } from "lucide-react";
 import { ReportModal } from '../../components/ui/ReportModal';
 import { getImageUrl } from "../../utils/image";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import "./StoryDetail.css";
 
 const fetchStoryDetail = async (slug: string): Promise<PublicStoryDetail> => {
@@ -163,6 +164,11 @@ export const StoryDetailPage: React.FC = () => {
     queryFn: () => fetchStoryDetail(slug as string),
     enabled: !!slug,
   });
+
+  const pageTitle = story 
+    ? `${story.title} - Đọc Truyện Online - Abora`
+    : "Đang tải... - Abora";
+  useDocumentTitle(pageTitle);
 
   const { data: recommendations = [] } = useQuery<any[]>({
     queryKey: ["stories", "recommendations"],

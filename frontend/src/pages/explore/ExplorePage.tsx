@@ -5,6 +5,7 @@ import { Star, Eye, Loader2, BookOpen, Tag, List, LayoutGrid, Heart } from "luci
 import api from "../../services/api";
 import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import "./ExplorePage.css";
 
 const PAGE_SIZE = 18;
@@ -12,6 +13,12 @@ const PAGE_SIZE = 18;
 export const ExplorePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
+  
+  const pageTitle = searchQuery.trim() !== "" 
+    ? `Tìm kiếm: "${searchQuery}" - Abora`
+    : "Khám Phá Truyện Hay - Abora";
+  useDocumentTitle(pageTitle);
+
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>("");
   const [currentCarouselIndex, setCurrentCarouselIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<"card" | "list">("card");

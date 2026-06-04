@@ -7,6 +7,7 @@ import { Button } from "../../components/ui/Button";
 import { useAuthStore } from "../../store/authStore";
 import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import "./HomePage.css";
 
 // ─── Custom Story Card for Slider ───────────────────────────────────────────
@@ -58,6 +59,7 @@ const HomeStoryCard: React.FC<HomeStoryCardProps> = ({ story, showTrendingBadge,
 
 // ─── Main HomePage Component ────────────────────────────────────────────────
 export const HomePage: React.FC = () => {
+  useDocumentTitle("Abora - Nền Tảng Đọc Và Sáng Tác Truyện Trực Tuyến");
   const { isAuthenticated } = useAuthStore();
 
   const containerRef = React.useRef<HTMLDivElement>(null);

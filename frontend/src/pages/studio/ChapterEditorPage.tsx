@@ -7,6 +7,7 @@ import api from '../../services/api';
 import { Button } from '../../components/ui/Button';
 import { ArrowLeft, MoreHorizontal, Eye, ChevronDown } from 'lucide-react';
 import { getImageUrl } from '../../utils/image';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './Studio.css';
 
 interface Chapter {
@@ -113,6 +114,11 @@ export const ChapterEditorPage: React.FC = () => {
     },
     enabled: !!storyId
   });
+
+  const editorPageTitle = story 
+    ? `Viết truyện: ${title || 'Chưa đặt tiêu đề'} - ${story.title} - Abora`
+    : 'Viết truyện - Abora';
+  useDocumentTitle(editorPageTitle);
 
   useEffect(() => {
     if (!isEditMode && chapters) {
