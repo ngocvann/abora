@@ -1,0 +1,7 @@
+-cp
+target\\classes
+-d
+target\\classes
+-sourcepath
+src\\main\\java
+@sources.txt
