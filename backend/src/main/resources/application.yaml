@@ -1,7 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/abora?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: abora
+    url: ${DB_URL:jdbc:mysql://localhost:3306/abora?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:abora}
+
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
@@ -31,7 +32,7 @@ spring:
             required: true
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 app:
   jwt:
@@ -39,9 +40,9 @@ app:
     access-token-expiration-minutes: 1440
   frontend-url: ${FRONTEND_URL}
   google:
-    client-id: ${GOOGLE_CLIENT_ID:426028933949-d82gdpajo4cvd8c511t5kse0ujl0jj06.apps.googleusercontent.com}
+    client-id: ${GOOGLE_CLIENT_ID}
 
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:dd3dzz38a}
-  api-key: ${CLOUDINARY_API_KEY:533633434235766}
-  api-secret: ${CLOUDINARY_API_SECRET:DbZySfbHJC-wPw95X3Gsi1GQO-Q}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
