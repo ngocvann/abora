@@ -22,7 +22,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: ${GMAIL_USERNAME:ngcvan04@gmail.com}
-    password: ${GMAIL_APP_PASSWORD:newGmailPass123!@#}
+    password: ${GMAIL_APP_PASSWORD:nlvf nsuk bbhs lpqy}
     properties:
       mail:
         smtp:
@@ -36,7 +36,7 @@ server:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:SuperSecretJwtKeyChange2023!ExtraCharsForLength}
+    secret: ${JWT_SECRET:SuperSecretJwtKeyChange2023!ExtraCharsForLengthIsRequired256bits}
     access-token-expiration-minutes: 1440
   frontend-url: ${FRONTEND_URL:http://localhost:5173}
   google:
