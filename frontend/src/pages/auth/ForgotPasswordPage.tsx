@@ -35,16 +35,16 @@ export const ForgotPasswordPage: React.FC = () => {
         {isSuccess ? (
           <div className="auth-success-state">
             <CheckCircle2 size={56} className="auth-success-icon" />
-            <h2 className="auth-title">Kiểm tra email của bạn</h2>
+            <h2 className="auth-title">Mã xác thực đã được gửi!</h2>
             <p className="auth-subtitle">
-              Nếu email <strong>{email}</strong> tồn tại trong hệ thống, chúng tôi đã gửi liên kết đặt lại mật khẩu.
-              Liên kết sẽ hết hạn sau <strong>1 giờ</strong>.
+              Nếu email <strong>{email}</strong> tồn tại trong hệ thống, chúng tôi đã gửi mã OTP gồm 6 chữ số để đặt lại mật khẩu.
+              Mã này sẽ hết hạn sau <strong>30 phút</strong>.
             </p>
             <p className="auth-subtitle" style={{ fontSize: '0.85rem', marginTop: '0.5rem', opacity: 0.7 }}>
-              (Trong môi trường dev, hãy kiểm tra console log của server backend để lấy link.)
+              (Trong môi trường dev, hãy kiểm tra console log của server backend để lấy mã OTP.)
             </p>
-            <Link to="/login">
-              <Button variant="primary" className="mt-6 w-full">Quay lại đăng nhập</Button>
+            <Link to={`/reset-password?email=${encodeURIComponent(email)}`}>
+              <Button variant="primary" className="mt-6 w-full">Tiếp tục nhập mã OTP</Button>
             </Link>
           </div>
         ) : (
@@ -54,7 +54,7 @@ export const ForgotPasswordPage: React.FC = () => {
             </div>
             <h2 className="auth-title">Quên mật khẩu?</h2>
             <p className="auth-subtitle">
-              Nhập email đã đăng ký, chúng tôi sẽ gửi liên kết đặt lại mật khẩu cho bạn.
+              Nhập email đã đăng ký, chúng tôi sẽ gửi mã xác thực đặt lại mật khẩu cho bạn.
             </p>
 
             {errorMsg && <div className="auth-error">{errorMsg}</div>}
@@ -80,7 +80,7 @@ export const ForgotPasswordPage: React.FC = () => {
                 isLoading={isSubmitting}
                 className="w-full mt-4"
               >
-                Gửi liên kết đặt lại mật khẩu
+                Gửi mã xác thực OTP
               </Button>
             </form>
 

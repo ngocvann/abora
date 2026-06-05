@@ -13,7 +13,7 @@ public class ConsoleEmailSender implements EmailSender {
     }
 
     @Override
-    public void sendPasswordResetEmail(String toEmail, String resetUrl) {
-        log.info("[EMAIL - Password Reset] To: {} | URL: {}", toEmail, resetUrl);
+    public void sendPasswordResetEmail(String toEmail, String otp) {
+        log.info("[EMAIL - Password Reset] To: {} | OTP: {}", toEmail, otp);
     }
 }

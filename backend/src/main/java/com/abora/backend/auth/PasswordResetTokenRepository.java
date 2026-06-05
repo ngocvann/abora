@@ -11,6 +11,8 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
 
     Optional<PasswordResetToken> findByTokenHashAndUsedAtIsNull(String tokenHash);
 
+    Optional<PasswordResetToken> findByUser_EmailAndTokenHashAndUsedAtIsNull(String email, String tokenHash);
+
     /** Invalidate all previously unused tokens for this user (allow only one active token at a time). */
     @Modifying
     @Transactional

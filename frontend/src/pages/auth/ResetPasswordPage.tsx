@@ -9,8 +9,11 @@ import './Auth.css';
 export const ResetPasswordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const token = searchParams.get('token') ?? '';
+  const queryEmail = searchParams.get('email') ?? '';
+  const queryToken = searchParams.get('token') ?? '';
 
+  const [email, setEmail] = useState(queryEmail);
+  const [token, setToken] = useState(queryToken);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,6 +24,14 @@ export const ResetPasswordPage: React.FC = () => {
     e.preventDefault();
     setErrorMsg('');
 
+    if (!email.trim()) {
+      setErrorMsg('Vui lòng nhập email.');
+      return;
+    }
+    if (!token.trim()) {
+      setErrorMsg('Vui lòng nhập mã xác thực OTP.');
+      return;
+    }
     if (newPassword.length < 8) {
       setErrorMsg('Mật khẩu phải có ít nhất 8 ký tự.');
       return;
@@ -29,36 +40,21 @@ export const ResetPasswordPage: React.FC = () => {
       setErrorMsg('Mật khẩu xác nhận không khớp.');
       return;
     }
-    if (!token) {
-      setErrorMsg('Token không hợp lệ. Vui lòng kiểm tra lại đường dẫn.');
-      return;
-    }
 
     try {
       setIsSubmitting(true);
-      await api.post('/auth/reset-password', { token, newPassword });
+      await api.post('/auth/reset-password', {
+        email: email.trim().toLowerCase(),
+        token: token.trim(),
+        newPassword
+      });
       setIsSuccess(true);
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || 'Token không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu đặt lại mật khẩu mới.');
+      setErrorMsg(err.response?.data?.message || 'Mã OTP không hợp lệ, đã hết hạn hoặc sai email. Vui lòng thử lại.');
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (!token) {
-    return (
-      <div className="auth-container">
-        <div className="auth-card glass-panel fade-in">
-          <div className="auth-error" style={{ marginBottom: 0 }}>
-            Đường dẫn không hợp lệ. Vui lòng sử dụng liên kết được gửi qua email.
-          </div>
-          <div className="auth-footer mt-4">
-            <Link to="/forgot-password" className="text-gradient font-bold">Yêu cầu đặt lại mật khẩu</Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="auth-container">
@@ -84,11 +80,32 @@ export const ResetPasswordPage: React.FC = () => {
               <KeyRound size={40} className="auth-page-icon" />
             </div>
             <h2 className="auth-title">Đặt lại mật khẩu</h2>
-            <p className="auth-subtitle">Nhập mật khẩu mới của bạn bên dưới.</p>
+            <p className="auth-subtitle">Nhập mã OTP và mật khẩu mới của bạn bên dưới.</p>
 
             {errorMsg && <div className="auth-error">{errorMsg}</div>}
 
             <form onSubmit={handleSubmit} className="auth-form">
+              <Input
+                label="Địa chỉ Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                disabled={!!queryEmail}
+              />
+
+              <Input
+                label="Mã xác thực OTP"
+                type="text"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                placeholder="Nhập mã 6 chữ số"
+                required
+                maxLength={6}
+                autoFocus={!token}
+              />
+
               <Input
                 label="Mật khẩu mới"
                 type="password"
@@ -96,7 +113,6 @@ export const ResetPasswordPage: React.FC = () => {
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Ít nhất 8 ký tự"
                 required
-                autoFocus
               />
 
               <Input
@@ -118,6 +134,12 @@ export const ResetPasswordPage: React.FC = () => {
                 Xác nhận đặt lại mật khẩu
               </Button>
             </form>
+
+            <div className="auth-footer mt-4">
+              <Link to="/forgot-password" className="text-gradient font-bold">
+                Yêu cầu gửi lại mã OTP mới
+              </Link>
+            </div>
           </>
         )}
       </div>

@@ -187,19 +187,18 @@ public class AuthService {
             }
             passwordResetTokenRepository.invalidateAllForUser(user.getId());
 
-            String rawToken  = authTokenService.generateRawToken();
-            String tokenHash = authTokenService.sha256(rawToken);
+            String otp = authTokenService.generateOtp();
+            String tokenHash = authTokenService.sha256(otp);
 
             PasswordResetToken resetToken = new PasswordResetToken();
             resetToken.setUser(user);
             resetToken.setTokenHash(tokenHash);
-            resetToken.setExpiresAt(Instant.now().plus(1, ChronoUnit.HOURS));
+            resetToken.setExpiresAt(Instant.now().plus(30, ChronoUnit.MINUTES)); // OTP valid for 30 minutes
             passwordResetTokenRepository.save(resetToken);
 
-            String resetUrl = "http://localhost:5173/reset-password?token=" + rawToken;
-            emailSender.sendPasswordResetEmail(user.getEmail(), resetUrl);
+            emailSender.sendPasswordResetEmail(user.getEmail(), otp);
         });
-        return new MessageResponse("Nếu email tồn tại, chúng tôi đã gửi hướng dẫn đặt lại mật khẩu.");
+        return new MessageResponse("Nếu email tồn tại, chúng tôi đã gửi mã xác thực đặt lại mật khẩu.");
     }
 
     @Transactional
@@ -207,14 +206,14 @@ public class AuthService {
         String tokenHash = authTokenService.sha256(request.token());
 
         PasswordResetToken resetToken = passwordResetTokenRepository
-                .findByTokenHashAndUsedAtIsNull(tokenHash)
+                .findByUser_EmailAndTokenHashAndUsedAtIsNull(request.email().trim().toLowerCase(), tokenHash)
                 .orElseThrow(() -> new BadRequestException(
-                    "Token không hợp lệ hoặc đã được sử dụng."
+                    "Mã xác thực không hợp lệ, đã được sử dụng hoặc sai email."
                 ));
 
         if (resetToken.getExpiresAt().isBefore(Instant.now())) {
             throw new BadRequestException(
-                "Token đã hết hạn. Vui lòng yêu cầu đặt lại mật khẩu mới."
+                "Mã xác thực đã hết hạn. Vui lòng yêu cầu mã mới."
             );
         }
 
