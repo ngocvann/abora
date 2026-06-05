@@ -793,6 +793,15 @@
   }
 }
 
+@media (max-width: 576px) {
+  .auth-buttons button:last-child {
+    display: none;
+  }
+  .auth-buttons {
+    gap: 0.25rem;
+  }
+}
+
 @media (max-width: 480px) {
   .navbar-logo-img {
     height: 32px;

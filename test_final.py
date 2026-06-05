@@ -32,8 +32,8 @@ def post(path, body, token=None):
             return {}, e.code
 
 # Login user + admin
-ru, cu = post("/api/auth/login", {"usernameOrEmail": "le.thu.huong@gmail.com", "password": "password123"})
-ra, ca = post("/api/auth/login", {"usernameOrEmail": "ngcvan04@gmail.com", "password": "password123"})
+ru, cu = post("/api/auth/login", {"email": "le.thu.huong@gmail.com", "password": "password123"})
+ra, ca = post("/api/auth/login", {"email": "ngcvan04@gmail.com", "password": "password123"})
 ut = ru.get("accessToken")
 at = ra.get("accessToken")
 print(f"User login:  HTTP {cu} token={'OK' if ut else 'FAIL'}")
@@ -63,8 +63,9 @@ print("\n--- Comments (public) ---")
 for cid in [1, 2, 13]:
     r, c = get(f"/api/chapters/{cid}/comments?page=0&size=3")
     if c == 200:
-        items = r.get("content", [])
-        print(f"  [OK] Chapter {cid}: {r.get('totalElements', len(items))} comments")
+        items = r if isinstance(r, list) else r.get("content", [])
+        total = len(items) if isinstance(r, list) else r.get('totalElements', len(items))
+        print(f"  [OK] Chapter {cid}: {total} comments")
         for cm in items[:2]:
             author = cm.get("user", cm.get("author", {}))
             name = author.get("displayName", "?")
