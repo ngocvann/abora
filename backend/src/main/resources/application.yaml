@@ -6,6 +6,11 @@ spring:
     password: ${DB_PASSWORD:1306}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -17,11 +22,6 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 15MB
 
   resend:
     api-key: ${RESEND_API_KEY:re_123456789}
