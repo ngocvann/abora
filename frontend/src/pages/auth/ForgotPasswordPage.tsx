@@ -40,9 +40,6 @@ export const ForgotPasswordPage: React.FC = () => {
               Nếu email <strong>{email}</strong> tồn tại trong hệ thống, chúng tôi đã gửi mã OTP gồm 6 chữ số để đặt lại mật khẩu.
               Mã này sẽ hết hạn sau <strong>30 phút</strong>.
             </p>
-            <p className="auth-subtitle" style={{ fontSize: '0.85rem', marginTop: '0.5rem', opacity: 0.7 }}>
-              (Trong môi trường dev, hãy kiểm tra console log của server backend để lấy mã OTP.)
-            </p>
             <Link to={`/reset-password?email=${encodeURIComponent(email)}`}>
               <Button variant="primary" className="mt-6 w-full">Tiếp tục nhập mã OTP</Button>
             </Link>
