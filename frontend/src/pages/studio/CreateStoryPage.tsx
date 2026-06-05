@@ -74,6 +74,12 @@ export const CreateStoryPage: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        alert("Kích thước ảnh bìa không được vượt quá 10MB. Vui lòng chọn ảnh khác.");
+        if (e.target) e.target.value = "";
+        return;
+      }
       setCoverFile(file);
       setCoverPreview(URL.createObjectURL(file));
     }

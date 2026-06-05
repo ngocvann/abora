@@ -541,6 +541,17 @@ export const ChapterManagementPage: React.FC = () => {
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        setAlertConfig({
+          isOpen: true,
+          title: "Ảnh bìa quá lớn",
+          message: "Kích thước ảnh bìa không được vượt quá 10MB. Vui lòng chọn ảnh khác.",
+          isDanger: true
+        });
+        if (e.target) e.target.value = "";
+        return;
+      }
       const formData = new FormData();
       formData.append("file", file);
       try {
