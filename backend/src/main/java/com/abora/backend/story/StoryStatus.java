@@ -5,5 +5,6 @@ public enum StoryStatus {
     PUBLISHED,
     HIDDEN,
     COMPLETED,
-    PAUSED
+    PAUSED,
+    ONGOING
 }
