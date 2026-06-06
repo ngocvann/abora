@@ -1,6 +1,7 @@
 package com.abora.backend.chapter;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +27,7 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
     Optional<Chapter> findFirstByStoryIdAndStatusOrderByChapterNumberDesc(Long storyId, ChapterStatus status);
     
     long countByStoryIdAndStatus(Long storyId, ChapterStatus status);
+
+    @Query("SELECT c FROM Chapter c WHERE c.status = 'PUBLISHED' AND c.story.visibility = 'PUBLIC' AND c.story.status = 'PUBLISHED'")
+    List<Chapter> findAllPublicPublishedChapters();
 }

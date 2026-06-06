@@ -33,6 +33,7 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     Page<Story> findPublicStoriesWithPublishedChapters(Pageable pageable);
     
     List<Story> findByAuthorIdOrderByUpdatedAtDesc(Long authorId);
+    List<Story> findByVisibilityAndStatus(StoryVisibility visibility, StoryStatus status);
 
     @Query(value = "SELECT s.*, " +
             "(s.view_count * 0.1 + s.follow_count * 0.5 + (SELECT COUNT(*) FROM reading_histories rh WHERE rh.story_id = s.id AND rh.updated_at >= :sevenDaysAgo) * 0.4) AS hot_score " +

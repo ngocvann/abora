@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "/api/auth/reset-password",
                                 "/api/auth/oauth2/google",
                                 "/api/files/**",
-                                "/actuator/health"
+                                "/actuator/health",
+                                "/sitemap.xml"
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.GET,
