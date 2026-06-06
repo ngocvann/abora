@@ -29,7 +29,7 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     
     Optional<Story> findBySlugAndVisibility(String slug, StoryVisibility visibility);
     
-    @Query("SELECT DISTINCT s FROM Story s JOIN s.chapters c WHERE c.status = 'PUBLISHED' AND s.visibility = 'PUBLIC'")
+    @Query("SELECT s FROM Story s WHERE s.visibility = 'PUBLIC' AND EXISTS (SELECT c FROM s.chapters c WHERE c.status = 'PUBLISHED')")
     Page<Story> findPublicStoriesWithPublishedChapters(Pageable pageable);
     
     List<Story> findByAuthorIdOrderByUpdatedAtDesc(Long authorId);
