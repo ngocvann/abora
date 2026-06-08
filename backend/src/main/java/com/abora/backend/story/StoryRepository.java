@@ -66,10 +66,15 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
             nativeQuery = true)
     List<Story> findLeaderboardByVotes();
 
-    @Query("SELECT DISTINCT s FROM Story s LEFT JOIN s.categories c " +
+    @Query("SELECT DISTINCT s FROM Story s " +
+           "LEFT JOIN s.categories c " +
+           "LEFT JOIN s.tags t " +
            "WHERE (LOWER(s.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
-           "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%'))) " +
-           "AND s.status = 'PUBLISHED' AND s.visibility = 'PUBLIC'")
+           "OR LOWER(s.author.displayName) LIKE LOWER(CONCAT('%', :query, '%')) " +
+           "OR LOWER(s.author.username) LIKE LOWER(CONCAT('%', :query, '%')) " +
+           "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
+           "OR LOWER(t.name) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+           "AND s.visibility = 'PUBLIC' AND s.status IN ('PUBLISHED', 'ONGOING', 'COMPLETED', 'PAUSED')")
     List<Story> searchStoriesByTitleOrCategory(@Param("query") String query);
 
     @Query(value = "SELECT s.*, " +
