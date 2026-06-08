@@ -1,0 +1,95 @@
+.cropper-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.cropper-content {
+  background: var(--surface-color, #1e1e2d);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.2s ease-out;
+}
+
+.cropper-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary, #fff);
+}
+
+.cropper-area {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: #000;
+  margin-bottom: 1rem;
+}
+
+.cropper-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.zoom-label {
+  color: var(--text-secondary, #aaa);
+}
+
+.zoom-slider {
+  flex: 1;
+}
+
+.cropper-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.cropper-actions .btn-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary, #fff);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cropper-actions .btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cropper-actions .btn-confirm {
+  background: var(--primary-color, #6366f1);
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.cropper-actions .btn-confirm:hover {
+  background: var(--primary-hover, #4f46e5);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

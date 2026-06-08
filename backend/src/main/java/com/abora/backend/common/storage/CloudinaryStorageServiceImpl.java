@@ -4,6 +4,7 @@ import com.abora.backend.common.exception.BadRequestException;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Service
+@ConditionalOnExpression("!'${cloudinary.api-key}'.equals('1234567890')")
 @Primary
 public class CloudinaryStorageServiceImpl implements StorageService {
 

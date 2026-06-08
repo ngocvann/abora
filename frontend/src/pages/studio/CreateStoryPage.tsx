@@ -1,5 +1,7 @@
 import React, { useState, useRef } from "react";
+import { ImageCropperModal } from "../../components/ui/ImageCropperModal";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "../../services/api";
 import { Button } from "../../components/ui/Button";
@@ -17,6 +19,8 @@ export const CreateStoryPage: React.FC = () => {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { data: categories = [] } = useQuery<any[]>({
     queryKey: ["categories"],
@@ -57,6 +61,7 @@ export const CreateStoryPage: React.FC = () => {
       return story.id;
     },
     onSuccess: (storyId) => {
+      toast.success("Tạo truyện mới thành công!");
       navigate(`/studio/story/${storyId}/chapters`);
     },
     onError: (error: any) => {
@@ -74,8 +79,8 @@ export const CreateStoryPage: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setCoverFile(file);
-      setCoverPreview(URL.createObjectURL(file));
+      setSelectedFile(file);
+      setCropperOpen(true);
     }
   };
 
@@ -270,6 +275,21 @@ export const CreateStoryPage: React.FC = () => {
           </div>
         </div>
       </form>
+      <ImageCropperModal
+        isOpen={cropperOpen}
+        imageFile={selectedFile}
+        aspect={2 / 3}
+        onClose={() => {
+          setCropperOpen(false);
+          setSelectedFile(null);
+        }}
+        onCropConfirm={(croppedFile) => {
+          setCoverFile(croppedFile);
+          setCoverPreview(URL.createObjectURL(croppedFile));
+          setCropperOpen(false);
+          setSelectedFile(null);
+        }}
+      />
     </div>
   );
 };

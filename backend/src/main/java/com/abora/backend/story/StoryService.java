@@ -234,8 +234,16 @@ public class StoryService {
         story.setCategories(new HashSet<>(categories));
     }
 
+    @Transactional(readOnly = true)
     public List<StoryResponse> getStoriesByAuthorId(Long authorId) {
-        return storyRepository.findByAuthorIdOrderByUpdatedAtDesc(authorId).stream().map(this::mapToResponse).toList();
+        return storyRepository.findByAuthorIdAndVisibilityAndStatusInOrderByUpdatedAtDesc(
+                authorId, 
+                StoryVisibility.PUBLIC, 
+                List.of(StoryStatus.PUBLISHED, StoryStatus.ONGOING, StoryStatus.COMPLETED, StoryStatus.PAUSED)
+        )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     private void setTags(Story story, List<String> tagNames) {

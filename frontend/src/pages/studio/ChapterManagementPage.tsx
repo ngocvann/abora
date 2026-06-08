@@ -4,6 +4,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
 import { Button } from '../../components/ui/Button';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
+import toast from 'react-hot-toast';
+import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useCallback } from 'react';
 import { ArrowLeft, Menu, Eye, Heart, MessageCircle, MoreHorizontal, Edit2, X, Info } from 'lucide-react';
@@ -418,6 +420,8 @@ export const ChapterManagementPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("chapters");
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [chapterToDelete, setChapterToDelete] = useState<number | null>(null);
   const [chapterToTogglePublish, setChapterToTogglePublish] = useState<{ id: number; currentStatus: string } | null>(null);
   const [activeDropdownId, setActiveDropdownId] = useState<number | null>(null);
@@ -541,27 +545,22 @@ export const ChapterManagementPage: React.FC = () => {
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      try {
-        await api.post(`/stories/${storyId}/cover`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        queryClient.invalidateQueries({ queryKey: ['story', storyId] });
-        setAlertConfig({
-          isOpen: true,
-          title: "Thành công",
-          message: "Tải ảnh bìa thành công!",
-          isDanger: false
-        });
-      } catch (err: any) {
-        setAlertConfig({
-          isOpen: true,
-          title: "Lỗi tải ảnh",
-          message: "Lỗi khi tải ảnh bìa: " + (err.response?.data?.message || err.message),
-          isDanger: true
-        });
-      }
+      setSelectedFile(file);
+      setCropperOpen(true);
+    }
+  };
+
+  const uploadCroppedCover = async (croppedFile: File) => {
+    const formData = new FormData();
+    formData.append("file", croppedFile);
+    try {
+      await api.post(`/stories/${storyId}/cover`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      queryClient.invalidateQueries({ queryKey: ['story', storyId] });
+      toast.success("Tải ảnh bìa thành công!");
+    } catch (err: any) {
+      toast.error("Lỗi khi tải ảnh bìa: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -798,6 +797,20 @@ export const ChapterManagementPage: React.FC = () => {
         isDanger={alertConfig.isDanger}
         onConfirm={() => setAlertConfig({ ...alertConfig, isOpen: false })}
         onCancel={() => setAlertConfig({ ...alertConfig, isOpen: false })}
+      />
+      <ImageCropperModal
+        isOpen={cropperOpen}
+        imageFile={selectedFile}
+        aspect={2 / 3}
+        onClose={() => {
+          setCropperOpen(false);
+          setSelectedFile(null);
+        }}
+        onCropConfirm={(croppedFile) => {
+          uploadCroppedCover(croppedFile);
+          setCropperOpen(false);
+          setSelectedFile(null);
+        }}
       />
     </div>
   );

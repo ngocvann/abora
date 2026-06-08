@@ -36,6 +36,7 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     Page<Story> findPublicStoriesWithPublishedChapters(Pageable pageable);
     
     List<Story> findByAuthorIdOrderByUpdatedAtDesc(Long authorId);
+    List<Story> findByAuthorIdAndVisibilityAndStatusInOrderByUpdatedAtDesc(Long authorId, StoryVisibility visibility, List<StoryStatus> statuses);
     List<Story> findByVisibilityAndStatus(StoryVisibility visibility, StoryStatus status);
 
     @Query(value = "SELECT s.*, " +

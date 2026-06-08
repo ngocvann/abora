@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Camera, Heart, MessageSquare, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users } from 'lucide-react';
@@ -97,6 +98,8 @@ export const ProfilePage: React.FC = () => {
   const [followListModal, setFollowListModal] = useState<{ type: 'following' | 'followers' } | null>(null);
   const [followList, setFollowList] = useState<any[]>([]);
   const [followListLoading, setFollowListLoading] = useState(false);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // User detail modal
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -312,10 +315,9 @@ export const ProfilePage: React.FC = () => {
       return res.data;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(['public-profile', activeUserId], (prev: any) => ({
-        ...prev,
-        avatarUrl: data.avatarUrl
-      }));
+      toast.success('Cập nhật ảnh đại diện thành công!');
+      queryClient.invalidateQueries({ queryKey: ['public-profile'] });
+      queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
       updateUser({ avatarUrl: data.avatarUrl });
     },
     onError: () => {
@@ -336,7 +338,9 @@ export const ProfilePage: React.FC = () => {
         toast.error('Vui lòng chọn ảnh nhỏ hơn 5MB');
         return;
       }
-      uploadAvatarMutation.mutate(file);
+      // Open cropper modal instead of direct upload
+      setSelectedFile(file);
+      setCropperOpen(true);
     }
   };
 
@@ -1171,6 +1175,19 @@ export const ProfilePage: React.FC = () => {
           onCancel={() => setConfirmModal(null)}
         />
       )}
+      <ImageCropperModal
+        isOpen={cropperOpen}
+        imageFile={selectedFile}
+        onClose={() => {
+          setCropperOpen(false);
+          setSelectedFile(null);
+        }}
+        onCropConfirm={(croppedFile) => {
+          uploadAvatarMutation.mutate(croppedFile);
+          setCropperOpen(false);
+          setSelectedFile(null);
+        }}
+      />
     </div>
   );
 };

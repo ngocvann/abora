@@ -275,7 +275,7 @@ export const ExplorePage: React.FC = () => {
                       </div>
                       <div className="story-card-stat">
                         <Heart size={11} />
-                        <span>{formatCount(story.followCount)}</span>
+                        <span>{formatCount(story.favoriteCount)}</span>
                       </div>
                     </div>
                   </div>
@@ -306,7 +306,7 @@ export const ExplorePage: React.FC = () => {
                     )}
                     <div className="list-item-meta">
                       <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt xem</span>
-                      <span className="list-meta-item"><Heart size={13} /> {formatCount(story.followCount)} yêu thích</span>
+                      <span className="list-meta-item"><Heart size={13} /> {formatCount(story.favoriteCount)} yêu thích</span>
                       <span className="list-meta-item"><BookOpen size={13} /> {story.chapterCount} chương</span>
                     </div>
                   </div>

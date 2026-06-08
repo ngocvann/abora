@@ -53,7 +53,8 @@ public class SecurityConfig {
                                 "/api/chapters/*/comments",
                                 "/api/reading-lists/**",
                                 "/api/categories",
-                                "/api/users/by-username/**"
+                                "/api/users/by-username/**",
+                                "/api/users/*/stories"
                         ).permitAll()
                         .requestMatchers("/api/categories", "/api/categories/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
