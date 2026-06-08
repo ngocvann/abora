@@ -85,7 +85,14 @@ export const CreateStoryPage: React.FC = () => {
   };
 
   const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === " ") {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      const newTag = currentTagInput.trim().replace(/,$/, "");
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+      }
+      setCurrentTagInput("");
+    } else if (e.key === " " && !e.nativeEvent.isComposing) {
       e.preventDefault();
       const newTag = currentTagInput.trim();
       if (newTag && !tags.includes(newTag)) {
@@ -99,6 +106,14 @@ export const CreateStoryPage: React.FC = () => {
     ) {
       setTags(tags.slice(0, -1));
     }
+  };
+
+  const handleTagInputBlur = () => {
+    const newTag = currentTagInput.trim().replace(/,$/, "");
+    if (newTag && !tags.includes(newTag)) {
+      setTags([...tags, newTag]);
+    }
+    setCurrentTagInput("");
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -217,7 +232,8 @@ export const CreateStoryPage: React.FC = () => {
                 value={currentTagInput}
                 onChange={(e) => setCurrentTagInput(e.target.value)}
                 onKeyDown={handleTagInputKeyDown}
-                placeholder={tags.length === 0 ? "Bấm Dấu Cách để tạo thẻ" : ""}
+                onBlur={handleTagInputBlur}
+                placeholder={tags.length === 0 ? "Bấm cách, dấu phẩy hoặc Enter để tạo thẻ" : ""}
                 disabled={createStoryMutation.isPending}
               />
             </div>

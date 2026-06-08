@@ -119,7 +119,14 @@ const StoryDetailsForm: React.FC<{ story: StoryDetail; storyId: string }> = ({ s
   };
 
   const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === " ") {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      const newTag = currentTagInput.trim().replace(/,$/, "");
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+      }
+      setCurrentTagInput("");
+    } else if (e.key === " " && !e.nativeEvent.isComposing) {
       e.preventDefault();
       const newTag = currentTagInput.trim();
       if (newTag && !tags.includes(newTag)) {
@@ -133,6 +140,14 @@ const StoryDetailsForm: React.FC<{ story: StoryDetail; storyId: string }> = ({ s
     ) {
       setTags(tags.slice(0, -1));
     }
+  };
+
+  const handleTagInputBlur = () => {
+    const newTag = currentTagInput.trim().replace(/,$/, "");
+    if (newTag && !tags.includes(newTag)) {
+      setTags([...tags, newTag]);
+    }
+    setCurrentTagInput("");
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -354,7 +369,8 @@ const StoryDetailsForm: React.FC<{ story: StoryDetail; storyId: string }> = ({ s
             value={currentTagInput}
             onChange={(e) => setCurrentTagInput(e.target.value)}
             onKeyDown={handleTagInputKeyDown}
-            placeholder="Bấm Dấu Cách để thêm thẻ"
+            onBlur={handleTagInputBlur}
+            placeholder="Bấm cách, dấu phẩy hoặc Enter để thêm thẻ"
           />
         </div>
       </div>
