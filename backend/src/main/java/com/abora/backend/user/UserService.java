@@ -134,4 +134,17 @@ public class UserService {
                 user.getOauthProvider()
         );
     }
+
+    @Transactional(readOnly = true)
+    public java.util.List<UserSimpleResponse> searchUsers(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return java.util.List.of();
+        }
+        String cleanQuery = query.trim();
+        org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(0, 10);
+        return userRepository.searchUsers(cleanQuery, pageRequest)
+                .stream()
+                .map(UserSimpleResponse::fromUser)
+                .toList();
+    }
 }

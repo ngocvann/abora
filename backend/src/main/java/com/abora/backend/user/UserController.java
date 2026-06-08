@@ -45,6 +45,11 @@ public class UserController {
         return ResponseEntity.ok(storyService.getStoriesByAuthorId(id));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<UserSimpleResponse>> searchUsers(@RequestParam("q") String query) {
+        return ResponseEntity.ok(userService.searchUsers(query));
+    }
+
     @GetMapping("/profile")
     public MyProfileResponse getProfile(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {

@@ -21,6 +21,7 @@ export const Navbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [userSuggestions, setUserSuggestions] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
@@ -61,6 +62,7 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setSuggestions([]);
+      setUserSuggestions([]);
       setIsSearching(false);
       return;
     }
@@ -68,8 +70,12 @@ export const Navbar: React.FC = () => {
     setIsSearching(true);
     const delayDebounceFn = setTimeout(async () => {
       try {
-        const res = await api.get(`/stories/search?q=${encodeURIComponent(searchQuery)}`);
-        setSuggestions(res.data.slice(0, 6)); // limit to 6
+        const [storiesRes, usersRes] = await Promise.all([
+          api.get(`/stories/search?q=${encodeURIComponent(searchQuery)}`),
+          api.get(`/users/search?q=${encodeURIComponent(searchQuery)}`)
+        ]);
+        setSuggestions(storiesRes.data.slice(0, 5)); // limit to 5
+        setUserSuggestions(usersRes.data.slice(0, 3)); // limit to 3 users
       } catch (error) {
         console.error('Error fetching suggestions', error);
       } finally {
@@ -198,32 +204,67 @@ export const Navbar: React.FC = () => {
                       <span>Đang tìm kiếm...</span>
                     </div>
                   ) : searchQuery.trim() !== '' ? (
-                    <div className="suggestions-group">
-                      <div className="group-title">Tác phẩm khớp</div>
-                      {suggestions.length > 0 ? (
-                        suggestions.map((story: any, idx) => (
-                          <div
-                            key={story.id}
-                            className={`suggestion-item ${idx === activeSuggestionIndex ? 'active' : ''}`}
-                            onClick={() => handleSelectSuggestion(story)}
-                            onMouseEnter={() => setActiveSuggestionIndex(idx)}
-                          >
-                            <img 
-                              src={getImageUrl(story.coverImageUrl, 'cover', story.title)} 
-                              alt={story.title} 
-                              className="suggestion-cover" 
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = getImageUrl('', 'cover', story.title);
-                              }}
-                            />
-                            <div className="suggestion-info">
-                              <span className="suggestion-title">{story.title}</span>
-                              <span className="suggestion-author">Bởi {story.authorDisplayName || story.authorName || 'Tác giả'}</span>
+                    <div className="suggestions-group-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div className="suggestions-group">
+                        <div className="group-title">Tác phẩm khớp</div>
+                        {suggestions.length > 0 ? (
+                          suggestions.map((story: any, idx) => (
+                            <div
+                              key={story.id}
+                              className={`suggestion-item ${idx === activeSuggestionIndex ? 'active' : ''}`}
+                              onClick={() => handleSelectSuggestion(story)}
+                              onMouseEnter={() => setActiveSuggestionIndex(idx)}
+                            >
+                              <img 
+                                src={getImageUrl(story.coverImageUrl, 'cover', story.title)} 
+                                alt={story.title} 
+                                className="suggestion-cover" 
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src = getImageUrl('', 'cover', story.title);
+                                }}
+                              />
+                              <div className="suggestion-info">
+                                <span className="suggestion-title">{story.title}</span>
+                                <span className="suggestion-author">Bởi {story.authorDisplayName || story.authorName || 'Tác giả'}</span>
+                              </div>
                             </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="search-popup-empty">Không tìm thấy tác phẩm nào</div>
+                          ))
+                        ) : (
+                          <div className="search-popup-empty">Không tìm thấy tác phẩm nào</div>
+                        )}
+                      </div>
+
+                      {userSuggestions.length > 0 && (
+                        <div className="suggestions-group" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '8px' }}>
+                          <div className="group-title">Tác giả khớp</div>
+                          {userSuggestions.map((u: any) => (
+                            <div
+                              key={u.id}
+                              className="suggestion-item"
+                              onClick={() => {
+                                navigate(`/${u.username}`);
+                                setSearchQuery('');
+                                setIsSearchFocused(false);
+                              }}
+                              style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 8px', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s' }}
+                            >
+                              <div className="avatar-circle" style={{ width: '24px', height: '24px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, var(--primary), var(--secondary))' }}>
+                                <img 
+                                  src={getImageUrl(u.avatarUrl, 'avatar', u.displayName)} 
+                                  alt={u.displayName} 
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', u.displayName);
+                                  }}
+                                />
+                              </div>
+                              <div className="suggestion-info" style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span className="suggestion-title" style={{ fontSize: '0.875rem', fontWeight: 500 }}>{u.displayName}</span>
+                                <span className="suggestion-author" style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.4)' }}>@{u.username}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       )}
                     </div>
                   ) : (
@@ -419,7 +460,7 @@ export const Navbar: React.FC = () => {
                 <button 
                   type="button" 
                   className="mobile-search-clear" 
-                  onClick={() => { setSearchQuery(''); setSuggestions([]); }}
+                  onClick={() => { setSearchQuery(''); setSuggestions([]); setUserSuggestions([]); }}
                 >
                   <X size={14} />
                 </button>
@@ -435,34 +476,69 @@ export const Navbar: React.FC = () => {
                 <span>Đang tìm kiếm...</span>
               </div>
             ) : searchQuery.trim() !== '' ? (
-              <div className="suggestions-group">
-                <div className="group-title">Tác phẩm khớp</div>
-                {suggestions.length > 0 ? (
-                  suggestions.map((story: any) => (
-                    <div
-                      key={story.id}
-                      className="suggestion-item"
-                      onClick={() => {
-                        handleSelectSuggestion(story);
-                        setIsMobileSearchOpen(false);
-                      }}
-                    >
-                      <img 
-                        src={getImageUrl(story.coverImageUrl, 'cover', story.title)} 
-                        alt={story.title} 
-                        className="suggestion-cover" 
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = getImageUrl('', 'cover', story.title);
+              <div className="suggestions-group-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="suggestions-group">
+                  <div className="group-title">Tác phẩm khớp</div>
+                  {suggestions.length > 0 ? (
+                    suggestions.map((story: any) => (
+                      <div
+                        key={story.id}
+                        className="suggestion-item"
+                        onClick={() => {
+                          handleSelectSuggestion(story);
+                          setIsMobileSearchOpen(false);
                         }}
-                      />
-                      <div className="suggestion-info">
-                        <span className="suggestion-title">{story.title}</span>
-                        <span className="suggestion-author">Bởi {story.authorDisplayName || story.authorName || 'Tác giả'}</span>
+                      >
+                        <img 
+                          src={getImageUrl(story.coverImageUrl, 'cover', story.title)} 
+                          alt={story.title} 
+                          className="suggestion-cover" 
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = getImageUrl('', 'cover', story.title);
+                          }}
+                        />
+                        <div className="suggestion-info">
+                          <span className="suggestion-title">{story.title}</span>
+                          <span className="suggestion-author">Bởi {story.authorDisplayName || story.authorName || 'Tác giả'}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="search-popup-empty">Không tìm thấy tác phẩm nào</div>
+                    ))
+                  ) : (
+                    <div className="search-popup-empty">Không tìm thấy tác phẩm nào</div>
+                  )}
+                </div>
+
+                {userSuggestions.length > 0 && (
+                  <div className="suggestions-group" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '8px' }}>
+                    <div className="group-title">Tác giả khớp</div>
+                    {userSuggestions.map((u: any) => (
+                      <div
+                        key={u.id}
+                        className="suggestion-item"
+                        onClick={() => {
+                          navigate(`/${u.username}`);
+                          setSearchQuery('');
+                          setIsMobileSearchOpen(false);
+                        }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 8px', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s' }}
+                      >
+                        <div className="avatar-circle" style={{ width: '24px', height: '24px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, var(--primary), var(--secondary))' }}>
+                          <img 
+                            src={getImageUrl(u.avatarUrl, 'avatar', u.displayName)} 
+                            alt={u.displayName} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', u.displayName);
+                            }}
+                          />
+                        </div>
+                        <div className="suggestion-info" style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span className="suggestion-title" style={{ fontSize: '0.875rem', fontWeight: 500 }}>{u.displayName}</span>
+                          <span className="suggestion-author" style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.4)' }}>@{u.username}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             ) : (
