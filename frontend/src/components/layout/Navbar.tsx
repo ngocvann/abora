@@ -206,7 +206,7 @@ export const Navbar: React.FC = () => {
                   ) : searchQuery.trim() !== '' ? (
                     <div className="suggestions-group-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       <div className="suggestions-group">
-                        <div className="group-title">Tác phẩm khớp</div>
+                        <div className="group-title">Tác phẩm</div>
                         {suggestions.length > 0 ? (
                           suggestions.map((story: any, idx) => (
                             <div
@@ -236,7 +236,7 @@ export const Navbar: React.FC = () => {
 
                       {userSuggestions.length > 0 && (
                         <div className="suggestions-group" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '8px' }}>
-                          <div className="group-title">Tác giả khớp</div>
+                          <div className="group-title">Tác giả</div>
                           {userSuggestions.map((u: any) => (
                             <div
                               key={u.id}
@@ -478,7 +478,7 @@ export const Navbar: React.FC = () => {
             ) : searchQuery.trim() !== '' ? (
               <div className="suggestions-group-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div className="suggestions-group">
-                  <div className="group-title">Tác phẩm khớp</div>
+                  <div className="group-title">Tác phẩm</div>
                   {suggestions.length > 0 ? (
                     suggestions.map((story: any) => (
                       <div
@@ -510,7 +510,7 @@ export const Navbar: React.FC = () => {
 
                 {userSuggestions.length > 0 && (
                   <div className="suggestions-group" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '8px' }}>
-                    <div className="group-title">Tác giả khớp</div>
+                    <div className="group-title">Tác giả</div>
                     {userSuggestions.map((u: any) => (
                       <div
                         key={u.id}
