@@ -297,6 +297,16 @@
   overflow-wrap: break-word;
 }
 
+.chapter-content * {
+  color: var(--reader-text) !important;
+  background-color: transparent !important;
+}
+
+.chapter-content a,
+.chapter-content a * {
+  color: var(--primary-color, #8b5cf6) !important;
+}
+
 .chapter-content p {
   margin-bottom: 1.5em;
   line-height: 1.8;
