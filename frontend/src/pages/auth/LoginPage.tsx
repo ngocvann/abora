@@ -25,6 +25,7 @@ const buildUser = (data: any) => ({
   email: data.email,
   username: data.username,
   displayName: data.displayName,
+  avatarUrl: data.avatarUrl,
   roles: [data.role],
   hasPassword: data.hasPassword ?? true,
   oauthProvider: data.oauthProvider ?? null,

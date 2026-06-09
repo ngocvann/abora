@@ -346,6 +346,7 @@ public class AuthService {
                 user.getUsername(),
                 user.getDisplayName(),
                 user.getRole().name(),
+                user.getAvatarUrl(),
                 accessToken
         );
     }
