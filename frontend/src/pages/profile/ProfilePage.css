@@ -636,7 +636,7 @@
   font-size: 0.95rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
-  margin: 0.75rem 0 1.25rem 0 !important;
+  margin: 0 !important;
   white-space: pre-wrap;
   word-break: break-word;
 }

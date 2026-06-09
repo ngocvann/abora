@@ -281,7 +281,7 @@ export const PostDetailPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="post-content" style={{ fontSize: '1.1rem', margin: '1.5rem 0', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+          <div className="post-content" style={{ fontSize: '1.1rem', margin: '0.75rem 0', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
             {renderPostContentWithHashtags(post.content)}
           </div>
         )}
