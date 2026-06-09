@@ -29,6 +29,68 @@ const fetchStoryDetail = async (slug: string): Promise<PublicStoryDetail> => {
   return data;
 };
 
+const parseParagraphs = (htmlContent: string): string[] => {
+  if (!htmlContent) return [];
+  
+  // Create a temporary element to parse the HTML in-memory
+  const container = document.createElement('div');
+  container.innerHTML = htmlContent;
+  
+  const parsed: string[] = [];
+  const children = Array.from(container.childNodes);
+  let currentText = '';
+  
+  children.forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as HTMLElement;
+      const tagName = element.tagName.toLowerCase();
+      
+      // If it's a block level container
+      if (['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'li', 'ul', 'ol', 'section'].includes(tagName)) {
+        if (currentText.trim()) {
+          parsed.push(`<p>${currentText.trim()}</p>`);
+          currentText = '';
+        }
+        parsed.push(element.outerHTML);
+      } else {
+        // Accumulate inline nodes
+        currentText += element.outerHTML;
+      }
+    } else if (node.nodeType === Node.TEXT_NODE) {
+      currentText += node.textContent || '';
+    }
+  });
+  
+  if (currentText.trim()) {
+    parsed.push(`<p>${currentText.trim()}</p>`);
+  }
+  
+  // Fallback if no block elements were parsed (e.g. plain text with newlines)
+  if (parsed.length <= 1) {
+    const normalizedContent = htmlContent
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\u00A0/g, ' ');
+    
+    if (normalizedContent.includes('\n')) {
+      const splitText = normalizedContent
+        .split('\n')
+        .map(p => p.trim())
+        .filter(p => p !== '');
+        
+      if (splitText.length > 1) {
+        return splitText.map(p => {
+          if (!p.startsWith('<p>') && !p.startsWith('<div')) {
+            return `<p>${p}</p>`;
+          }
+          return p;
+        });
+      }
+    }
+  }
+  
+  return parsed.length > 0 ? parsed : [htmlContent];
+};
+
 export const ReaderPage: React.FC = () => {
   const { slug, chapterSlug } = useParams<{
     slug: string;
@@ -476,13 +538,8 @@ export const ReaderPage: React.FC = () => {
 
   const commentCount = getTotalComments(comments) || chapter?.commentCount || 0;
   
-  // Parse paragraphs by breaking on newlines
-  const paragraphs = chapter.content
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\u00A0/g, ' ')
-    .split('\n')
-    .map(p => p.trim())
-    .filter(p => p !== '');
+  // Parse paragraphs by breaking on HTML block tags or newlines
+  const paragraphs = parseParagraphs(chapter.content);
 
   return (
     <div 
@@ -622,6 +679,7 @@ export const ReaderPage: React.FC = () => {
             const hash = getParagraphHash(p);
             const totalCommentsCount = getParagraphCommentCount(hash);
             const hasComments = totalCommentsCount > 0;
+            const isParaEmpty = p.replace(/<[^>]*>/g, '').trim() === '';
             return (
               <div 
                 key={index} 
@@ -634,23 +692,25 @@ export const ReaderPage: React.FC = () => {
                   }
                 }}
               >
-                <p 
+                <div 
                   className="paragraph-text" 
                   dangerouslySetInnerHTML={{ __html: p }} 
                 />
-                <button 
-                  className={`paragraph-comment-indicator ${hasComments ? 'has-comments' : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedParagraphHash(hash);
-                    setSelectedParagraphText(p.replace(/<[^>]*>/g, '').trim());
-                    setShowComments(true);
-                  }}
-                  title="Bình luận về đoạn này"
-                >
-                  <MessageCircle size={14} />
-                  {hasComments && <span className="badge">{totalCommentsCount}</span>}
-                </button>
+                {!isParaEmpty && (
+                  <button 
+                    className={`paragraph-comment-indicator ${hasComments ? 'has-comments' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedParagraphHash(hash);
+                      setSelectedParagraphText(p.replace(/<[^>]*>/g, '').trim());
+                      setShowComments(true);
+                    }}
+                    title="Bình luận về đoạn này"
+                  >
+                    <MessageCircle size={14} />
+                    {hasComments && <span className="badge">{totalCommentsCount}</span>}
+                  </button>
+                )}
               </div>
             );
           })}
