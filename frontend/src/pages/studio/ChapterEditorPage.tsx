@@ -213,6 +213,7 @@ export const ChapterEditorPage: React.FC = () => {
 
         if (currentChapterId === 'new') {
           const { data } = await api.post(`/stories/${storyId}/chapters`, payload);
+          queryClient.setQueryData(['chapter', storyId, data.id.toString()], data);
           setInitializedChapterId(data.id.toString()); 
           setCurrentChapterId(data.id.toString());
           queryClient.invalidateQueries({ queryKey: ['management-chapters', storyId] });
@@ -289,7 +290,7 @@ export const ChapterEditorPage: React.FC = () => {
     ? title.toUpperCase()
     : `CHƯƠNG ${chapterNumber}: CHƯA ĐẶT TIÊU ĐỀ`;
 
-  if (isEditMode && (isLoading || initializedChapterId !== chapterId)) {
+  if (isEditMode && ((isLoading && !chapter) || initializedChapterId !== chapterId)) {
     return (
       <div className="editor-page-wrapper flex justify-center items-center" style={{ minHeight: '100vh', paddingTop: 'var(--navbar-height, 56px)' }}>
         <div className="flex flex-col items-center gap-4 text-gray-400">
