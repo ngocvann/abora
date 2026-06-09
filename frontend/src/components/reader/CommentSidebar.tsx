@@ -44,14 +44,26 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   width = 400,
   onWidthChange,
   paragraphHash = null,
-  paragraphText = null,
-  onClearParagraphFilter
+  paragraphText = null
 }) => {
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<{ id: number; userName: string } | null>(null);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const user = useAuthStore(state => state.user);
   const queryClient = useQueryClient();
+  
+  const [isParagraphExpanded, setIsParagraphExpanded] = useState(false);
+
+  useEffect(() => {
+    setIsParagraphExpanded(false);
+  }, [paragraphHash]);
+
+  const getCleanedParagraphText = (html: string | null): string => {
+    if (!html) return '';
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    return (temp.textContent || temp.innerText || "").replace(/\s+/g, ' ').trim();
+  };
   
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isResizing, setIsResizing] = useState(false);
@@ -335,41 +347,47 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
             borderBottom: '1px solid var(--glass-border)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '6px'
+            gap: '4px'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--primary-color)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Bình luận đoạn văn:</span>
-              <button 
-                onClick={onClearParagraphFilter}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: 'var(--text-secondary)',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'color 0.2s'
-                }}
-                onMouseOver={(e) => (e.target as HTMLElement).style.color = 'var(--text-primary)'}
-                onMouseOut={(e) => (e.target as HTMLElement).style.color = 'var(--text-secondary)'}
-              >
-                Xem tất cả
-              </button>
-            </div>
-            {paragraphText && (
-              <p style={{
-                margin: 0,
-                fontSize: '0.8rem',
-                color: 'var(--text-muted)',
-                fontStyle: 'italic',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }}>
-                "{paragraphText}"
-              </p>
-            )}
+            {paragraphText && (() => {
+              const decodedText = getCleanedParagraphText(paragraphText);
+              return (
+                <div 
+                  onClick={() => setIsParagraphExpanded(!isParagraphExpanded)}
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    color: 'var(--text-secondary)',
+                    lineHeight: '1.45',
+                    position: 'relative'
+                  }}
+                >
+                  <p style={{
+                    margin: 0,
+                    display: isParagraphExpanded ? 'block' : '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    fontStyle: 'italic',
+                    color: 'var(--text-muted)'
+                  }}>
+                    "{decodedText}"
+                  </p>
+                  {decodedText.length > 80 && (
+                    <span style={{ 
+                      color: 'var(--primary-color)', 
+                      fontSize: '0.75rem', 
+                      fontWeight: 600,
+                      display: 'block',
+                      marginTop: '4px',
+                      textAlign: 'right'
+                    }}>
+                      {isParagraphExpanded ? 'Thu gọn' : 'Xem thêm'}
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
 

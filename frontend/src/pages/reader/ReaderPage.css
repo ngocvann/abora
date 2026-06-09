@@ -721,6 +721,11 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   margin: 0 !important;
 }
 
+.paragraph-text p,
+.paragraph-text div {
+  margin-bottom: 0 !important;
+}
+
 .paragraph-comment-indicator {
   display: flex;
   align-items: center;
