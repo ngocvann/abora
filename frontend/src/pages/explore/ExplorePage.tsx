@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
-import { Star, Eye, Loader2, BookOpen, Tag, List, LayoutGrid, Heart } from "lucide-react";
+import { Eye, Loader2, BookOpen, Tag, List, LayoutGrid, Heart } from "lucide-react";
 import api from "../../services/api";
 import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
@@ -144,8 +144,8 @@ export const ExplorePage: React.FC = () => {
                   <span>{currentRecommendation.viewCount.toLocaleString()}<span className="meta-text"> lượt xem</span></span>
                 </div>
                 <div className="carousel-meta-item">
-                  <Star size={16} />
-                  <span>{currentRecommendation.followCount.toLocaleString()}<span className="meta-text"> lượt vote</span></span>
+                  <Heart size={16} />
+                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> lượt yêu thích</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <BookOpen size={16} />
