@@ -138,9 +138,11 @@ export const StudioDashboard: React.FC = () => {
   return (
     <div className="studio-container fade-in">
       <div className="studio-header">
-        <h1 className="studio-title">Studio Sáng Tác</h1>
+        <h1 className="studio-title">
+          Studio<span className="desktop-suffix"> Sáng Tác</span>
+        </h1>
         <Button onClick={() => navigate("/studio/story/new")} variant="primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <PlusCircle size={18} /> Tạo truyện mới
+          <PlusCircle size={18} /> Tạo <span className="desktop-suffix">truyện </span>mới
         </Button>
       </div>
 

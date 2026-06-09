@@ -1054,10 +1054,18 @@ input:checked + .toggle-slider:before {
 /* ==========================================================================
    Mobile-Responsive Rules for Studio & Chapter Management (max-width: 768px)
    ========================================================================== */
+.desktop-suffix {
+  display: inline;
+}
+
 @media (max-width: 768px) {
+  .desktop-suffix {
+    display: none !important;
+  }
+
   /* Layout Padding & Header */
   .studio-container {
-    padding: 1.25rem 1rem !important;
+    padding: 0.6rem 1rem !important;
   }
 
   .studio-header {
@@ -1065,7 +1073,7 @@ input:checked + .toggle-slider:before {
     justify-content: space-between !important;
     align-items: center !important;
     gap: 0.5rem !important;
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 0.6rem !important;
   }
 
   .studio-title {
@@ -1075,9 +1083,15 @@ input:checked + .toggle-slider:before {
 
   .studio-header button {
     width: auto !important;
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.8rem !important;
+    padding: 0.35rem 0.6rem !important;
+    font-size: 0.76rem !important;
+    border-radius: 6px !important;
     white-space: nowrap !important;
+  }
+
+  .studio-header button svg {
+    width: 14px !important;
+    height: 14px !important;
   }
 
   /* Sub Header / Edit Header */
@@ -1088,13 +1102,19 @@ input:checked + .toggle-slider:before {
 
   /* Studio Tabs styling */
   .studio-tabs {
-    gap: 1.25rem !important;
-    margin-bottom: 1.5rem !important;
+    width: 100% !important;
+    display: flex !important;
+    gap: 0 !important;
+    margin-bottom: 1rem !important;
   }
 
   .studio-tab {
-    font-size: 0.95rem !important;
+    flex: 1 !important;
+    text-align: center !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
     padding: 0.5rem 0 !important;
+    letter-spacing: -0.3px !important;
   }
 
   /* Story list spacing */
