@@ -610,6 +610,7 @@ body.editor-scrolled .navbar {
 .distraction-free-editor .ql-editor {
   min-height: 60vh;
   padding: 0;
+  color: var(--text-main, #f8fafc) !important;
 }
 
 .distraction-free-editor .ql-editor.ql-blank::before {
@@ -621,7 +622,7 @@ body.editor-scrolled .navbar {
 
 .distraction-free-editor .ql-editor p {
   margin-bottom: 1.5em;
-  color: var(--text-main);
+  color: var(--text-main, #f8fafc) !important;
 }
 
 .distraction-free-editor .ql-snow .ql-stroke {
