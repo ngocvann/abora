@@ -286,9 +286,7 @@ export const ChapterEditorPage: React.FC = () => {
 
 
   const displayHeaderTitle = title 
-    ? (title.toUpperCase().includes('CHƯƠNG') || title.toUpperCase().includes('VĂN ÁN')
-        ? title.toUpperCase()
-        : `CHƯƠNG ${chapterNumber}: ${title.toUpperCase()}`)
+    ? title.toUpperCase()
     : `CHƯƠNG ${chapterNumber}: CHƯA ĐẶT TIÊU ĐỀ`;
 
   if (isEditMode && (isLoading || initializedChapterId !== chapterId)) {
@@ -350,8 +348,7 @@ export const ChapterEditorPage: React.FC = () => {
                         navigate(`/studio/story/${storyId}/chapters/${ch.id}`);
                       }}
                     >
-                      <span className="chapter-toc-num">Chương {ch.chapterNumber}:</span>
-                      <span className="chapter-toc-title">{ch.title || 'Chưa đặt tiêu đề'}</span>
+                      <span className="chapter-toc-title">{ch.title || `Chương ${ch.chapterNumber}`}</span>
                       {ch.status === 'DRAFT' && <span className="chapter-toc-draft-badge">Nháp</span>}
                     </div>
                   ))}

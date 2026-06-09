@@ -99,7 +99,7 @@ export const ReaderPage: React.FC = () => {
   });
 
   const pageTitle = chapter && story 
-    ? `Chương ${chapter.chapterNumber}: ${chapter.title || 'Chưa đặt tiêu đề'} - ${story.title} - Abora`
+    ? `${chapter.title || `Chương ${chapter.chapterNumber}`} - ${story.title} - Abora`
     : 'Đang tải... - Abora';
   useDocumentTitle(pageTitle);
 
@@ -402,7 +402,7 @@ export const ReaderPage: React.FC = () => {
             )}
             <div className="reader-top-bar-info">
               <span className="reader-story-title" style={{ fontSize: '12px' }}>{story?.title || 'Đang tải...'}</span>
-              <span className="reader-chapter-title" style={{ fontSize: '14px', paddingTop: '5px' }}>{chapter.title}</span>
+              <span className="reader-chapter-title" style={{ fontSize: '14px', paddingTop: '5px' }}>{chapter.title || `Chương ${chapter.chapterNumber}`}</span>
             </div>
             <ChevronDown size={16} className="text-secondary flex-shrink-0" />
           </div>
@@ -460,7 +460,7 @@ export const ReaderPage: React.FC = () => {
                       navigate(`/story/${slug}/chapter/${c.slug}`);
                     }}
                   >
-                    {c.title}
+                    {c.title || `Chương ${c.chapterNumber}`}
                   </button>
                 ))
               ) : (
@@ -494,7 +494,7 @@ export const ReaderPage: React.FC = () => {
 
       {/* Main Content */}
       <div className="reader-container fade-in" style={{ fontSize: `${fontSize}px` }}>
-        <h1 className="chapter-title">{chapter.title}</h1>
+        <h1 className="chapter-title">{chapter.title || `Chương ${chapter.chapterNumber}`}</h1>
         
         <div
           className="chapter-content"
