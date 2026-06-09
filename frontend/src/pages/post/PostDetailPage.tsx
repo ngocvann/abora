@@ -130,6 +130,33 @@ export const PostDetailPage: React.FC = () => {
     navigate(`/users/${username}`);
   };
 
+  const renderPostContentWithHashtags = (content: string) => {
+    const words = content.split(/(\s+)/);
+    return words.map((word, idx) => {
+      if (word.startsWith('#') && word.length > 1) {
+        return (
+          <span
+            key={idx}
+            onClick={(e) => {
+              e.stopPropagation();
+              const tag = word.trim();
+              navigate(`/forum?tag=${encodeURIComponent(tag)}`);
+            }}
+            style={{
+              color: 'var(--primary-color, #a855f7)',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+            className="hover:underline"
+          >
+            {word}
+          </span>
+        );
+      }
+      return word;
+    });
+  };
+
   if (isLoading) {
     return <div className="flex justify-center items-center p-8"><Loader2 className="animate-spin text-primary" size={32} /></div>;
   }
@@ -172,7 +199,7 @@ export const PostDetailPage: React.FC = () => {
               <span className="post-author-username" style={{ color: 'var(--text-secondary)' }}>@{post.userUsername}</span>
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span className="post-time">{formatRelativeTime(post.createdAt)}</span>
             {user && (
               <div style={{ position: 'relative' }}>
@@ -255,7 +282,7 @@ export const PostDetailPage: React.FC = () => {
           </div>
         ) : (
           <div className="post-content" style={{ fontSize: '1.1rem', margin: '1.5rem 0', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
-            {post.content}
+            {renderPostContentWithHashtags(post.content)}
           </div>
         )}
 

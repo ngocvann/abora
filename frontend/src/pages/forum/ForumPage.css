@@ -78,13 +78,15 @@
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   color: #fff;
   font-family: inherit;
   font-size: 1rem;
   resize: none;
   transition: border-color 0.2s ease;
-  min-height: 100px;
+  min-height: 46px;
+  height: 46px;
+  overflow-y: hidden;
 }
 
 .post-creator textarea:focus {
@@ -96,6 +98,7 @@
 .creator-actions {
   display: flex;
   justify-content: flex-end;
+  margin-top: 5px !important;
 }
 
 .publish-btn {
@@ -156,8 +159,13 @@
 }
 
 .post-time {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  white-space: nowrap;
 }
 
 .post-content {
@@ -194,11 +202,11 @@
 }
 
 .interaction-btn.liked {
-  color: #ef4444;
+  color: var(--primary-color, #a855f7) !important;
 }
 
 .interaction-btn.liked:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(168, 85, 247, 0.1) !important;
 }
 
 .interaction-btn svg {

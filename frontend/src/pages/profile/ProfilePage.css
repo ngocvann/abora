@@ -671,14 +671,14 @@
 }
 
 .interaction-btn.liked {
-  color: #f43f5e !important;
-  background: rgba(244, 63, 94, 0.08) !important;
-  border-color: rgba(244, 63, 94, 0.2) !important;
+  color: var(--primary-color, #a855f7) !important;
+  background: rgba(168, 85, 247, 0.08) !important;
+  border-color: rgba(168, 85, 247, 0.2) !important;
 }
 
 .interaction-btn.liked:hover {
-  background: rgba(244, 63, 94, 0.15) !important;
-  border-color: rgba(244, 63, 94, 0.3) !important;
+  background: rgba(168, 85, 247, 0.15) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
 }
 
 .interaction-btn svg {

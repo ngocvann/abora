@@ -94,6 +94,86 @@ export const ProfilePage: React.FC = () => {
   const [openMenuProfileId, setOpenMenuProfileId] = useState<number | null>(null);
   const [reportTarget, setReportTarget] = useState<{ type: 'STORY' | 'CHAPTER' | 'COMMENT' | 'USER' | 'POST', id: number } | null>(null);
 
+  // Hashtag & Show More state for posts
+  const [expandedPosts, setExpandedPosts] = useState<Record<number, boolean>>({});
+
+  const renderPostContentWithHashtags = (content: string) => {
+    const words = content.split(/(\s+)/);
+    return words.map((word, idx) => {
+      if (word.startsWith('#') && word.length > 1) {
+        return (
+          <span
+            key={idx}
+            onClick={(e) => {
+              e.stopPropagation();
+              const tag = word.trim();
+              navigate(`/forum?tag=${encodeURIComponent(tag)}`);
+            }}
+            style={{
+              color: 'var(--primary-color, #a855f7)',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+            className="hover:underline"
+          >
+            {word}
+          </span>
+        );
+      }
+      return word;
+    });
+  };
+
+  const renderPostText = (post: any) => {
+    const isExpanded = expandedPosts[post.id];
+    const limit = 250;
+    
+    if (post.content.length <= limit || isExpanded) {
+      return (
+        <div className="post-content" onClick={() => navigate(`/post/${post.id}`)}>
+          {renderPostContentWithHashtags(post.content)}
+          {isExpanded && post.content.length > limit && (
+            <span 
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpandedPosts(prev => ({ ...prev, [post.id]: false }));
+              }}
+              style={{
+                color: 'var(--primary-color, #a855f7)',
+                fontWeight: 600,
+                marginLeft: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              Thu gọn
+            </span>
+          )}
+        </div>
+      );
+    }
+    
+    const truncated = post.content.substring(0, limit);
+    return (
+      <div className="post-content" onClick={() => navigate(`/post/${post.id}`)}>
+        {renderPostContentWithHashtags(truncated)}...
+        <span 
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpandedPosts(prev => ({ ...prev, [post.id]: true }));
+          }}
+          style={{
+            color: 'var(--primary-color, #a855f7)',
+            fontWeight: 600,
+            marginLeft: '6px',
+            cursor: 'pointer'
+          }}
+        >
+          Xem thêm
+        </span>
+      </div>
+    );
+  };
+
   // Follow list modal state
   const [followListModal, setFollowListModal] = useState<{ type: 'following' | 'followers' } | null>(null);
   const [followList, setFollowList] = useState<any[]>([]);
@@ -750,12 +830,7 @@ export const ProfilePage: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <div 
-                        className="post-content" 
-                        onClick={() => navigate(`/post/${post.id}`)}
-                      >
-                        {post.content}
-                      </div>
+                      renderPostText(post)
                     )}
 
                     {/* Footer */}

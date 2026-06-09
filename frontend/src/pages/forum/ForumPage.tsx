@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Heart, MessageSquare, Send, Compass, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2 } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Loader2, Heart, MessageSquare, MessagesSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X } from 'lucide-react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
@@ -54,6 +54,106 @@ export const ForumPage: React.FC = () => {
   const [newPostContent, setNewPostContent] = useState('');
   const [openCommentsPostId, setOpenCommentsPostId] = useState<number | null>(null);
 
+  // Hashtag & Textarea Expand & Show More state
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedHashtag = searchParams.get('tag') || null;
+
+  const setSelectedHashtag = (tag: string | null) => {
+    if (tag) {
+      setSearchParams({ tag });
+    } else {
+      setSearchParams({});
+    }
+  };
+
+  const [expandedPosts, setExpandedPosts] = useState<Record<number, boolean>>({});
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewPostContent(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  const renderPostContentWithHashtags = (content: string) => {
+    const words = content.split(/(\s+)/);
+    return words.map((word, idx) => {
+      if (word.startsWith('#') && word.length > 1) {
+        return (
+          <span
+            key={idx}
+            onClick={(e) => {
+              e.stopPropagation();
+              const tag = word.trim();
+              setSelectedHashtag(selectedHashtag === tag ? null : tag);
+            }}
+            style={{
+              color: 'var(--primary-color, #a855f7)',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+            className="hover:underline"
+          >
+            {word}
+          </span>
+        );
+      }
+      return word;
+    });
+  };
+
+  const renderPostText = (post: Post) => {
+    const isExpanded = expandedPosts[post.id];
+    const limit = 250;
+    
+    if (post.content.length <= limit || isExpanded) {
+      return (
+        <div className="post-content" onClick={() => navigate(`/post/${post.id}`)}>
+          {renderPostContentWithHashtags(post.content)}
+          {isExpanded && post.content.length > limit && (
+            <span 
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpandedPosts(prev => ({ ...prev, [post.id]: false }));
+              }}
+              style={{
+                color: 'var(--primary-color, #a855f7)',
+                fontWeight: 600,
+                marginLeft: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              Thu gọn
+            </span>
+          )}
+        </div>
+      );
+    }
+    
+    const truncated = post.content.substring(0, limit);
+    return (
+      <div className="post-content" onClick={() => navigate(`/post/${post.id}`)}>
+        {renderPostContentWithHashtags(truncated)}...
+        <span 
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpandedPosts(prev => ({ ...prev, [post.id]: true }));
+          }}
+          style={{
+            color: 'var(--primary-color, #a855f7)',
+            fontWeight: 600,
+            marginLeft: '6px',
+            cursor: 'pointer'
+          }}
+        >
+          Xem thêm
+        </span>
+      </div>
+    );
+  };
+
   // Post Edit state
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
   const [editPostContent, setEditPostContent] = useState('');
@@ -77,6 +177,11 @@ export const ForumPage: React.FC = () => {
 
   const posts: Post[] = postsData?.content || [];
 
+  const filteredPosts = posts.filter((post) => {
+    if (!selectedHashtag) return true;
+    return post.content.toLowerCase().includes(selectedHashtag.toLowerCase());
+  });
+
   // Create Post Mutation
   const createPostMutation = useMutation({
     mutationFn: async (content: string) => {
@@ -85,6 +190,9 @@ export const ForumPage: React.FC = () => {
     },
     onSuccess: () => {
       setNewPostContent('');
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
     },
     onError: () => {
@@ -187,10 +295,12 @@ export const ForumPage: React.FC = () => {
               </div>
               <form onSubmit={handleCreatePost}>
                 <textarea
+                  ref={textareaRef}
                   placeholder="Hôm nay bạn muốn chia sẻ hay thảo luận điều gì?"
                   value={newPostContent}
-                  onChange={(e) => setNewPostContent(e.target.value)}
+                  onChange={handleTextareaChange}
                   maxLength={2000}
+                  rows={1}
                 />
                 <div className="creator-actions">
                   <Button
@@ -210,10 +320,44 @@ export const ForumPage: React.FC = () => {
             </div>
           )}
 
-          <h2 className="feed-title">
-            <Compass className="mr-2 inline" size={24} style={{ verticalAlign: 'middle', color: '#a855f7' }} />
+          <h2 className="feed-title" style={{ display: 'flex', alignItems: 'center' }}>
+            <MessagesSquare size={24} style={{ color: '#a855f7', marginRight: '16px' }} />
             Thảo luận cộng đồng
           </h2>
+
+          {selectedHashtag && (
+            <div 
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                background: 'rgba(168, 85, 247, 0.15)', 
+                border: '1px solid rgba(168, 85, 247, 0.3)', 
+                borderRadius: '20px', 
+                padding: '6px 14px', 
+                marginBottom: '1.5rem',
+                fontSize: '0.9rem',
+                color: '#d8b4fe'
+              }}
+            >
+              <span>Đang lọc theo: <strong>{selectedHashtag}</strong></span>
+              <button 
+                onClick={() => setSelectedHashtag(null)}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#ef4444', 
+                  cursor: 'pointer', 
+                  fontSize: '1rem', 
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
 
           {isLoading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
@@ -224,13 +368,13 @@ export const ForumPage: React.FC = () => {
             <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--danger-color)' }}>
               Có lỗi xảy ra khi tải bài đăng diễn đàn. Vui lòng tải lại trang.
             </div>
-          ) : posts.length === 0 ? (
+          ) : filteredPosts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem', color: 'rgba(255, 255, 255, 0.4)' }}>
-              Chưa có cuộc thảo luận nào. Hãy là người đầu tiên khơi nguồn ý tưởng!
+              {selectedHashtag ? 'Không tìm thấy bài viết nào chứa hashtag này.' : 'Chưa có cuộc thảo luận nào. Hãy là người đầu tiên khơi nguồn ý tưởng!'}
             </div>
           ) : (
             <div className="posts-feed">
-              {posts.map((post) => (
+              {filteredPosts.map((post) => (
                 <div key={post.id} className="glass-card post-card">
                   
                   {/* Post Author Info */}
@@ -249,14 +393,14 @@ export const ForumPage: React.FC = () => {
                         <span className="post-author-username">@{post.userUsername}</span>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <span className="post-time">{formatRelativeTime(post.createdAt)}</span>
                       {user && (
                         <div style={{ position: 'relative' }}>
                           <button 
                             onClick={(e) => { e.stopPropagation(); setOpenMenuPostId(openMenuPostId === post.id ? null : post.id); }}
                             onBlur={() => setTimeout(() => setOpenMenuPostId(null), 150)}
-                            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: '0.2rem' }}
+                            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: '0.2rem', display: 'flex', alignItems: 'center' }}
                           >
                             <MoreVertical size={18} />
                           </button>
@@ -330,13 +474,7 @@ export const ForumPage: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <div 
-                      className="post-content" 
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => navigate(`/post/${post.id}`)}
-                    >
-                      {post.content}
-                    </div>
+                    renderPostText(post)
                   )}
 
                   {/* Post Interactions */}
