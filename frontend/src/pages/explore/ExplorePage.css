@@ -20,6 +20,7 @@
   display: flex;
   align-items: center;
   padding: 2.5rem;
+  container-type: inline-size;
 }
 
 .explore-banner-bg {
@@ -112,10 +113,11 @@
   font-size: 1rem;
   line-height: 1.6;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 50cqw;
 }
 
 .carousel-meta {
@@ -349,6 +351,7 @@
     margin-bottom: 0.1rem;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* clamp to 2 lines on mobile for compactness */
+    max-width: none;
   }
 
   .carousel-meta {
