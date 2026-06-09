@@ -1128,7 +1128,8 @@ input:checked + .toggle-slider:before {
     grid-template-columns: 80px 1fr !important;
     grid-template-rows: auto auto !important;
     padding: 1rem !important;
-    gap: 1rem !important;
+    row-gap: 0.5rem !important; /* Make buttons closer to story info */
+    column-gap: 1rem !important;
     border-radius: 12px !important;
   }
 
@@ -1153,11 +1154,14 @@ input:checked + .toggle-slider:before {
   .story-row-title {
     font-size: 1.08rem !important;
     margin-bottom: 0.25rem !important;
-    white-space: normal !important; /* Allow wrapping if title is very long */
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
+    white-space: nowrap !important;
     overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+  }
+
+  .story-row-date {
+    display: none !important; /* Hide updated date/time on mobile */
   }
 
   /* Status Line, Date, and Stats styling on Mobile */
@@ -1188,9 +1192,11 @@ input:checked + .toggle-slider:before {
     display: flex !important;
     justify-content: flex-end !important;
     width: 100% !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
-    padding-top: 0.75rem !important;
-    margin-top: 0.25rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important; /* Faint line is now at the bottom */
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 0.25rem !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
     gap: 0.5rem !important;
   }
 

@@ -218,7 +218,7 @@ export const StudioDashboard: React.FC = () => {
                   {renderChapterStatusLine(story)}
                 </div>
                 
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                <div className="story-row-date" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                   {formatStoryDate(story.updatedAt)}
                 </div>
                 
