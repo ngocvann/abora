@@ -172,6 +172,7 @@
   padding: 0.25rem;
   border-radius: 9999px;
   transition: background-color 0.2s ease;
+  margin-right: 5px;
 }
 
 .avatar-trigger:hover {
@@ -787,6 +788,7 @@
   .avatar-trigger {
     gap: 0 !important;
     padding: 0 !important;
+    margin-right: 5px !important;
   }
 
   .navbar-admin-btn {
