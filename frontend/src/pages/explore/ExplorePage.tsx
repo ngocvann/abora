@@ -141,15 +141,15 @@ export const ExplorePage: React.FC = () => {
               <div className="carousel-meta">
                 <div className="carousel-meta-item">
                   <Eye size={16} />
-                  <span>{currentRecommendation.viewCount.toLocaleString()} lượt xem</span>
+                  <span>{currentRecommendation.viewCount.toLocaleString()}<span className="meta-text"> lượt xem</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <Star size={16} />
-                  <span>{currentRecommendation.followCount.toLocaleString()} lượt vote</span>
+                  <span>{currentRecommendation.followCount.toLocaleString()}<span className="meta-text"> lượt vote</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <BookOpen size={16} />
-                  <span>{currentRecommendation.chapterCount} chương</span>
+                  <span>{currentRecommendation.chapterCount}<span className="meta-text"> chương</span></span>
                 </div>
               </div>
               <Link to={`/story/${currentRecommendation.id}-${currentRecommendation.slug}`} className="carousel-btn">

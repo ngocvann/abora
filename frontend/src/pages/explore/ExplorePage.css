@@ -133,6 +133,10 @@
   font-size: 0.9rem;
 }
 
+.meta-text {
+  display: inline;
+}
+
 .carousel-meta-item {
   display: flex;
   align-items: center;
@@ -332,7 +336,7 @@
     text-align: left;
     align-items: flex-start;
     gap: 0.35rem;
-    min-height: 150px; /* Expandable height to prevent text cut-off */
+    height: 150px; /* Exact height matching the cover */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -374,6 +378,10 @@
     gap: 0.5rem;
     font-size: 0.68rem;
     margin-bottom: 0.2rem;
+  }
+
+  .meta-text {
+    display: none;
   }
 
   .carousel-meta-item {
