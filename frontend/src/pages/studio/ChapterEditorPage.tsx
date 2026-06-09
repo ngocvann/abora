@@ -72,9 +72,19 @@ export const ChapterEditorPage: React.FC = () => {
     gcTime: 0 // Prevent stale cache from showing empty content on remount
   });
 
+  // Fetch chapters list for TOC and auto-calculating chapter number
+  const { data: chapters } = useQuery({
+    queryKey: ['management-chapters', storyId],
+    queryFn: async () => {
+      const { data } = await api.get(`/stories/${storyId}/chapters/management`);
+      return data;
+    },
+    enabled: !!storyId
+  });
+
   // Set form data when chapter is loaded
   useEffect(() => {
-    if (chapter && initializedChapterId !== chapterId) {
+    if (isEditMode && chapter && initializedChapterId !== chapterId) {
       setTitle(chapter.title || '');
       setContent(chapter.content || '');
       setChapterNumber(chapter.chapterNumber);
@@ -86,24 +96,27 @@ export const ChapterEditorPage: React.FC = () => {
         isLoadedRef.current = true;
       }, 100);
       return () => clearTimeout(timer);
-    } else if (!isEditMode) {
-      // In create mode, we are ready immediately
-      isLoadedRef.current = true;
+    } else if (!isEditMode && initializedChapterId !== 'new') {
+      // Switch to create mode - reset all form states to avoid carrying over content from previously edited chapter
+      setTitle('');
+      setContent('');
+      const nextNum = chapters && chapters.length > 0 ? chapters[chapters.length - 1].chapterNumber + 1 : 1;
+      setChapterNumber(nextNum);
+      setStatus('DRAFT');
+      setInitializedChapterId('new');
+      
+      isLoadedRef.current = false;
+      const timer = setTimeout(() => {
+        isLoadedRef.current = true;
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [chapter, isEditMode, chapterId, initializedChapterId]);
+  }, [chapter, isEditMode, chapterId, initializedChapterId, chapters]);
 
   // Kiểm tra xem có sự thay đổi nào so với dữ liệu gốc trên server hay không
   const hasChanges = chapter ? (title !== chapter.title || content !== chapter.content) : false;
 
-  // Fetch chapters list for TOC and auto-calculating chapter number
-  const { data: chapters } = useQuery({
-    queryKey: ['management-chapters', storyId],
-    queryFn: async () => {
-      const { data } = await api.get(`/stories/${storyId}/chapters/management`);
-      return data;
-    },
-    enabled: !!storyId
-  });
+
 
   // Fetch story details for header info (title, cover)
   const { data: story } = useQuery({
