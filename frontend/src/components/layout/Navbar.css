@@ -774,11 +774,11 @@
   }
 
   .navbar-actions {
-    gap: 0.6rem !important; /* Tighten gaps between action buttons on mobile */
+    gap: 0.45rem !important; /* Tighten gaps between action buttons on mobile */
   }
 
   .user-menu {
-    gap: 0.6rem !important; /* Tighten gaps inside user menu on mobile */
+    gap: 0.45rem !important; /* Tighten gaps inside user menu on mobile */
   }
 
   .chevron-icon {
@@ -788,14 +788,23 @@
   .avatar-trigger {
     gap: 0 !important;
     padding: 0 !important;
-    margin-right: 5px !important;
+    margin-right: 5px !important; /* Keep the 5px spacing from right edge/adjacent elements */
   }
 
   .navbar-admin-btn {
-    padding: 4px 10px !important;
+    padding: 4px 8px !important;
     font-size: 0.75rem !important;
-    margin-right: 4px !important;
+    margin-right: 0 !important; /* Remove redundant margin to save space */
     gap: 4px !important;
+  }
+
+  .mobile-menu-toggle {
+    padding: 0.35rem !important;
+    margin-right: 0.25rem !important;
+  }
+
+  .mobile-search-toggle {
+    padding: 0.35rem !important;
   }
 }
 
@@ -811,6 +820,20 @@
 @media (max-width: 480px) {
   .navbar-logo-img {
     height: 32px;
+  }
+
+  .navbar-actions {
+    gap: 0.3rem !important;
+  }
+
+  .user-menu {
+    gap: 0.3rem !important;
+  }
+
+  .navbar-admin-btn {
+    padding: 4px 6px !important;
+    font-size: 0.7rem !important;
+    gap: 2px !important;
   }
 }
 
