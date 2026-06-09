@@ -148,6 +148,19 @@
 @media (max-width: 650px) {
   .profile-stats-row {
     justify-content: center;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    gap: 0 !important;
+  }
+
+  .profile-stats-row .stat-item {
+    flex: 1;
+    padding: 0.4rem 0.25rem !important;
+  }
+
+  .profile-stats-row .stat-divider {
+    padding-left: 0 !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -195,6 +208,18 @@
   border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.profile-name-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.profile-edit-icon {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
 /* Action button area (Follow, Edit) */
 .profile-actions-wrapper {
   display: flex;
@@ -204,8 +229,18 @@
 }
 
 @media (max-width: 650px) {
+  .profile-name-container {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .profile-edit-icon {
+    margin-right: 0 !important;
+  }
+
   .profile-actions-wrapper {
     justify-content: center;
+    margin-top: 0 !important;
   }
 }
 

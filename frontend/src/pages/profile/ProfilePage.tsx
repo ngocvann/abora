@@ -515,13 +515,14 @@ export const ProfilePage: React.FC = () => {
 
           {/* Profile Text Info */}
           <div className="profile-info-details">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <div className="profile-name-container">
               <h1 className="profile-display-name">{profile.displayName}</h1>
               
-              <div className="profile-actions-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div className="profile-actions-wrapper">
                 {isMe ? (
-                  <Button variant="secondary" size="sm" onClick={() => navigate('/settings')}>
-                    <Edit3 size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Chỉnh sửa
+                  <Button variant="secondary" size="sm" onClick={() => navigate('/settings')} className="profile-edit-btn">
+                    <Edit3 size={14} className="profile-edit-icon" />
+                    <span className="desktop-suffix"> Chỉnh sửa</span>
                   </Button>
                 ) : (
                   currentUser && (
