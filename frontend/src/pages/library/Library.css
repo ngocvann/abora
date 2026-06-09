@@ -855,7 +855,15 @@
   }
 }
 
+.desktop-suffix {
+  display: inline;
+}
+
 @media (max-width: 768px) {
+  .desktop-suffix {
+    display: none;
+  }
+
   .library-page {
     padding-top: 1.25rem;
   }
@@ -865,17 +873,39 @@
   }
 
   .library-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     padding-bottom: 1rem;
+    width: 100%;
   }
 
   .library-title {
     font-size: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .library-subtitle {
+    display: none;
   }
   
   .library-view-toggle {
-    align-self: flex-end;
+    align-self: center;
+  }
+
+  .library-tabs {
+    width: 100%;
+    display: flex;
+    gap: 0;
+  }
+
+  .tab-btn {
+    flex: 1;
+    text-align: center;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    padding: 0.75rem 0 1rem;
+    letter-spacing: -0.3px;
   }
 
   .library-list {

@@ -485,7 +485,9 @@ export const LibraryPage: React.FC = () => {
       <div className="library-container">
         <div className="library-header">
           <div>
-            <h1 className="library-title">Thư viện của tôi</h1>
+            <h1 className="library-title">
+              Thư viện<span className="desktop-suffix"> của tôi</span>
+            </h1>
             <p className="library-subtitle">Quản lý và tiếp tục đọc các tác phẩm yêu thích của bạn</p>
           </div>
           
