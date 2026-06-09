@@ -865,18 +865,18 @@
   }
 
   .library-page {
-    padding-top: 1.25rem;
+    padding-top: 0.6rem;
   }
 
   .library-container {
-    gap: 1.25rem;
+    gap: 0.6rem;
   }
 
   .library-header {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5rem;
     width: 100%;
   }
 
@@ -891,6 +891,19 @@
   
   .library-view-toggle {
     align-self: center;
+    padding: 0.15rem;
+    border-radius: 8px;
+    gap: 0.25rem;
+  }
+
+  .toggle-btn {
+    padding: 0.35rem;
+    border-radius: 6px;
+  }
+
+  .toggle-btn svg {
+    width: 15px !important;
+    height: 15px !important;
   }
 
   .library-tabs {
