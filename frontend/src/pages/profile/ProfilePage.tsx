@@ -600,7 +600,7 @@ export const ProfilePage: React.FC = () => {
           className={`profile-tab-button ${activeTab === 'posts' ? 'active' : ''}`}
           onClick={() => setActiveTab('posts')}
         >
-          Bài viết cá nhân ({timelinePosts.length})
+          Bài viết<span className="desktop-suffix"> cá nhân</span> ({timelinePosts.length})
         </button>
         <button
           className={`profile-tab-button ${activeTab === 'stories' ? 'active' : ''}`}

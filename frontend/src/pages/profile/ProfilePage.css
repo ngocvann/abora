@@ -229,9 +229,21 @@
 }
 
 @media (max-width: 650px) {
-  .profile-name-container {
-    justify-content: center;
+  .profile-info-details {
     width: 100%;
+  }
+
+  .profile-name-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .profile-display-name {
+    text-align: center;
+    padding: 0 40px; /* Prevent overlap with the edit/follow button */
   }
 
   .profile-edit-icon {
@@ -239,7 +251,10 @@
   }
 
   .profile-actions-wrapper {
-    justify-content: center;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     margin-top: 0 !important;
   }
 }
@@ -938,6 +953,23 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+@media (max-width: 650px) {
+  .profile-tabs-bar {
+    width: 100% !important;
+    display: flex !important;
+    gap: 0 !important;
+  }
+
+  .profile-tab-button {
+    flex: 1 !important;
+    text-align: center !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+    padding: 0.75rem 0 !important;
+    letter-spacing: -0.3px !important;
+  }
 }
 
 
