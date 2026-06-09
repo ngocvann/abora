@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { NotificationPopover } from '../ui/NotificationPopover';
-import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library } from 'lucide-react';
+import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library, MessageSquare } from 'lucide-react';
 import api from '../../services/api';
 import { getImageUrl } from '../../utils/image';
 import './Navbar.css';
@@ -171,6 +171,7 @@ export const Navbar: React.FC = () => {
             <div className="navbar-links">
               <Link to="/" className="nav-link">Trang chủ</Link>
               <Link to="/explore" className="nav-link">Khám phá</Link>
+              <Link to="/forum" className="nav-link">Diễn đàn</Link>
               <Link to="/library" className="nav-link">Thư viện</Link>
               <Link to="/studio" className="nav-link">Viết truyện</Link>
             </div>
@@ -417,6 +418,10 @@ export const Navbar: React.FC = () => {
           <Link to="/explore" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
             <Compass size={18} />
             <span>Khám phá</span>
+          </Link>
+          <Link to="/forum" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <MessageSquare size={18} />
+            <span>Diễn đàn</span>
           </Link>
           <Link to="/library" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
             <Library size={18} />

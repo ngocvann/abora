@@ -22,6 +22,7 @@ import { TermsPage } from '../pages/legal/TermsPage';
 import { PrivacyPage } from '../pages/legal/PrivacyPage';
 import { HelpPage } from '../pages/help/HelpPage';
 import { PostDetailPage } from '../pages/post/PostDetailPage';
+import { ForumPage } from '../pages/forum/ForumPage';
 import { useAuthStore } from '../store/authStore';
 import { AdminRoute } from './AdminRoute';
 import { AdminLayout } from '../pages/admin/AdminLayout';
@@ -48,7 +49,7 @@ export const AppRouter: React.FC = () => {
         <Route path="verify-email" element={<VerifyEmailPage />} />
         <Route path="story/:slug" element={<StoryDetailPage />} />
         <Route path="story/:slug/chapter/:chapterSlug" element={<ReaderPage />} />
-        <Route path="forum" element={<Navigate to="/" replace />} />
+        <Route path="forum" element={<ForumPage />} />
         <Route path="explore" element={<ExplorePage />} />
         <Route path="users/:username" element={<ProfilePage />} />
         <Route path="post/:id" element={<PostDetailPage />} />
