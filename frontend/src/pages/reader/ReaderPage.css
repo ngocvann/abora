@@ -317,7 +317,7 @@
 .chapter-content {
   text-align: left;
   margin-bottom: 4rem;
-  word-break: break-word;
+  word-break: normal;
   overflow-wrap: break-word;
 }
 
@@ -719,6 +719,9 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 .paragraph-text {
   flex: 1;
   margin: 0 !important;
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .paragraph-text p,
@@ -794,6 +797,7 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   backdrop-filter: blur(8px);
   transform: translate(-50%, -100%);
   margin-top: -12px;
+  user-select: none;
   animation: scaleUpTooltip 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 

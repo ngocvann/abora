@@ -401,45 +401,66 @@ export const ReaderPage: React.FC = () => {
     };
   }, [chapter, isAuthenticated]);
 
-  // Handle Selection Change (floating menu for Quotes & Comments)
+  // Handle Selection Change (floating menu for Quotes & Comments on mouseup/touchend)
   useEffect(() => {
-    const handleSelectionChange = () => {
+    const handleSelection = () => {
+      // Small timeout to let selection finalize
+      setTimeout(() => {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+          setTooltipCoords(null);
+          setSelectedText("");
+          setSelectionRange(null);
+          return;
+        }
+
+        const text = selection.toString().trim();
+        if (!text) {
+          setTooltipCoords(null);
+          setSelectedText("");
+          setSelectionRange(null);
+          return;
+        }
+
+        const range = selection.getRangeAt(0);
+        const container = document.querySelector('.chapter-content');
+        if (container && container.contains(range.commonAncestorContainer)) {
+          const rect = range.getBoundingClientRect();
+          setTooltipCoords({
+            x: rect.left + rect.width / 2 + window.scrollX,
+            y: rect.top + window.scrollY
+          });
+          setSelectedText(text);
+          setSelectionRange(range);
+        }
+      }, 20);
+    };
+
+    const handleClearSelection = (e: MouseEvent | TouchEvent) => {
+      // If clicking inside the tooltip, don't clear
+      const tooltip = document.querySelector('.selection-tooltip');
+      if (tooltip && tooltip.contains(e.target as Node)) {
+        return;
+      }
+      
       const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
-        setTooltipCoords(null);
-        setSelectedText("");
-        setSelectionRange(null);
-        return;
-      }
-
-      const text = selection.toString().trim();
-      if (!text) {
-        setTooltipCoords(null);
-        setSelectedText("");
-        setSelectionRange(null);
-        return;
-      }
-
-      const range = selection.getRangeAt(0);
-      const container = document.querySelector('.chapter-content');
-      if (container && container.contains(range.commonAncestorContainer)) {
-        const rect = range.getBoundingClientRect();
-        setTooltipCoords({
-          x: rect.left + rect.width / 2 + window.scrollX,
-          y: rect.top + window.scrollY
-        });
-        setSelectedText(text);
-        setSelectionRange(range);
-      } else {
+      if (!selection || selection.isCollapsed) {
         setTooltipCoords(null);
         setSelectedText("");
         setSelectionRange(null);
       }
     };
 
-    document.addEventListener('selectionchange', handleSelectionChange);
+    document.addEventListener('mouseup', handleSelection);
+    document.addEventListener('touchend', handleSelection);
+    document.addEventListener('mousedown', handleClearSelection);
+    document.addEventListener('touchstart', handleClearSelection);
+
     return () => {
-      document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener('mouseup', handleSelection);
+      document.removeEventListener('touchend', handleSelection);
+      document.removeEventListener('mousedown', handleClearSelection);
+      document.removeEventListener('touchstart', handleClearSelection);
     };
   }, []);
 
