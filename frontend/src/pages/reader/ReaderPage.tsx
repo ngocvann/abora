@@ -465,26 +465,6 @@ export const ReaderPage: React.FC = () => {
     };
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className={`reader-container theme-${theme} flex justify-center items-center h-[80vh]`}>
-        <span className="spinner" style={{ width: "3rem", height: "3rem", borderTopColor: "var(--primary-color)" }}></span>
-      </div>
-    );
-  }
-
-  if (isError || !chapter) {
-    return (
-      <div className={`reader-container theme-${theme} flex flex-col items-center justify-center h-[50vh]`}>
-        <h2>Lỗi tải chương</h2>
-        <p className="text-secondary mt-2">Không thể tải nội dung chương. Vui lòng thử lại.</p>
-        <button className="btn btn-primary mt-4" onClick={() => navigate(`/story/${slug}`)}>
-          Quay lại truyện
-        </button>
-      </div>
-    );
-  }
-
   const getParagraphHash = (htmlContent: string): string => {
     const cleanText = htmlContent.replace(/<[^>]*>/g, '').trim().substring(0, 100);
     let hash = 0;
@@ -506,6 +486,72 @@ export const ReaderPage: React.FC = () => {
     });
     return count;
   };
+
+  // Parse paragraphs by breaking on HTML block tags or newlines (memoized to prevent selection loss on re-render)
+  const paragraphs = React.useMemo(() => parseParagraphs(chapter?.content || ""), [chapter?.content]);
+
+  // Memoize rendered paragraphs to maintain stable DOM references and prevent browser selection flickering
+  const renderedParagraphs = React.useMemo(() => {
+    return paragraphs.map((p, index) => {
+      const hash = getParagraphHash(p);
+      const totalCommentsCount = getParagraphCommentCount(hash);
+      const hasComments = totalCommentsCount > 0;
+      const isParaEmpty = p.replace(/<[^>]*>/g, '').trim() === '';
+      return (
+        <div 
+          key={index} 
+          className={`paragraph-wrapper ${activeParagraphIndex === index ? 'active' : ''}`}
+          data-paragraph-hash={hash}
+          onClick={(e) => {
+            if (window.innerWidth <= 768) {
+              e.stopPropagation();
+              setActiveParagraphIndex(activeParagraphIndex === index ? null : index);
+            }
+          }}
+        >
+          <div 
+            className="paragraph-text" 
+            dangerouslySetInnerHTML={{ __html: p }} 
+          />
+          {!isParaEmpty && (
+            <button 
+              className={`paragraph-comment-indicator ${hasComments ? 'has-comments' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedParagraphHash(hash);
+                setSelectedParagraphText(p.replace(/<[^>]*>/g, '').trim());
+                setShowComments(true);
+              }}
+              title="Bình luận về đoạn này"
+            >
+              <MessageCircle size={14} />
+              {hasComments && <span className="badge">{totalCommentsCount}</span>}
+            </button>
+          )}
+        </div>
+      );
+    });
+  }, [paragraphs, activeParagraphIndex, comments]);
+
+  if (isLoading) {
+    return (
+      <div className={`reader-container theme-${theme} flex justify-center items-center h-[80vh]`}>
+        <span className="spinner" style={{ width: "3rem", height: "3rem", borderTopColor: "var(--primary-color)" }}></span>
+      </div>
+    );
+  }
+
+  if (isError || !chapter) {
+    return (
+      <div className={`reader-container theme-${theme} flex flex-col items-center justify-center h-[50vh]`}>
+        <h2>Lỗi tải chương</h2>
+        <p className="text-secondary mt-2">Không thể tải nội dung chương. Vui lòng thử lại.</p>
+        <button className="btn btn-primary mt-4" onClick={() => navigate(`/story/${slug}`)}>
+          Quay lại truyện
+        </button>
+      </div>
+    );
+  }
 
   const handleCreateQuote = () => {
     if (!selectedText) return;
@@ -559,52 +605,6 @@ export const ReaderPage: React.FC = () => {
   };
 
   const commentCount = getTotalComments(comments) || chapter?.commentCount || 0;
-  
-  // Parse paragraphs by breaking on HTML block tags or newlines (memoized to prevent selection loss on re-render)
-  const paragraphs = React.useMemo(() => parseParagraphs(chapter?.content || ""), [chapter?.content]);
-
-  // Memoize rendered paragraphs to maintain stable DOM references and prevent browser selection flickering
-  const renderedParagraphs = React.useMemo(() => {
-    return paragraphs.map((p, index) => {
-      const hash = getParagraphHash(p);
-      const totalCommentsCount = getParagraphCommentCount(hash);
-      const hasComments = totalCommentsCount > 0;
-      const isParaEmpty = p.replace(/<[^>]*>/g, '').trim() === '';
-      return (
-        <div 
-          key={index} 
-          className={`paragraph-wrapper ${activeParagraphIndex === index ? 'active' : ''}`}
-          data-paragraph-hash={hash}
-          onClick={(e) => {
-            if (window.innerWidth <= 768) {
-              e.stopPropagation();
-              setActiveParagraphIndex(activeParagraphIndex === index ? null : index);
-            }
-          }}
-        >
-          <div 
-            className="paragraph-text" 
-            dangerouslySetInnerHTML={{ __html: p }} 
-          />
-          {!isParaEmpty && (
-            <button 
-              className={`paragraph-comment-indicator ${hasComments ? 'has-comments' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedParagraphHash(hash);
-                setSelectedParagraphText(p.replace(/<[^>]*>/g, '').trim());
-                setShowComments(true);
-              }}
-              title="Bình luận về đoạn này"
-            >
-              <MessageCircle size={14} />
-              {hasComments && <span className="badge">{totalCommentsCount}</span>}
-            </button>
-          )}
-        </div>
-      );
-    });
-  }, [paragraphs, activeParagraphIndex, comments]);
 
   return (
     <div 
