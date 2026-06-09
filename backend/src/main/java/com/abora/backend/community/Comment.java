@@ -45,6 +45,9 @@ public class Comment {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "paragraph_hash", length = 100)
+    private String paragraphHash;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private CommentStatus status = CommentStatus.ACTIVE;

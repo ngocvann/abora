@@ -6,6 +6,7 @@ public record CommentRequest(
         @NotBlank
         String content,
         
-        Long parentId
+        Long parentId,
+        String paragraphHash
 ) {
 }

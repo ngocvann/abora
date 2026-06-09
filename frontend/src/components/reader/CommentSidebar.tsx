@@ -6,7 +6,6 @@ import { useAuthStore } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { ReportModal } from '../ui/ReportModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
-import { getImageUrl } from '../../utils/image';
 import './CommentSidebar.css';
 
 interface Comment {
@@ -19,6 +18,7 @@ interface Comment {
   likeCount: number;
   createdAt: string;
   replies: Comment[];
+  paragraphHash?: string | null;
 }
 
 interface CommentSidebarProps {
@@ -30,6 +30,9 @@ interface CommentSidebarProps {
   width?: number;
   setWidth?: (width: number) => void;
   onWidthChange?: (width: number) => void;
+  paragraphHash?: string | null;
+  paragraphText?: string | null;
+  onClearParagraphFilter?: () => void;
 }
 
 export const CommentSidebar: React.FC<CommentSidebarProps> = ({ 
@@ -39,7 +42,10 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   isPinned = false,
   onTogglePin,
   width = 400,
-  onWidthChange
+  onWidthChange,
+  paragraphHash = null,
+  paragraphText = null,
+  onClearParagraphFilter
 }) => {
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<{ id: number; userName: string } | null>(null);
@@ -61,7 +67,6 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing || !onWidthChange) return;
-      // Calculate new width: window.innerWidth - e.clientX
       const newWidth = Math.max(300, Math.min(800, window.innerWidth - e.clientX));
       onWidthChange(newWidth);
     };
@@ -93,8 +98,8 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   });
 
   const addCommentMutation = useMutation({
-    mutationFn: async ({ content, parentId }: { content: string, parentId?: number }) => {
-      const res = await api.post(`/chapters/${chapterId}/comments`, { content, parentId });
+    mutationFn: async ({ content, parentId, paragraphHash }: { content: string, parentId?: number, paragraphHash?: string | null }) => {
+      const res = await api.post(`/chapters/${chapterId}/comments`, { content, parentId, paragraphHash });
       return res.data;
     },
     onSuccess: () => {
@@ -139,8 +144,18 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
       return;
     }
     if (!newComment.trim()) return;
-    addCommentMutation.mutate({ content: newComment, parentId: replyTo?.id });
+    addCommentMutation.mutate({ 
+      content: newComment, 
+      parentId: replyTo?.id,
+      paragraphHash: replyTo ? null : paragraphHash
+    });
   };
+
+  const filteredComments = comments ? (
+    paragraphHash 
+      ? comments.filter(c => c.paragraphHash === paragraphHash)
+      : comments
+  ) : [];
 
   if (!isOpen) return null;
 
@@ -169,26 +184,7 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   const renderComment = (comment: Comment, isReply = false) => (
     <div key={comment.id} className="reader-comment-item-container">
       <div className="reader-comment-item">
-        <div className={`reader-comment-avatar ${isReply ? 'reply-avatar' : ''}`} style={{ overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {comment.avatarUrl ? (
-            <img 
-              src={getImageUrl(comment.avatarUrl, 'avatar', comment.displayName || comment.userName)} 
-              alt={comment.displayName || comment.userName}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-                const parent = (e.target as HTMLImageElement).parentElement;
-                if (parent) {
-                  const fallback = parent.querySelector('.avatar-fallback');
-                  if (fallback) (fallback as HTMLElement).style.display = 'block';
-                }
-              }}
-            />
-          ) : null}
-          <span className="avatar-fallback" style={{ display: comment.avatarUrl ? 'none' : 'block' }}>
-            {(comment.displayName || comment.userName).charAt(0).toUpperCase()}
-          </span>
-        </div>
+        {/* Commenter avatars are hidden as per request 6 */}
         <div className="reader-comment-bubble">
           <div className="reader-comment-author-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
@@ -286,7 +282,6 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
         </div>
       </div>
       
-      {/* Render nested replies if any */}
       {!isReply && comment.replies && comment.replies.length > 0 && (
         <div className="reader-comment-replies">
           {comment.replies.map(reply => renderComment(reply, true))}
@@ -307,7 +302,6 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
         style={{ width: `${width}px`, pointerEvents: 'auto' }}
         ref={sidebarRef}
       >
-        {/* Resize Handle */}
         {isPinned && (
           <div 
             className="comment-sidebar-resizer" 
@@ -333,16 +327,66 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
           </div>
         </div>
 
+        {/* Selected Paragraph Filter Banner */}
+        {paragraphHash && (
+          <div className="paragraph-filter-indicator" style={{
+            padding: '12px 16px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            borderBottom: '1px solid var(--glass-border)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--primary-color)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Bình luận đoạn văn:</span>
+              <button 
+                onClick={onClearParagraphFilter}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  padding: 0,
+                  transition: 'color 0.2s'
+                }}
+                onMouseOver={(e) => (e.target as HTMLElement).style.color = 'var(--text-primary)'}
+                onMouseOut={(e) => (e.target as HTMLElement).style.color = 'var(--text-secondary)'}
+              >
+                Xem tất cả
+              </button>
+            </div>
+            {paragraphText && (
+              <p style={{
+                margin: 0,
+                fontSize: '0.8rem',
+                color: 'var(--text-muted)',
+                fontStyle: 'italic',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}>
+                "{paragraphText}"
+              </p>
+            )}
+          </div>
+        )}
+
         <div className="comment-list-container">
           {isLoading ? (
             <p className="text-center text-secondary">Đang tải...</p>
-          ) : comments && comments.length > 0 ? (
-            comments.map(comment => renderComment(comment))
+          ) : filteredComments && filteredComments.length > 0 ? (
+            filteredComments.map(comment => renderComment(comment))
           ) : (
             <div className="text-center text-secondary mt-8">
               <MessageCircle size={48} className="mx-auto mb-4 opacity-50" />
               <p>Chưa có bình luận nào.</p>
-              <p className="text-sm">Hãy là người đầu tiên chia sẻ cảm nghĩ!</p>
+              {paragraphHash ? (
+                <p className="text-sm mt-1">Hãy là người đầu tiên bình luận về đoạn này!</p>
+              ) : (
+                <p className="text-sm mt-1">Hãy là người đầu tiên chia sẻ cảm nghĩ!</p>
+              )}
             </div>
           )}
         </div>

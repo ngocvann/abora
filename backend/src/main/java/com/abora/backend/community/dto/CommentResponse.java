@@ -11,5 +11,6 @@ public record CommentResponse(
         String content,
         Long parentId,
         List<CommentResponse> replies,
-        Instant createdAt
+        Instant createdAt,
+        String paragraphHash
 ) {}

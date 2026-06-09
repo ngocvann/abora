@@ -349,7 +349,7 @@ export const ChapterEditorPage: React.FC = () => {
                         navigate(`/studio/story/${storyId}/chapters/${ch.id}`);
                       }}
                     >
-                      <span className="chapter-toc-title">{ch.title || `Chương ${ch.chapterNumber}`}</span>
+                      <span className="chapter-toc-title">{ch.title || `${ch.chapterNumber}`}</span>
                       {ch.status === 'DRAFT' && <span className="chapter-toc-draft-badge">Nháp</span>}
                     </div>
                   ))}

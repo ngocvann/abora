@@ -50,6 +50,7 @@ public class CommentService {
         comment.setUser(user);
         comment.setChapter(chapter);
         comment.setStory(chapter.getStory());
+        comment.setParagraphHash(request.paragraphHash());
 
         if (request.parentId() != null) {
             Comment parent = commentRepository.findById(request.parentId())
@@ -123,7 +124,8 @@ public class CommentService {
                 comment.getContent(),
                 comment.getParent() != null ? comment.getParent().getId() : null,
                 replies,
-                comment.getCreatedAt()
+                comment.getCreatedAt(),
+                comment.getParagraphHash()
         );
     }
 

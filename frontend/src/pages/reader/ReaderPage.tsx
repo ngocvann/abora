@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useReaderStore } from "../../store/readerStore";
 import { useAuthStore } from "../../store/authStore";
 import { CommentSidebar } from "../../components/reader/CommentSidebar";
+import { QuoteGeneratorModal } from "../../components/reader/QuoteGeneratorModal";
 import { ReportModal } from "../../components/ui/ReportModal";
 import { ChevronDown, Plus, Heart, Type, MessageCircle, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -54,6 +55,20 @@ export const ReaderPage: React.FC = () => {
   const [newListIsPublic, setNewListIsPublic] = useState(false);
   const [addedToLibrary, setAddedToLibrary] = useState(false);
 
+  // Paragraph & Comments state
+  const [selectedParagraphHash, setSelectedParagraphHash] = useState<string | null>(null);
+  const [selectedParagraphText, setSelectedParagraphText] = useState<string | null>(null);
+  const [activeParagraphIndex, setActiveParagraphIndex] = useState<number | null>(null);
+
+  // Selection states
+  const [selectionRange, setSelectionRange] = useState<Range | null>(null);
+  const [tooltipCoords, setTooltipCoords] = useState<{ x: number; y: number } | null>(null);
+  const [selectedText, setSelectedText] = useState("");
+
+  // Quote modal states
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [quoteModalText, setQuoteModalText] = useState("");
+
   const currentUser = useAuthStore((state) => state.user);
 
   const tocRef = useRef<HTMLDivElement>(null);
@@ -99,7 +114,7 @@ export const ReaderPage: React.FC = () => {
   });
 
   const pageTitle = chapter && story 
-    ? `${chapter.title || `Chương ${chapter.chapterNumber}`} - ${story.title} - Abora`
+    ? `${chapter.title || `${chapter.chapterNumber}`} - ${story.title} - Abora`
     : 'Đang tải... - Abora';
   useDocumentTitle(pageTitle);
 
@@ -324,6 +339,48 @@ export const ReaderPage: React.FC = () => {
     };
   }, [chapter, isAuthenticated]);
 
+  // Handle Selection Change (floating menu for Quotes & Comments)
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+        setTooltipCoords(null);
+        setSelectedText("");
+        setSelectionRange(null);
+        return;
+      }
+
+      const text = selection.toString().trim();
+      if (!text) {
+        setTooltipCoords(null);
+        setSelectedText("");
+        setSelectionRange(null);
+        return;
+      }
+
+      const range = selection.getRangeAt(0);
+      const container = document.querySelector('.chapter-content');
+      if (container && container.contains(range.commonAncestorContainer)) {
+        const rect = range.getBoundingClientRect();
+        setTooltipCoords({
+          x: rect.left + rect.width / 2 + window.scrollX,
+          y: rect.top + window.scrollY
+        });
+        setSelectedText(text);
+        setSelectionRange(range);
+      } else {
+        setTooltipCoords(null);
+        setSelectedText("");
+        setSelectionRange(null);
+      }
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
+
   if (isLoading) {
     return (
       <div className={`reader-container theme-${theme} flex justify-center items-center h-[80vh]`}>
@@ -344,6 +401,62 @@ export const ReaderPage: React.FC = () => {
     );
   }
 
+  const getParagraphHash = (htmlContent: string): string => {
+    const cleanText = htmlContent.replace(/<[^>]*>/g, '').trim().substring(0, 100);
+    let hash = 0;
+    for (let i = 0; i < cleanText.length; i++) {
+      hash = ((hash << 5) - hash) + cleanText.charCodeAt(i);
+      hash |= 0;
+    }
+    return 'p_' + Math.abs(hash).toString(36);
+  };
+
+  const getParagraphCommentCount = (hash: string): number => {
+    if (!comments) return 0;
+    let count = 0;
+    comments.forEach((c: any) => {
+      if (c.paragraphHash === hash) {
+        count += 1;
+        if (c.replies) count += c.replies.length;
+      }
+    });
+    return count;
+  };
+
+  const handleCreateQuote = () => {
+    if (!selectedText) return;
+    setQuoteModalText(selectedText);
+    setShowQuoteModal(true);
+    window.getSelection()?.removeAllRanges();
+  };
+
+  const handleCommentOnSelection = () => {
+    if (!selectionRange) return;
+    const container = document.querySelector('.chapter-content');
+    let node: Node | null = selectionRange.commonAncestorContainer;
+    let hash: string | null = null;
+    let text: string | null = null;
+    
+    while (node && node !== container) {
+      if (node instanceof HTMLElement && node.hasAttribute('data-paragraph-hash')) {
+        hash = node.getAttribute('data-paragraph-hash');
+        const textEl = node.querySelector('.paragraph-text');
+        if (textEl) {
+          text = textEl.textContent || "";
+        }
+        break;
+      }
+      node = node.parentNode;
+    }
+
+    if (hash) {
+      setSelectedParagraphHash(hash);
+      setSelectedParagraphText(text ? text.replace(/<[^>]*>/g, '').trim() : "");
+      setShowComments(true);
+      window.getSelection()?.removeAllRanges();
+    }
+  };
+
   const getTotalComments = (commentsData: any[]) => {
     let count = 0;
     if (!commentsData) return count;
@@ -362,6 +475,14 @@ export const ReaderPage: React.FC = () => {
   };
 
   const commentCount = getTotalComments(comments) || chapter?.commentCount || 0;
+  
+  // Parse paragraphs by breaking on newlines
+  const paragraphs = chapter.content
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\u00A0/g, ' ')
+    .split('\n')
+    .map(p => p.trim())
+    .filter(p => p !== '');
 
   return (
     <div 
@@ -402,7 +523,7 @@ export const ReaderPage: React.FC = () => {
             )}
             <div className="reader-top-bar-info">
               <span className="reader-story-title" style={{ fontSize: '12px' }}>{story?.title || 'Đang tải...'}</span>
-              <span className="reader-chapter-title" style={{ fontSize: '14px', paddingTop: '5px' }}>{chapter.title || `Chương ${chapter.chapterNumber}`}</span>
+              <span className="reader-chapter-title" style={{ fontSize: '14px', paddingTop: '5px' }}>{chapter.title || `${chapter.chapterNumber}`}</span>
             </div>
             <ChevronDown size={16} className="text-secondary flex-shrink-0" />
 
@@ -423,7 +544,7 @@ export const ReaderPage: React.FC = () => {
                           navigate(`/story/${slug}/chapter/${c.slug}`);
                         }}
                       >
-                        {c.title || `Chương ${c.chapterNumber}`}
+                        {c.title || `${c.chapterNumber}`}
                       </button>
                     ))
                   ) : (
@@ -470,8 +591,6 @@ export const ReaderPage: React.FC = () => {
         {/* Progress Bar */}
         <div className="reader-progress-bar" style={{ width: `${scrollProgress}%` }} />
 
-
-
         {/* Settings Popover */}
         {showSettings && (
           <div className="reader-settings-popover" ref={settingsRef}>
@@ -496,21 +615,66 @@ export const ReaderPage: React.FC = () => {
 
       {/* Main Content */}
       <div className="reader-container fade-in" style={{ fontSize: `${fontSize}px` }}>
-        <h1 className="chapter-title">{chapter.title || `Chương ${chapter.chapterNumber}`}</h1>
+        <h1 className="chapter-title">{chapter.title || `${chapter.chapterNumber}`}</h1>
         
-        <div
-          className="chapter-content"
-          dangerouslySetInnerHTML={{
-            __html: chapter.content
-              .replace(/&nbsp;/g, ' ')
-              .replace(/\u00A0/g, ' ')
-              .split('\n')
-              .filter(p => p.trim() !== '')
-              .map(p => `<p>${p}</p>`)
-              .join(''),
-          }}
-        />
+        <div className="chapter-content">
+          {paragraphs.map((p, index) => {
+            const hash = getParagraphHash(p);
+            const totalCommentsCount = getParagraphCommentCount(hash);
+            const hasComments = totalCommentsCount > 0;
+            return (
+              <div 
+                key={index} 
+                className={`paragraph-wrapper ${activeParagraphIndex === index ? 'active' : ''}`}
+                data-paragraph-hash={hash}
+                onClick={(e) => {
+                  if (window.innerWidth <= 768) {
+                    e.stopPropagation();
+                    setActiveParagraphIndex(activeParagraphIndex === index ? null : index);
+                  }
+                }}
+              >
+                <p 
+                  className="paragraph-text" 
+                  dangerouslySetInnerHTML={{ __html: p }} 
+                />
+                <button 
+                  className={`paragraph-comment-indicator ${hasComments ? 'has-comments' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedParagraphHash(hash);
+                    setSelectedParagraphText(p.replace(/<[^>]*>/g, '').trim());
+                    setShowComments(true);
+                  }}
+                  title="Bình luận về đoạn này"
+                >
+                  <MessageCircle size={14} />
+                  {hasComments && <span className="badge">{totalCommentsCount}</span>}
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Selection Tooltip Menu */}
+      {tooltipCoords && selectedText && (
+        <div 
+          className="selection-tooltip"
+          style={{ 
+            top: `${tooltipCoords.y}px`, 
+            left: `${tooltipCoords.x}px` 
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="selection-tooltip-btn" onClick={handleCreateQuote}>
+            Tạo quote
+          </button>
+          <button className="selection-tooltip-btn" onClick={handleCommentOnSelection}>
+            Bình luận
+          </button>
+        </div>
+      )}
 
       {/* Bottom Actions */}
       <div className="reader-bottom-actions" onClick={(e) => e.stopPropagation()}>
@@ -551,16 +715,38 @@ export const ReaderPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Quote Card Generator Modal */}
+      {showQuoteModal && (
+        <QuoteGeneratorModal
+          isOpen={showQuoteModal}
+          onClose={() => setShowQuoteModal(false)}
+          quoteText={quoteModalText}
+          storyTitle={story?.title || ""}
+          authorName={story?.authorName || ""}
+          coverUrl={story?.coverImageUrl}
+        />
+      )}
+
       {/* Comments Sidebar */}
       {showComments && createPortal(
         <CommentSidebar 
           chapterId={chapter?.id || 0}
           isOpen={showComments}
-          onClose={() => setShowComments(false)}
+          onClose={() => {
+            setShowComments(false);
+            setSelectedParagraphHash(null);
+            setSelectedParagraphText(null);
+          }}
           isPinned={isCommentPinned}
           onTogglePin={() => setIsCommentPinned(!isCommentPinned)}
           width={commentSidebarWidth}
           onWidthChange={setCommentSidebarWidth}
+          paragraphHash={selectedParagraphHash}
+          paragraphText={selectedParagraphText}
+          onClearParagraphFilter={() => {
+            setSelectedParagraphHash(null);
+            setSelectedParagraphText(null);
+          }}
         />,
         document.body
       )}
