@@ -6,12 +6,15 @@ import { useAuthStore } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { ReportModal } from '../ui/ReportModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
+import { getImageUrl } from '../../utils/image';
 import './CommentSidebar.css';
 
 interface Comment {
   id: number;
   userId: number;
   userName: string;
+  displayName?: string;
+  avatarUrl?: string | null;
   content: string;
   likeCount: number;
   createdAt: string;
@@ -166,13 +169,30 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   const renderComment = (comment: Comment, isReply = false) => (
     <div key={comment.id} className="reader-comment-item-container">
       <div className="reader-comment-item">
-        <div className={`reader-comment-avatar ${isReply ? 'reply-avatar' : ''}`}>
-          {comment.userName.charAt(0).toUpperCase()}
+        <div className={`reader-comment-avatar ${isReply ? 'reply-avatar' : ''}`} style={{ overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {comment.avatarUrl ? (
+            <img 
+              src={getImageUrl(comment.avatarUrl, 'avatar', comment.displayName || comment.userName)} 
+              alt={comment.displayName || comment.userName}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                const parent = (e.target as HTMLImageElement).parentElement;
+                if (parent) {
+                  const fallback = parent.querySelector('.avatar-fallback');
+                  if (fallback) (fallback as HTMLElement).style.display = 'block';
+                }
+              }}
+            />
+          ) : null}
+          <span className="avatar-fallback" style={{ display: comment.avatarUrl ? 'none' : 'block' }}>
+            {(comment.displayName || comment.userName).charAt(0).toUpperCase()}
+          </span>
         </div>
         <div className="reader-comment-bubble">
           <div className="reader-comment-author-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <span className="reader-comment-author">{comment.userName}</span>
+              <span className="reader-comment-author">{comment.displayName || comment.userName}</span>
               <span className="reader-comment-time" style={{ marginLeft: '8px' }}>
                 {formatRelativeTime(comment.createdAt)}
               </span>
