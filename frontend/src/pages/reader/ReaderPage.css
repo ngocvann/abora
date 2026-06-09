@@ -60,7 +60,8 @@
   border-radius: 8px;
   transition: background-color 0.2s;
   min-width: 0;
-  flex: 1;
+  width: 100%;
+  max-width: 320px;
 }
 
 .reader-top-bar-left:hover {
