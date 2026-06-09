@@ -32,9 +32,14 @@ const fetchStoryDetail = async (slug: string): Promise<PublicStoryDetail> => {
 const parseParagraphs = (htmlContent: string): string[] => {
   if (!htmlContent) return [];
   
+  // Replace non-breaking spaces with normal spaces to prevent word-wrapping bugs
+  const cleanedHtml = htmlContent
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\u00A0/g, ' ');
+  
   // Create a temporary element to parse the HTML in-memory
   const container = document.createElement('div');
-  container.innerHTML = htmlContent;
+  container.innerHTML = cleanedHtml;
   
   const parsed: string[] = [];
   const children = Array.from(container.childNodes);
@@ -67,12 +72,8 @@ const parseParagraphs = (htmlContent: string): string[] => {
   
   // Fallback if no block elements were parsed (e.g. plain text with newlines)
   if (parsed.length <= 1) {
-    const normalizedContent = htmlContent
-      .replace(/&nbsp;/g, ' ')
-      .replace(/\u00A0/g, ' ');
-    
-    if (normalizedContent.includes('\n')) {
-      const splitText = normalizedContent
+    if (cleanedHtml.includes('\n')) {
+      const splitText = cleanedHtml
         .split('\n')
         .map(p => p.trim())
         .filter(p => p !== '');
@@ -88,7 +89,7 @@ const parseParagraphs = (htmlContent: string): string[] => {
     }
   }
   
-  return parsed.length > 0 ? parsed : [htmlContent];
+  return parsed.length > 0 ? parsed : [cleanedHtml];
 };
 
 export const ReaderPage: React.FC = () => {
@@ -559,8 +560,51 @@ export const ReaderPage: React.FC = () => {
 
   const commentCount = getTotalComments(comments) || chapter?.commentCount || 0;
   
-  // Parse paragraphs by breaking on HTML block tags or newlines
-  const paragraphs = parseParagraphs(chapter.content);
+  // Parse paragraphs by breaking on HTML block tags or newlines (memoized to prevent selection loss on re-render)
+  const paragraphs = React.useMemo(() => parseParagraphs(chapter?.content || ""), [chapter?.content]);
+
+  // Memoize rendered paragraphs to maintain stable DOM references and prevent browser selection flickering
+  const renderedParagraphs = React.useMemo(() => {
+    return paragraphs.map((p, index) => {
+      const hash = getParagraphHash(p);
+      const totalCommentsCount = getParagraphCommentCount(hash);
+      const hasComments = totalCommentsCount > 0;
+      const isParaEmpty = p.replace(/<[^>]*>/g, '').trim() === '';
+      return (
+        <div 
+          key={index} 
+          className={`paragraph-wrapper ${activeParagraphIndex === index ? 'active' : ''}`}
+          data-paragraph-hash={hash}
+          onClick={(e) => {
+            if (window.innerWidth <= 768) {
+              e.stopPropagation();
+              setActiveParagraphIndex(activeParagraphIndex === index ? null : index);
+            }
+          }}
+        >
+          <div 
+            className="paragraph-text" 
+            dangerouslySetInnerHTML={{ __html: p }} 
+          />
+          {!isParaEmpty && (
+            <button 
+              className={`paragraph-comment-indicator ${hasComments ? 'has-comments' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedParagraphHash(hash);
+                setSelectedParagraphText(p.replace(/<[^>]*>/g, '').trim());
+                setShowComments(true);
+              }}
+              title="Bình luận về đoạn này"
+            >
+              <MessageCircle size={14} />
+              {hasComments && <span className="badge">{totalCommentsCount}</span>}
+            </button>
+          )}
+        </div>
+      );
+    });
+  }, [paragraphs, activeParagraphIndex, comments]);
 
   return (
     <div 
@@ -696,45 +740,7 @@ export const ReaderPage: React.FC = () => {
         <h1 className="chapter-title">{chapter.title || `${chapter.chapterNumber}`}</h1>
         
         <div className="chapter-content">
-          {paragraphs.map((p, index) => {
-            const hash = getParagraphHash(p);
-            const totalCommentsCount = getParagraphCommentCount(hash);
-            const hasComments = totalCommentsCount > 0;
-            const isParaEmpty = p.replace(/<[^>]*>/g, '').trim() === '';
-            return (
-              <div 
-                key={index} 
-                className={`paragraph-wrapper ${activeParagraphIndex === index ? 'active' : ''}`}
-                data-paragraph-hash={hash}
-                onClick={(e) => {
-                  if (window.innerWidth <= 768) {
-                    e.stopPropagation();
-                    setActiveParagraphIndex(activeParagraphIndex === index ? null : index);
-                  }
-                }}
-              >
-                <div 
-                  className="paragraph-text" 
-                  dangerouslySetInnerHTML={{ __html: p }} 
-                />
-                {!isParaEmpty && (
-                  <button 
-                    className={`paragraph-comment-indicator ${hasComments ? 'has-comments' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedParagraphHash(hash);
-                      setSelectedParagraphText(p.replace(/<[^>]*>/g, '').trim());
-                      setShowComments(true);
-                    }}
-                    title="Bình luận về đoạn này"
-                  >
-                    <MessageCircle size={14} />
-                    {hasComments && <span className="badge">{totalCommentsCount}</span>}
-                  </button>
-                )}
-              </div>
-            );
-          })}
+          {renderedParagraphs}
         </div>
       </div>
 
