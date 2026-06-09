@@ -405,6 +405,33 @@ export const ReaderPage: React.FC = () => {
               <span className="reader-chapter-title" style={{ fontSize: '14px', paddingTop: '5px' }}>{chapter.title || `Chương ${chapter.chapterNumber}`}</span>
             </div>
             <ChevronDown size={16} className="text-secondary flex-shrink-0" />
+
+            {/* TOC Popover */}
+            {showToc && (
+              <div className="reader-toc-popover" ref={tocRef} onClick={(e) => e.stopPropagation()}>
+                <div className="toc-popover-header justify-center">
+                  <span className="text-sm font-medium text-secondary opacity-70 uppercase tracking-wider">Bảng mục lục</span>
+                </div>
+                <div className="toc-popover-list">
+                  {story ? (
+                    story.chapters.map((c) => (
+                      <button
+                        key={c.id}
+                        className={`toc-popover-item ${c.slug === chapter.slug ? "active" : ""}`}
+                        onClick={() => {
+                          setShowToc(false);
+                          navigate(`/story/${slug}/chapter/${c.slug}`);
+                        }}
+                      >
+                        {c.title || `Chương ${c.chapterNumber}`}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center"><span className="spinner"></span></div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         
@@ -443,32 +470,7 @@ export const ReaderPage: React.FC = () => {
         {/* Progress Bar */}
         <div className="reader-progress-bar" style={{ width: `${scrollProgress}%` }} />
 
-        {/* TOC Popover */}
-        {showToc && (
-          <div className="reader-toc-popover" ref={tocRef} onClick={(e) => e.stopPropagation()}>
-            <div className="toc-popover-header justify-center">
-              <span className="text-sm font-medium text-secondary opacity-70 uppercase tracking-wider">Bảng mục lục</span>
-            </div>
-            <div className="toc-popover-list">
-              {story ? (
-                story.chapters.map((c) => (
-                  <button
-                    key={c.id}
-                    className={`toc-popover-item ${c.slug === chapter.slug ? "active" : ""}`}
-                    onClick={() => {
-                      setShowToc(false);
-                      navigate(`/story/${slug}/chapter/${c.slug}`);
-                    }}
-                  >
-                    {c.title || `Chương ${c.chapterNumber}`}
-                  </button>
-                ))
-              ) : (
-                <div className="p-4 text-center"><span className="spinner"></span></div>
-              )}
-            </div>
-          </div>
-        )}
+
 
         {/* Settings Popover */}
         {showSettings && (
