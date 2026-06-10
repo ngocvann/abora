@@ -792,20 +792,17 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 
 .paragraph-comment-indicator .badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
-  font-size: 0.6rem;
-  font-weight: 700;
-  background-color: var(--primary-color, #9d4edd);
-  color: white;
-  min-width: 14px;
-  height: 14px;
-  padding: 0 3px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 6px rgba(157, 78, 221, 0.6);
+  top: 1px;
+  right: 1px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--primary-color, #9d4edd);
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  min-width: auto;
+  height: auto;
+  border-radius: 0;
 }
 
 /* Mobile tap focus toggle for paragraph comment button */
