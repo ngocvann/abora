@@ -235,28 +235,28 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
                   minWidth: '120px'
                 }}>
                   {user?.username === comment.userName && (
-                    <>
-                      <button 
-                        style={{ width: '100%', padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
-                        onClick={() => { setEditingCommentId(comment.id); setEditCommentText(comment.content); setOpenMenuCommentId(null); }}
-                      >
-                        Chỉnh sửa
-                      </button>
-                      <button 
-                        style={{ width: '100%', padding: '8px 16px', background: 'transparent', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
-                        onClick={() => {
-                          setConfirmModal({
-                            isOpen: true,
-                            title: 'Xác nhận xóa',
-                            message: 'Bạn có chắc chắn muốn xóa bình luận này?',
-                            onConfirm: () => deleteCommentMutation.mutate(comment.id)
-                          });
-                          setOpenMenuCommentId(null);
-                        }}
-                      >
-                        Xóa
-                      </button>
-                    </>
+                    <button 
+                      style={{ width: '100%', padding: '8px 16px', background: 'transparent', border: 'none', color: 'var(--text-primary)', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
+                      onClick={() => { setEditingCommentId(comment.id); setEditCommentText(comment.content); setOpenMenuCommentId(null); }}
+                    >
+                      Chỉnh sửa
+                    </button>
+                  )}
+                  {(user?.username === comment.userName || (storyAuthorUsername && user?.username === storyAuthorUsername)) && (
+                    <button 
+                      style={{ width: '100%', padding: '8px 16px', background: 'transparent', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem' }}
+                      onClick={() => {
+                        setConfirmModal({
+                          isOpen: true,
+                          title: 'Xác nhận xóa',
+                          message: 'Bạn có chắc chắn muốn xóa bình luận này?',
+                          onConfirm: () => deleteCommentMutation.mutate(comment.id)
+                        });
+                        setOpenMenuCommentId(null);
+                      }}
+                    >
+                      Xóa
+                    </button>
                   )}
                   {user?.username !== comment.userName && (
                     <button 

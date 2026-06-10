@@ -840,6 +840,7 @@ export const ReaderPage: React.FC = () => {
             setSelectedParagraphHash(null);
             setSelectedParagraphText(null);
           }}
+          storyAuthorUsername={story?.authorUsername}
         />,
         document.body
       )}

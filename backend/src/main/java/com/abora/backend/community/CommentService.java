@@ -121,6 +121,7 @@ public class CommentService {
 
         return commentRepository.findByChapterIdAndParentIsNullOrderByCreatedAtDesc(chapterId)
                 .stream()
+                .filter(c -> c.getStatus() == CommentStatus.ACTIVE)
                 .map(this::mapToResponse)
                 .toList();
     }
