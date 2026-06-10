@@ -1,6 +1,7 @@
 package com.abora.backend.chapter;
 
 import com.abora.backend.auth.AuthenticatedUser;
+import com.abora.backend.user.User;
 import com.abora.backend.chapter.dto.ChapterResponse;
 import com.abora.backend.chapter.dto.ChapterSummaryResponse;
 import com.abora.backend.chapter.dto.CreateChapterRequest;
