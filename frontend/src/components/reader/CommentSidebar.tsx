@@ -34,6 +34,7 @@ interface CommentSidebarProps {
   paragraphHash?: string | null;
   paragraphText?: string | null;
   onClearParagraphFilter?: () => void;
+  storyAuthorUsername?: string;
 }
 
 export const CommentSidebar: React.FC<CommentSidebarProps> = ({ 
@@ -45,7 +46,8 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   width = 400,
   onWidthChange,
   paragraphHash = null,
-  paragraphText = null
+  paragraphText = null,
+  storyAuthorUsername
 }) => {
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState<{ id: number; userName: string } | null>(null);
