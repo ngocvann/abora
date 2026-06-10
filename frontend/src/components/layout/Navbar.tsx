@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { NotificationPopover } from '../ui/NotificationPopover';
-import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library, MessageSquare } from 'lucide-react';
+import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library } from 'lucide-react';
 import api from '../../services/api';
 import { getImageUrl } from '../../utils/image';
 import './Navbar.css';
