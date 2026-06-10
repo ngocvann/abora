@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Bell, MessageSquareReply, BookOpen, BookPlus, CheckCheck, Loader2, Info, UserPlus, Heart, Trash2, Ban, MessageSquareCode, ListPlus } from 'lucide-react';
+import { Bell, MessageSquareReply, BookOpen, BookPlus, CheckCheck, Loader2, Info, UserPlus, Heart, Trash2, Ban, MessageSquare, ListPlus } from 'lucide-react';
 import api from '../../services/api';
 import './NotificationPopover.css';
 
@@ -41,7 +41,7 @@ const typeIcon = (type: Notification['type']) => {
     case 'CONTENT_DELETED': return <Trash2 size={18} className="notif-icon" />;
     case 'ACCOUNT_BANNED': return <Ban size={18} className="notif-icon" />;
     case 'COMMENT_REPLY': return <MessageSquareReply size={18} className="notif-icon" />;
-    case 'NEW_COMMENT':   return <MessageSquareCode size={18} className="notif-icon" />;
+    case 'NEW_COMMENT':   return <MessageSquare size={18} className="notif-icon" />;
     case 'NEW_CHAPTER':   return <BookOpen size={18} className="notif-icon" />;
     case 'NEW_STORY':     return <BookPlus size={18} className="notif-icon" />;
     case 'ADD_TO_READING_LIST': return <ListPlus size={18} className="notif-icon" />;
