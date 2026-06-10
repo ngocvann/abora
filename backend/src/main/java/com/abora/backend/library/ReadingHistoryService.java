@@ -124,7 +124,7 @@ public class ReadingHistoryService {
                 .description(story.getDescription())
                 .viewCount(story.getViewCount())
                 .chapterCount(story.getChapterCount())
-                .starCount(story.getFollowCount()) // Placeholder
+                .starCount(story.getFavoriteCount())
                 .readingStatus(history.getStatus() != null ? history.getStatus().name() : null)
                 .isFavorite(history.isFavorite())
                 .lastReadChapterId(lastChapter != null ? lastChapter.getId() : null)
