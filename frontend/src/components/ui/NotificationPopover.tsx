@@ -33,18 +33,18 @@ const fetchUnreadCount = async (): Promise<UnreadCount> => {
 
 const typeIcon = (type: Notification['type']) => {
   switch (type) {
-    case 'SYSTEM_ALERT':  return <Info size={18} className="notif-icon system" />;
-    case 'NEW_FOLLOWER':  return <UserPlus size={18} className="notif-icon user" />;
+    case 'SYSTEM_ALERT':  return <Info size={18} className="notif-icon" />;
+    case 'NEW_FOLLOWER':  return <UserPlus size={18} className="notif-icon" />;
     case 'LIKE_COMMENT':
-    case 'LIKE_POST':     return <Heart size={18} className="notif-icon heart" />;
-    case 'LIKE_STORY':    return <Heart size={18} className="notif-icon heart" style={{ color: '#ec4899' }} />;
-    case 'CONTENT_DELETED': return <Trash2 size={18} className="notif-icon danger" />;
-    case 'ACCOUNT_BANNED': return <Ban size={18} className="notif-icon danger" />;
-    case 'COMMENT_REPLY': return <MessageSquareReply size={18} className="notif-icon reply" />;
-    case 'NEW_COMMENT':   return <MessageSquareCode size={18} className="notif-icon reply" style={{ color: '#3b82f6' }} />;
-    case 'NEW_CHAPTER':   return <BookOpen size={18} className="notif-icon chapter" />;
-    case 'NEW_STORY':     return <BookPlus size={18} className="notif-icon story" />;
-    case 'ADD_TO_READING_LIST': return <ListPlus size={18} className="notif-icon story" style={{ color: '#10b981' }} />;
+    case 'LIKE_POST':     
+    case 'LIKE_STORY':    return <Heart size={18} className="notif-icon" />;
+    case 'CONTENT_DELETED': return <Trash2 size={18} className="notif-icon" />;
+    case 'ACCOUNT_BANNED': return <Ban size={18} className="notif-icon" />;
+    case 'COMMENT_REPLY': return <MessageSquareReply size={18} className="notif-icon" />;
+    case 'NEW_COMMENT':   return <MessageSquareCode size={18} className="notif-icon" />;
+    case 'NEW_CHAPTER':   return <BookOpen size={18} className="notif-icon" />;
+    case 'NEW_STORY':     return <BookPlus size={18} className="notif-icon" />;
+    case 'ADD_TO_READING_LIST': return <ListPlus size={18} className="notif-icon" />;
     default:              return <Bell size={18} className="notif-icon" />;
   }
 };

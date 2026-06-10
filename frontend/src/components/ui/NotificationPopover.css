@@ -133,35 +133,7 @@
 }
 
 .notif-icon {
-  color: var(--text-muted);
-}
-
-.notif-icon.reply {
-  color: #94a3b8; /* xám */
-}
-
-.notif-icon.chapter {
-  color: #8b5cf6; /* tím */
-}
-
-.notif-icon.story {
-  color: #1e3a8a; /* xanh than */
-}
-
-.notif-icon.system {
-  color: #e2e8f0; /* trắng xám */
-}
-
-.notif-icon.user {
-  color: #a78bfa; /* tím nhạt */
-}
-
-.notif-icon.heart {
-  color: #cbd5e1; /* xám nhạt */
-}
-
-.notif-icon.danger {
-  color: #475569; /* xám đậm */
+  color: var(--primary-color, #7c3aed);
 }
 
 /* Body */
