@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, MessageCircle, Pin, PinOff, MoreHorizontal } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
+import { getImageUrl } from '../../utils/image';
 import { Button } from '../ui/Button';
 import { ReportModal } from '../ui/ReportModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
@@ -196,7 +197,15 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   const renderComment = (comment: Comment, isReply = false) => (
     <div key={comment.id} className="reader-comment-item-container">
       <div className="reader-comment-item">
-        {/* Commenter avatars are hidden as per request 6 */}
+        <div className={`reader-comment-avatar ${isReply ? 'reply-avatar' : ''}`}>
+          <img 
+            src={getImageUrl(comment.avatarUrl, 'avatar', comment.displayName || comment.userName)} 
+            alt={comment.displayName || comment.userName} 
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', comment.displayName || comment.userName);
+            }}
+          />
+        </div>
         <div className="reader-comment-bubble">
           <div className="reader-comment-author-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
