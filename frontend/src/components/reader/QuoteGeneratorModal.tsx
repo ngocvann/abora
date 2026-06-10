@@ -336,6 +336,27 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
     e.target.value = '';
   };
 
+  const removeVietnameseTones = (str: string): string => {
+    let result = str;
+    result = result.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    result = result.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    result = result.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    result = result.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    result = result.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    result = result.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    result = result.replace(/đ/g, "d");
+    result = result.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    result = result.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    result = result.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    result = result.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    result = result.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    result = result.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    result = result.replace(/Đ/g, "D");
+    // Remove combined accents
+    result = result.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return result;
+  };
+
   const handleDownload = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -343,16 +364,69 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
     setIsGenerating(true);
 
     try {
-      const dataUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      const sanitizedTitle = storyTitle.toLowerCase().replace(/[^a-z0-9]/g, '_');
-      link.download = `abora_quote_${sanitizedTitle}.png`;
-      link.href = dataUrl;
-      link.click();
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const plainTitle = removeVietnameseTones(storyTitle)
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // remove special characters
+        .trim()
+        .replace(/\s+/g, '-');        // convert spaces to dash
+      
+      const fileName = `abora-${plainTitle || 'quote'}.png`;
+
+      if (isMobile) {
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            // Fallback to dataUrl in case blob creation fails
+            const dataUrl = canvas.toDataURL('image/png');
+            const newTab = window.open();
+            if (newTab) {
+              newTab.document.write(`<img src="${dataUrl}" style="max-width:100%; height:auto;" /><p style="text-align:center;font-family:sans-serif;color:#666;">Nhấn giữ vào ảnh để lưu về thiết bị</p>`);
+            } else {
+              window.location.href = dataUrl;
+            }
+            setIsGenerating(false);
+            return;
+          }
+
+          const file = new File([blob], fileName, { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: `Quote từ truyện ${storyTitle}`,
+              text: `Chia sẻ ảnh trích dẫn từ Abora`,
+            })
+            .catch((shareErr) => {
+              console.log('User cancelled or share failed, trying fallback:', shareErr);
+              // Fallback: Open image in new tab for saving
+              const url = URL.createObjectURL(blob);
+              const newTab = window.open(url, '_blank');
+              if (!newTab) {
+                window.location.href = url;
+              }
+            })
+            .finally(() => setIsGenerating(false));
+          } else {
+            // Direct download attempts or opening in new window
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = url;
+            link.click();
+            setIsGenerating(false);
+          }
+        }, 'image/png');
+      } else {
+        // Desktop standard download
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = dataUrl;
+        link.click();
+        setIsGenerating(false);
+      }
     } catch (err) {
       console.error('Lỗi khi tải ảnh:', err);
       alert('Không thể tạo ảnh do chính sách bảo mật trình duyệt (CORS). Vui lòng thử lại với một hình nền khác hoặc hình ảnh tự tải lên.');
-    } finally {
       setIsGenerating(false);
     }
   };
