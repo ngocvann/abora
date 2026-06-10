@@ -755,8 +755,8 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  border: none;
   color: var(--reader-text);
   opacity: 0;
   cursor: pointer;
@@ -782,8 +782,7 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 
 .paragraph-comment-indicator.has-comments {
   color: var(--primary-color, #9d4edd);
-  background-color: rgba(157, 78, 221, 0.08);
-  border-color: rgba(157, 78, 221, 0.25);
+  background: transparent;
 }
 
 .paragraph-comment-indicator:hover {
