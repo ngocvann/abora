@@ -480,7 +480,7 @@ public class ChapterService {
                     com.abora.backend.notification.NotificationType.LIKE_STORY,
                     "CHAPTER",
                     chapterId,
-                    actor.getDisplayName() + " đã bình chọn chương \"" + chapter.getTitle() + "\" của truyện \"" + story.getTitle() + "\"",
+                    actor.getDisplayName() + " đã yêu thích (tim) truyện \"" + story.getTitle() + "\"",
                     targetUrl
             );
         }
