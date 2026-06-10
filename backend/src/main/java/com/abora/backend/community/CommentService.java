@@ -77,7 +77,7 @@ public class CommentService {
 
         String actorName = user.getDisplayName();
         String storyTitle = story.getTitle();
-        String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getChapterNumber();
+        String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getSlug();
 
         // 1. Gửi thông báo cho tác giả truyện (nếu người comment không phải là chính tác giả)
         Long authorId = story.getAuthor().getId();
