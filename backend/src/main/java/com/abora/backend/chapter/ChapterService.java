@@ -468,6 +468,22 @@ public class ChapterService {
         Story story = chapter.getStory();
         story.setFavoriteCount(story.getFavoriteCount() + 1);
         storyRepository.save(story);
+
+        // Gửi thông báo bình chọn chương cho tác giả truyện
+        Long authorId = story.getAuthor().getId();
+        if (!userId.equals(authorId)) {
+            User actor = userRepository.getReferenceById(userId);
+            String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getSlug();
+            notificationService.createNotification(
+                    authorId,
+                    userId,
+                    com.abora.backend.notification.NotificationType.LIKE_STORY,
+                    "CHAPTER",
+                    chapterId,
+                    actor.getDisplayName() + " đã bình chọn chương \"" + chapter.getTitle() + "\" của truyện \"" + story.getTitle() + "\"",
+                    targetUrl
+            );
+        }
     }
 
     @Transactional
