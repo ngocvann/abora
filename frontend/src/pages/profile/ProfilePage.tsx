@@ -888,7 +888,10 @@ export const ProfilePage: React.FC = () => {
                       alt="Cover" 
                       className="story-card-cover" 
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = getImageUrl('', 'cover', story.title);
+                        const target = e.target as HTMLImageElement;
+                        if (!target.src.includes('data:image/svg+xml')) {
+                          target.src = getImageUrl('', 'cover', story.title);
+                        }
                       }}
                     />
                     
