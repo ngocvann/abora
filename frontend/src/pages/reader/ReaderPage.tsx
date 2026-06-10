@@ -796,7 +796,7 @@ export const ReaderPage: React.FC = () => {
             <Plus size={18} /> Thêm
           </button>
           <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={handleToggleLike}>
-            <Heart size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} /> Bình chọn
+            <Heart size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} /> Yêu thích
           </button>
           
           <button className="action-btn icon-only" onClick={handleCopyLink} title="Sao chép liên kết">
