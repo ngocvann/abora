@@ -755,48 +755,58 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   color: var(--reader-text);
   opacity: 0;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   font-size: 0.85rem;
-  transition: opacity 0.2s ease;
-  white-space: nowrap;
-  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
-.paragraph-wrapper:hover .paragraph-comment-indicator,
-.paragraph-comment-indicator.has-comments {
+.paragraph-wrapper:hover .paragraph-comment-indicator {
   opacity: 0.6;
 }
 
-.paragraph-wrapper:hover .paragraph-comment-indicator:hover,
 .paragraph-comment-indicator.has-comments {
+  opacity: 0.85;
+}
+
+.paragraph-wrapper:hover .paragraph-comment-indicator:hover,
+.paragraph-comment-indicator.has-comments:hover {
   opacity: 1;
 }
 
 .paragraph-comment-indicator.has-comments {
   color: var(--primary-color, #9d4edd);
   background-color: rgba(157, 78, 221, 0.08);
-  border-color: rgba(157, 78, 221, 0.2);
+  border-color: rgba(157, 78, 221, 0.25);
 }
 
 .paragraph-comment-indicator:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.08);
   color: var(--primary-color, #9d4edd);
 }
 
 .paragraph-comment-indicator .badge {
-  font-size: 0.7rem;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 0.6rem;
   font-weight: 700;
   background-color: var(--primary-color, #9d4edd);
   color: white;
-  padding: 1px 5px;
-  border-radius: 10px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(157, 78, 221, 0.6);
 }
 
 /* Mobile tap focus toggle for paragraph comment button */
