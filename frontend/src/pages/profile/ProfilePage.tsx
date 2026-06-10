@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Camera, Heart, MessageSquare, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users } from 'lucide-react';
+import { Loader2, Camera, Heart, MessageSquare, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
@@ -45,6 +45,8 @@ interface Story {
   createdAt: string;
   categories: { id: number; name: string }[];
   tags: { id: number; name: string }[];
+  publishedChapterCount?: number;
+  favoriteCount?: number;
 }
 
 export const formatRelativeTime = (dateStr: string) => {
@@ -877,57 +879,69 @@ export const ProfilePage: React.FC = () => {
               </div>
             ) : (
               <div className="stories-list-wrapper">
-                {stories.map((story) => (
-                  <div
-                    key={story.id}
-                    className="profile-story-card"
-                    onClick={() => navigate(`/story/${story.id}-${story.slug}`)}
-                  >
-                    <img 
-                      src={getImageUrl(story.coverImageUrl, 'cover', story.title)} 
-                      alt="Cover" 
-                      className="story-card-cover" 
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        if (!target.src.includes('data:image/svg+xml')) {
-                          target.src = getImageUrl('', 'cover', story.title);
-                        }
-                      }}
-                    />
-                    
-                    <div className="story-card-info">
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
-                        <h3 className="story-card-title">{story.title}</h3>
-                        <span style={{ 
-                          fontSize: '0.7rem', 
-                          padding: '0.15rem 0.45rem', 
-                          borderRadius: '4px', 
-                          fontWeight: 600,
-                          whiteSpace: 'nowrap',
-                          background: story.status === 'PUBLISHED' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                          color: story.status === 'PUBLISHED' ? '#4ade80' : '#fbbf24',
-                          border: story.status === 'PUBLISHED' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)'
-                        }}>
-                          {story.status === 'PUBLISHED' ? 'Đã đăng tải' : 'Bản thảo'}
-                        </span>
-                      </div>
-                      <p className="story-card-desc">{story.description}</p>
+                {stories.map((story) => {
+                  const isStoryPublished = story.status === 'PUBLISHED' || (story.publishedChapterCount !== undefined && story.publishedChapterCount > 0);
+                  return (
+                    <div
+                      key={story.id}
+                      className="profile-story-card"
+                      onClick={() => navigate(`/story/${story.id}-${story.slug}`)}
+                    >
+                      <img 
+                        src={getImageUrl(story.coverImageUrl, 'cover', story.title)} 
+                        alt="Cover" 
+                        className="story-card-cover" 
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (!target.src.includes('data:image/svg+xml')) {
+                            target.src = getImageUrl('', 'cover', story.title);
+                          }
+                        }}
+                      />
                       
-                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', margin: '0.25rem 0' }}>
-                        {story.categories.map(c => (
-                          <span key={c.id} className="story-card-tag">{c.name}</span>
-                        ))}
+                      <div className="story-card-info">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+                          <h3 className="story-card-title">{story.title}</h3>
+                          <span style={{ 
+                            fontSize: '0.7rem', 
+                            padding: '0.15rem 0.45rem', 
+                            borderRadius: '4px', 
+                            fontWeight: 600,
+                            whiteSpace: 'nowrap',
+                            background: isStoryPublished ? 'rgba(34, 197, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                            color: isStoryPublished ? '#4ade80' : '#fbbf24',
+                            border: isStoryPublished ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)'
+                          }}>
+                            {isStoryPublished ? 'Đã đăng tải' : 'Bản thảo'}
+                          </span>
+                        </div>
+                        <p className="story-card-desc">{story.description}</p>
+                        
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', margin: '0.25rem 0' }}>
+                          {story.categories.map(c => (
+                            <span key={c.id} className="story-card-tag">{c.name}</span>
+                          ))}
+                        </div>
+
+                        <div className="story-card-meta">
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="Chương">
+                            <BookOpen size={13} />
+                            {story.chapterCount}
+                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="Lượt đọc">
+                            <Eye size={13} />
+                            {story.viewCount}
+                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="Yêu thích">
+                            <Heart size={13} />
+                            {story.favoriteCount || 0}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="story-card-meta">
-                        <span>Chương: {story.chapterCount}</span>
-                        <span>Lượt đọc: {story.viewCount}</span>
-                        <span>Đã lưu: {story.followCount}</span>
-                      </div>
                     </div>
-
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
