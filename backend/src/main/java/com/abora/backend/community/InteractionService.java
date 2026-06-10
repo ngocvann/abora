@@ -49,6 +49,21 @@ public class InteractionService {
         if (wasFavorite != isFavorite) {
             if (isFavorite) {
                 story.setFavoriteCount(story.getFavoriteCount() + 1);
+                
+                // Gửi thông báo cho tác giả truyện khi người dùng yêu thích truyện
+                User actor = userRepository.getReferenceById(userId);
+                Long authorId = story.getAuthor().getId();
+                if (!userId.equals(authorId)) {
+                    notificationService.createNotification(
+                            authorId,
+                            userId,
+                            NotificationType.LIKE_STORY,
+                            "STORY",
+                            storyId,
+                            actor.getDisplayName() + " đã yêu thích (tim) truyện \"" + story.getTitle() + "\" của bạn",
+                            "/story/" + story.getId() + "-" + story.getSlug()
+                    );
+                }
             } else {
                 story.setFavoriteCount(Math.max(0, story.getFavoriteCount() - 1));
             }
@@ -71,21 +86,6 @@ public class InteractionService {
             
             story.setFollowCount(story.getFollowCount() + 1);
             storyRepository.save(story);
-
-            // Gửi thông báo cho tác giả truyện
-            User actor = userRepository.getReferenceById(userId);
-            Long authorId = story.getAuthor().getId();
-            if (!userId.equals(authorId)) {
-                notificationService.createNotification(
-                        authorId,
-                        userId,
-                        NotificationType.LIKE_STORY,
-                        "STORY",
-                        storyId,
-                        actor.getDisplayName() + " đã yêu thích (tim) truyện \"" + story.getTitle() + "\" của bạn",
-                        "/story/" + story.getId() + "-" + story.getSlug()
-                );
-            }
         } else if (!isFollow && exists) {
             storyFollowRepository.deleteByUserIdAndStoryId(userId, storyId);
             
