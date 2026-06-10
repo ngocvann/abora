@@ -4,11 +4,11 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background: var(--bg-panel);
+  background: rgba(14, 18, 33, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-light);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
 }
 
 .navbar-container {
