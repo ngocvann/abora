@@ -358,14 +358,15 @@
 }
 
 .profile-story-card .story-card-cover {
-  width: 90px;
-  min-width: 90px;
-  max-width: 90px;
-  height: 120px;
+  width: 90px !important;
+  min-width: 90px !important;
+  max-width: 90px !important;
+  height: 120px !important;
   border-radius: 6px;
   object-fit: cover;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
+  position: static !important; /* Ngăn chặn absolute từ explore */
 }
 
 .profile-story-card .story-card-cover-fallback {
