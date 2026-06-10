@@ -691,7 +691,7 @@ body.in-reader-page .main-content,
     left: auto !important;
     right: -16px !important;
     top: auto !important;
-    bottom: -2px !important;
+    bottom: 0 !important;
     transform: none !important;
     background-color: var(--reader-bg) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
@@ -760,7 +760,7 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   position: absolute;
   left: 100%;
   margin-left: 8px;
-  top: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
