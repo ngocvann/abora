@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { X, Download, Upload, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { X, Download, Upload, Loader2, Move, ZoomIn, ZoomOut, Check } from 'lucide-react';
 import { getImageUrl } from '../../utils/image';
 import './QuoteGeneratorModal.css';
 
@@ -15,6 +15,12 @@ interface QuoteGeneratorModalProps {
 type BackgroundType = 'cover' | 'preset_1' | 'preset_2' | 'preset_3' | 'preset_4' | 'preset_5' | 'preset_6' | 'custom';
 type FontSize = 'sm' | 'md' | 'lg';
 
+interface CropState {
+  offsetX: number; // 0–1 relative offset within the image
+  offsetY: number;
+  scale: number;   // zoom level >= 1
+}
+
 export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
   isOpen,
   onClose,
@@ -29,6 +35,13 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCoverLoaded, setIsCoverLoaded] = useState(false);
 
+  // Crop state for uploaded custom image
+  const [showCropUI, setShowCropUI] = useState(false);
+  const [pendingImage, setPendingImage] = useState<string | null>(null); // raw uploaded, pre-crop
+  const [cropState, setCropState] = useState<CropState>({ offsetX: 0.5, offsetY: 0.5, scale: 1 });
+  const cropContainerRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ startX: number; startY: number; startOffX: number; startOffY: number } | null>(null);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +51,7 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
       case 'cover':
         return coverUrl ? getImageUrl(coverUrl, 'cover') : '';
       case 'preset_1':
-        return '/presets/preset_1.jpg';
+        return '/presets/preset_1.jpg';  // file is actually a PNG but served at this path
       case 'preset_2':
         return '/presets/preset_2.png';
       case 'preset_3':
@@ -155,7 +168,65 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
       drawOverlayAndText(ctx, canvasSize);
     };
 
-  }, [isOpen, backgroundType, fontSize, customImage, quoteText, storyTitle, authorName, isCoverLoaded]);
+  }, [isOpen, backgroundType, fontSize, customImage, quoteText, storyTitle, authorName, isCoverLoaded, cropState]);
+
+  // ── Crop UI helpers ──────────────────────────────────────────────────────────
+  const handleCropPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startOffX: cropState.offsetX,
+      startOffY: cropState.offsetY,
+    };
+  }, [cropState]);
+
+  const handleCropPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current || !cropContainerRef.current) return;
+    const rect = cropContainerRef.current.getBoundingClientRect();
+    const dx = (e.clientX - dragRef.current.startX) / rect.width;
+    const dy = (e.clientY - dragRef.current.startY) / rect.height;
+    // Move opposite to drag direction (drag image to pan)
+    const newX = Math.max(0, Math.min(1, dragRef.current.startOffX - dx));
+    const newY = Math.max(0, Math.min(1, dragRef.current.startOffY - dy));
+    setCropState(prev => ({ ...prev, offsetX: newX, offsetY: newY }));
+  }, []);
+
+  const handleCropPointerUp = useCallback(() => {
+    dragRef.current = null;
+  }, []);
+
+  const handleCropWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.1 : -0.1;
+    setCropState(prev => ({ ...prev, scale: Math.max(1, Math.min(4, prev.scale + delta)) }));
+  }, []);
+
+  const applyCrop = () => {
+    // Render the image with the current cropState to a square canvas and use that as customImage
+    if (!pendingImage) return;
+    const offscreen = document.createElement('canvas');
+    offscreen.width = 800;
+    offscreen.height = 800;
+    const ctx = offscreen.getContext('2d');
+    if (!ctx) return;
+    const img = new Image();
+    img.onload = () => {
+      // Compute source rect from cropState
+      const displaySize = Math.min(img.width, img.height) / cropState.scale;
+      const maxOffX = img.width - displaySize;
+      const maxOffY = img.height - displaySize;
+      const srcX = cropState.offsetX * maxOffX;
+      const srcY = cropState.offsetY * maxOffY;
+      ctx.drawImage(img, srcX, srcY, displaySize, displaySize, 0, 0, 800, 800);
+      setCustomImage(offscreen.toDataURL('image/jpeg', 0.92));
+      setBackgroundType('custom');
+      setShowCropUI(false);
+      setPendingImage(null);
+      setCropState({ offsetX: 0.5, offsetY: 0.5, scale: 1 });
+    };
+    img.src = pendingImage;
+  };
 
   const drawOverlayAndText = (ctx: CanvasRenderingContext2D, size: number) => {
     // 1. Dark translucent overlay (rgba(0, 0, 0, 0.45) as requested)
@@ -255,11 +326,14 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === 'string') {
-        setCustomImage(reader.result);
-        setBackgroundType('custom');
+        setPendingImage(reader.result);
+        setCropState({ offsetX: 0.5, offsetY: 0.5, scale: 1 });
+        setShowCropUI(true);
       }
     };
     reader.readAsDataURL(file);
+    // Reset input so same file can be re-uploaded
+    e.target.value = '';
   };
 
   const handleDownload = () => {
@@ -284,6 +358,69 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
   };
 
   if (!isOpen) return null;
+
+  // ── Crop UI overlay ──────────────────────────────────────────────────────────
+  if (showCropUI && pendingImage) {
+    return (
+      <div className="quote-modal-overlay">
+        <div className="crop-ui-panel">
+          <div className="crop-ui-header">
+            <span>Điều chỉnh ảnh</span>
+            <button className="quote-close-btn" onClick={() => { setShowCropUI(false); setPendingImage(null); }}>
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Crop viewport – square, shows image with current offset/scale */}
+          <div
+            ref={cropContainerRef}
+            className="crop-viewport"
+            onPointerDown={handleCropPointerDown}
+            onPointerMove={handleCropPointerMove}
+            onPointerUp={handleCropPointerUp}
+            onPointerLeave={handleCropPointerUp}
+            onWheel={handleCropWheel}
+            style={{ touchAction: 'none' }}
+          >
+            <img
+              src={pendingImage}
+              alt="crop preview"
+              draggable={false}
+              style={{
+                width: `${cropState.scale * 100}%`,
+                height: `${cropState.scale * 100}%`,
+                objectFit: 'cover',
+                position: 'absolute',
+                left: `${-cropState.offsetX * (cropState.scale - 1) * 100}%`,
+                top: `${-cropState.offsetY * (cropState.scale - 1) * 100}%`,
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            />
+            {/* Crosshair overlay */}
+            <div className="crop-crosshair" />
+          </div>
+
+          {/* Zoom controls */}
+          <div className="crop-zoom-row">
+            <button className="crop-zoom-btn" onClick={() => setCropState(p => ({ ...p, scale: Math.max(1, p.scale - 0.2) }))}>
+              <ZoomOut size={16} /> Thu nhỏ
+            </button>
+            <span className="crop-zoom-label">{Math.round(cropState.scale * 100)}%</span>
+            <button className="crop-zoom-btn" onClick={() => setCropState(p => ({ ...p, scale: Math.min(4, p.scale + 0.2) }))}>
+              <ZoomIn size={16} /> Phóng to
+            </button>
+          </div>
+
+          <p className="crop-hint"><Move size={13} style={{ display: 'inline', verticalAlign: 'middle' }} /> Kéo để di chuyển &nbsp;·&nbsp; Cuộn để zoom</p>
+
+          <button className="crop-apply-btn" onClick={applyCrop}>
+            <Check size={16} /> Xác nhận
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="quote-modal-overlay" onClick={onClose}>

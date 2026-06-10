@@ -326,6 +326,23 @@
   background-color: transparent !important;
 }
 
+/* Smooth, branded text selection */
+.chapter-content,
+.chapter-content * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.chapter-content ::selection {
+  background: rgba(157, 78, 221, 0.32);
+  color: inherit;
+}
+
+.chapter-content ::-moz-selection {
+  background: rgba(157, 78, 221, 0.32);
+  color: inherit;
+}
+
 .chapter-content a,
 .chapter-content a * {
   color: var(--primary-color, #8b5cf6) !important;
@@ -655,7 +672,7 @@ body.in-reader-page .main-content,
   }
 }
 
-/* Top bar text & button width optimizations on small mobile screens */
+/* Trên màn hình nhỏ: ẩn khoảng trống trái, icon nằm sát phải */
 @media (max-width: 480px) {
   .reader-top-bar-right .reader-stat-item {
     display: none !important; /* Hide view count completely */
@@ -667,6 +684,11 @@ body.in-reader-page .main-content,
   
   .reader-top-bar-right .reader-btn.has-text span {
     display: none !important; /* Hide vote/comment numbers to keep only icons */
+  }
+
+  /* Không có đủ chỗ bên phải trên mobile → ẩn icon đoạn */
+  .paragraph-comment-indicator {
+    display: none !important;
   }
 }
 
@@ -709,17 +731,12 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 /* Paragraph inline comments styling */
 .paragraph-wrapper {
   position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
   margin-bottom: 1.5rem;
   width: 100%;
 }
 
 .paragraph-text {
-  flex: 1;
   margin: 0 !important;
-  min-width: 0;
   word-break: normal;
   overflow-wrap: break-word;
 }
@@ -730,6 +747,11 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 }
 
 .paragraph-comment-indicator {
+  /* Nằm ngay bên phải cột text, không ảnh hưởng layout chút nào */
+  position: absolute;
+  left: 100%;
+  margin-left: 8px;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -739,12 +761,11 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   color: var(--reader-text);
   opacity: 0;
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 4px 6px;
   border-radius: 12px;
   font-size: 0.85rem;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  margin-top: 2px;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
   border: 1px solid transparent;
 }
 

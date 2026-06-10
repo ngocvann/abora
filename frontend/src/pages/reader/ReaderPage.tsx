@@ -32,10 +32,15 @@ const fetchStoryDetail = async (slug: string): Promise<PublicStoryDetail> => {
 const parseParagraphs = (htmlContent: string): string[] => {
   if (!htmlContent) return [];
   
-  // Replace non-breaking spaces with normal spaces to prevent word-wrapping bugs
+  // Replace non-breaking spaces and invisible Unicode chars to prevent word-wrapping / word-break bugs
   const cleanedHtml = htmlContent
     .replace(/&nbsp;/g, ' ')
-    .replace(/\u00A0/g, ' ');
+    .replace(/\u00A0/g, ' ')     // non-breaking space
+    .replace(/\u200B/g, '')      // zero-width space
+    .replace(/\u200C/g, '')      // zero-width non-joiner
+    .replace(/\u200D/g, '')      // zero-width joiner
+    .replace(/\u00AD/g, '')      // soft hyphen
+    .replace(/\uFEFF/g, '');     // BOM / zero-width no-break space
   
   // Create a temporary element to parse the HTML in-memory
   const container = document.createElement('div');
@@ -123,10 +128,12 @@ export const ReaderPage: React.FC = () => {
   const [selectedParagraphText, setSelectedParagraphText] = useState<string | null>(null);
   const [activeParagraphIndex, setActiveParagraphIndex] = useState<number | null>(null);
 
-  // Selection states
-  const [selectionRange, setSelectionRange] = useState<Range | null>(null);
-  const [tooltipCoords, setTooltipCoords] = useState<{ x: number; y: number } | null>(null);
-  const [selectedText, setSelectedText] = useState("");
+  // Selection state – all in one object so updates are batched in a single render (prevents flicker)
+  const [selectionState, setSelectionState] = useState<{
+    range: Range | null;
+    coords: { x: number; y: number } | null;
+    text: string;
+  }>({ range: null, coords: null, text: '' });
 
   // Quote modal states
   const [showQuoteModal, setShowQuoteModal] = useState(false);
@@ -404,22 +411,20 @@ export const ReaderPage: React.FC = () => {
 
   // Handle Selection Change (floating menu for Quotes & Comments on mouseup/touchend)
   useEffect(() => {
+    const clearSelection = () => setSelectionState({ range: null, coords: null, text: '' });
+
     const handleSelection = () => {
       // Small timeout to let selection finalize
       setTimeout(() => {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
-          setTooltipCoords(null);
-          setSelectedText("");
-          setSelectionRange(null);
+          clearSelection();
           return;
         }
 
         const text = selection.toString().trim();
         if (!text) {
-          setTooltipCoords(null);
-          setSelectedText("");
-          setSelectionRange(null);
+          clearSelection();
           return;
         }
 
@@ -427,12 +432,14 @@ export const ReaderPage: React.FC = () => {
         const container = document.querySelector('.chapter-content');
         if (container && container.contains(range.commonAncestorContainer)) {
           const rect = range.getBoundingClientRect();
-          setTooltipCoords({
-            x: rect.left + rect.width / 2 + window.scrollX,
-            y: rect.top + window.scrollY
+          // Single setState call – no intermediate renders that could flicker the highlight
+          setSelectionState({
+            range,
+            coords: { x: rect.left + rect.width / 2 + window.scrollX, y: rect.top + window.scrollY },
+            text
           });
-          setSelectedText(text);
-          setSelectionRange(range);
+        } else {
+          clearSelection();
         }
       }, 20);
     };
@@ -443,12 +450,9 @@ export const ReaderPage: React.FC = () => {
       if (tooltip && tooltip.contains(e.target as Node)) {
         return;
       }
-      
       const selection = window.getSelection();
       if (!selection || selection.isCollapsed) {
-        setTooltipCoords(null);
-        setSelectedText("");
-        setSelectionRange(null);
+        clearSelection();
       }
     };
 
@@ -554,16 +558,17 @@ export const ReaderPage: React.FC = () => {
   }
 
   const handleCreateQuote = () => {
-    if (!selectedText) return;
-    setQuoteModalText(selectedText);
+    if (!selectionState.text) return;
+    setQuoteModalText(selectionState.text);
     setShowQuoteModal(true);
+    setSelectionState({ range: null, coords: null, text: '' });
     window.getSelection()?.removeAllRanges();
   };
 
   const handleCommentOnSelection = () => {
-    if (!selectionRange) return;
+    if (!selectionState.range) return;
     const container = document.querySelector('.chapter-content');
-    let node: Node | null = selectionRange.commonAncestorContainer;
+    let node: Node | null = selectionState.range.commonAncestorContainer;
     let hash: string | null = null;
     let text: string | null = null;
     
@@ -583,6 +588,7 @@ export const ReaderPage: React.FC = () => {
       setSelectedParagraphHash(hash);
       setSelectedParagraphText(text ? text.replace(/<[^>]*>/g, '').trim() : "");
       setShowComments(true);
+      setSelectionState({ range: null, coords: null, text: '' });
       window.getSelection()?.removeAllRanges();
     }
   };
@@ -745,12 +751,12 @@ export const ReaderPage: React.FC = () => {
       </div>
 
       {/* Selection Tooltip Menu */}
-      {tooltipCoords && selectedText && (
+      {selectionState.coords && selectionState.text && (
         <div 
           className="selection-tooltip"
           style={{ 
-            top: `${tooltipCoords.y}px`, 
-            left: `${tooltipCoords.x}px` 
+            top: `${selectionState.coords.y}px`, 
+            left: `${selectionState.coords.x}px` 
           }}
           onClick={(e) => e.stopPropagation()}
         >
