@@ -686,9 +686,17 @@ body.in-reader-page .main-content,
     display: none !important; /* Hide vote/comment numbers to keep only icons */
   }
 
-  /* Không có đủ chỗ bên phải trên mobile → ẩn icon đoạn */
+  /* Trên mobile, hiển thị icon sát mép phải đoạn văn thay vì ẩn hoàn toàn */
   .paragraph-comment-indicator {
-    display: none !important;
+    left: auto !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background-color: var(--reader-bg) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid var(--reader-border, rgba(255, 255, 255, 0.08)) !important;
+    display: flex !important;
+    z-index: 5;
   }
 }
 
