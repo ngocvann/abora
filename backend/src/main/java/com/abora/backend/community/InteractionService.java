@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.abora.backend.notification.NotificationService;
+import com.abora.backend.notification.NotificationType;
+
 @Service
 @RequiredArgsConstructor
 public class InteractionService {
@@ -23,6 +26,7 @@ public class InteractionService {
     private final ReadingHistoryRepository readingHistoryRepository;
     private final StoryRepository storyRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public void toggleFavorite(Long storyId, boolean isFavorite) {
@@ -67,6 +71,21 @@ public class InteractionService {
             
             story.setFollowCount(story.getFollowCount() + 1);
             storyRepository.save(story);
+
+            // Gửi thông báo cho tác giả truyện
+            User actor = userRepository.getReferenceById(userId);
+            Long authorId = story.getAuthor().getId();
+            if (!userId.equals(authorId)) {
+                notificationService.createNotification(
+                        authorId,
+                        userId,
+                        NotificationType.LIKE_STORY,
+                        "STORY",
+                        storyId,
+                        actor.getDisplayName() + " đã yêu thích (tim) truyện \"" + story.getTitle() + "\" của bạn",
+                        "/story/" + story.getId() + "-" + story.getSlug()
+                );
+            }
         } else if (!isFollow && exists) {
             storyFollowRepository.deleteByUserIdAndStoryId(userId, storyId);
             

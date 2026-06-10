@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.abora.backend.notification.NotificationService;
+import com.abora.backend.notification.NotificationType;
+
 @Service
 @RequiredArgsConstructor
 public class ReadingListService {
@@ -26,6 +29,7 @@ public class ReadingListService {
     private final StoryRepository storyRepository;
     private final UserRepository userRepository;
     private final StoryService storyService;
+    private final NotificationService notificationService;
 
     @Transactional
     public ReadingListResponse createReadingList(CreateReadingListRequest request) {
@@ -56,6 +60,24 @@ public class ReadingListService {
 
         readingList.getStories().add(story);
         readingListRepository.save(readingList);
+
+        // Gửi thông báo cho tác giả nếu danh sách đọc là công khai (public)
+        if (readingList.isPublic()) {
+            Long userId = getCurrentUserId();
+            Long authorId = story.getAuthor().getId();
+            if (!userId.equals(authorId)) {
+                User actor = userRepository.getReferenceById(userId);
+                notificationService.createNotification(
+                        authorId,
+                        userId,
+                        NotificationType.ADD_TO_READING_LIST,
+                        "STORY",
+                        storyId,
+                        actor.getDisplayName() + " đã thêm truyện \"" + story.getTitle() + "\" của bạn vào danh sách đọc \"" + readingList.getName() + "\"",
+                        "/story/" + story.getId() + "-" + story.getSlug()
+                );
+            }
+        }
     }
 
     @Transactional

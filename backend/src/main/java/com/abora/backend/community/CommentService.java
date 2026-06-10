@@ -75,20 +75,38 @@ public class CommentService {
         story.setCommentCount(story.getCommentCount() + 1);
         storyRepository.save(story);
 
-        // Gửi thông báo cho chủ comment gốc khi có reply
+        String actorName = user.getDisplayName();
+        String storyTitle = story.getTitle();
+        String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getChapterNumber();
+
+        // 1. Gửi thông báo cho tác giả truyện (nếu người comment không phải là chính tác giả)
+        Long authorId = story.getAuthor().getId();
+        if (!userId.equals(authorId)) {
+            notificationService.createNotification(
+                    authorId,
+                    userId,
+                    NotificationType.NEW_COMMENT,
+                    "COMMENT",
+                    comment.getId(),
+                    actorName + " đã bình luận về truyện \"" + storyTitle + "\"",
+                    targetUrl
+            );
+        }
+
+        // 2. Gửi thông báo cho chủ comment gốc khi có reply (nếu người reply không phải chủ comment gốc)
         if (comment.getParent() != null) {
             Long parentAuthorId = comment.getParent().getUser().getId();
-            String actorName = user.getDisplayName();
-            String storyTitle = chapter.getStory().getTitle();
-            notificationService.createNotification(
-                    parentAuthorId,
-                    userId,
-                    NotificationType.COMMENT_REPLY,
-                    "COMMENT",
-                    comment.getParent().getId(),
-                    actorName + " đã trả lời bình luận của bạn trong truyện \"" + storyTitle + "\"",
-                    "/story/" + chapter.getStory().getSlug() + "/chapter/" + chapter.getChapterNumber()
-            );
+            if (!userId.equals(parentAuthorId)) {
+                notificationService.createNotification(
+                        parentAuthorId,
+                        userId,
+                        NotificationType.COMMENT_REPLY,
+                        "COMMENT",
+                        comment.getParent().getId(),
+                        actorName + " đã trả lời bình luận của bạn trong truyện \"" + storyTitle + "\"",
+                        targetUrl
+                );
+            }
         }
 
         return mapToResponse(comment);

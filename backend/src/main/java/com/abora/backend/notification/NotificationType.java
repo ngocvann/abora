@@ -18,5 +18,11 @@ public enum NotificationType {
     /** Nội dung bị xóa bởi Admin */
     CONTENT_DELETED,
     /** Tài khoản bị cảnh báo/khóa */
-    ACCOUNT_BANNED
+    ACCOUNT_BANNED,
+    /** Có bình luận mới trong truyện của tác giả */
+    NEW_COMMENT,
+    /** Có người yêu thích (tim) truyện */
+    LIKE_STORY,
+    /** Có người thêm truyện vào danh sách đọc */
+    ADD_TO_READING_LIST
 }

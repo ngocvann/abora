@@ -1,13 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Bell, MessageSquareReply, BookOpen, BookPlus, CheckCheck, Loader2, Info, UserPlus, Heart, Trash2, Ban } from 'lucide-react';
+import { Bell, MessageSquareReply, BookOpen, BookPlus, CheckCheck, Loader2, Info, UserPlus, Heart, Trash2, Ban, MessageSquareCode, ListPlus } from 'lucide-react';
 import api from '../../services/api';
 import './NotificationPopover.css';
 
 interface Notification {
   id: number;
-  type: 'NEW_CHAPTER' | 'NEW_STORY' | 'COMMENT_REPLY' | 'SYSTEM_ALERT' | 'NEW_FOLLOWER' | 'LIKE_COMMENT' | 'LIKE_POST' | 'CONTENT_DELETED' | 'ACCOUNT_BANNED';
+  type: 'NEW_CHAPTER' | 'NEW_STORY' | 'COMMENT_REPLY' | 'SYSTEM_ALERT' | 'NEW_FOLLOWER' | 'LIKE_COMMENT' | 'LIKE_POST' | 'CONTENT_DELETED' | 'ACCOUNT_BANNED' | 'NEW_COMMENT' | 'LIKE_STORY' | 'ADD_TO_READING_LIST';
   message: string;
   entityType: string | null;
   entityId: number | null;
@@ -37,11 +37,14 @@ const typeIcon = (type: Notification['type']) => {
     case 'NEW_FOLLOWER':  return <UserPlus size={18} className="notif-icon user" />;
     case 'LIKE_COMMENT':
     case 'LIKE_POST':     return <Heart size={18} className="notif-icon heart" />;
+    case 'LIKE_STORY':    return <Heart size={18} className="notif-icon heart" style={{ color: '#ec4899' }} />;
     case 'CONTENT_DELETED': return <Trash2 size={18} className="notif-icon danger" />;
     case 'ACCOUNT_BANNED': return <Ban size={18} className="notif-icon danger" />;
     case 'COMMENT_REPLY': return <MessageSquareReply size={18} className="notif-icon reply" />;
+    case 'NEW_COMMENT':   return <MessageSquareCode size={18} className="notif-icon reply" style={{ color: '#3b82f6' }} />;
     case 'NEW_CHAPTER':   return <BookOpen size={18} className="notif-icon chapter" />;
     case 'NEW_STORY':     return <BookPlus size={18} className="notif-icon story" />;
+    case 'ADD_TO_READING_LIST': return <ListPlus size={18} className="notif-icon story" style={{ color: '#10b981' }} />;
     default:              return <Bell size={18} className="notif-icon" />;
   }
 };
