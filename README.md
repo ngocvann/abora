@@ -4,6 +4,19 @@
 
 Abora là một nền tảng mạng xã hội kết hợp đọc và sáng tác truyện trực tuyến hiện đại. Được thiết kế với giao diện tối giản, tập trung vào trải nghiệm người dùng, Abora mang đến không gian lý tưởng cho cả độc giả và các tác giả đam mê viết lách.
 
+Truy cập: https://www.abora.blog/
+
+<img width="948" height="439" alt="image" src="https://github.com/user-attachments/assets/db6dee16-1450-4146-b151-20ad2348d2fc" />
+<img width="947" height="435" alt="image" src="https://github.com/user-attachments/assets/c37eda55-dd17-4eb9-b512-e880456577fa" />
+<img width="948" height="438" alt="image" src="https://github.com/user-attachments/assets/a69f68ec-766e-4b68-94d6-1a1d42c4a9dc" />
+<img width="947" height="434" alt="image" src="https://github.com/user-attachments/assets/6982aebc-391a-4273-a849-d451339bdffa" />
+<img width="960" height="437" alt="image" src="https://github.com/user-attachments/assets/e69485b1-226b-49a3-a3b2-ecc0d7a12585" />
+<img width="960" height="438" alt="image" src="https://github.com/user-attachments/assets/dd3dc19b-9752-4067-b79e-fa03ac180c39" />
+<img width="960" height="438" alt="image" src="https://github.com/user-attachments/assets/a6a815c4-daf9-44c2-bc42-5e0da8f1b561" />
+
+
+
+
 ---
 
 ## 🌟 Tính Năng Nổi Bật
