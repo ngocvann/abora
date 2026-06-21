@@ -122,6 +122,7 @@ export const ReaderPage: React.FC = () => {
   const [newListStr, setNewListStr] = useState("");
   const [newListIsPublic, setNewListIsPublic] = useState(false);
   const [addedToLibrary, setAddedToLibrary] = useState(false);
+  const [showLibraryPrompt, setShowLibraryPrompt] = useState(false);
 
   // Paragraph & Comments state
   const [selectedParagraphHash, setSelectedParagraphHash] = useState<string | null>(null);
@@ -263,6 +264,14 @@ export const ReaderPage: React.FC = () => {
       toast.error("Đã có lỗi xảy ra khi cập nhật thư viện");
     }
   });
+
+  const handleExitReader = () => {
+    if (isAuthenticated && !addedToLibrary) {
+      setShowLibraryPrompt(true);
+    } else {
+      navigate('/library');
+    }
+  };
 
   // Reading Lists
   const { data: readingLists, isLoading: isReadingListsLoading } = useQuery({
@@ -634,7 +643,7 @@ export const ReaderPage: React.FC = () => {
             className="reader-btn" 
             style={{ marginRight: '8px' }}
             title="Quay lại thư viện" 
-            onClick={(e) => { e.stopPropagation(); navigate('/library'); }}
+            onClick={(e) => { e.stopPropagation(); handleExitReader(); }}
           >
             <ArrowLeft size={20} />
           </button>
@@ -1011,6 +1020,61 @@ export const ReaderPage: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {showLibraryPrompt && createPortal(
+        <div className="library-modal-overlay" onClick={() => setShowLibraryPrompt(false)}>
+          <div className="library-modal-content fade-in-fast" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '400px', gap: '1rem' }}>
+            <div className="library-modal-header" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.75rem', marginBottom: '0.25rem' }}>
+              <span className="library-modal-title" style={{ fontSize: '1.15rem', fontWeight: 700 }}>Thêm vào thư viện?</span>
+              <button 
+                className="library-modal-close-btn"
+                onClick={() => setShowLibraryPrompt(false)}
+              >
+                &times;
+              </button>
+            </div>
+            <div style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.5 }}>
+              Bạn có muốn thêm truyện <strong>{story?.title}</strong> vào thư viện để nhận thông báo chương mới và dễ dàng tìm lại không?
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <button 
+                className="btn btn-primary" 
+                style={{ width: '100%', padding: '10px', borderRadius: '8px', fontWeight: 600 }}
+                onClick={async () => {
+                  try {
+                    await api.post('/user/reading-history/add', { storyId: story?.id, status: 'READ_LATER' });
+                    queryClient.invalidateQueries({ queryKey: ["library"] });
+                    toast.success("Đã thêm vào thư viện");
+                  } catch (err) {
+                    console.error(err);
+                  }
+                  setShowLibraryPrompt(false);
+                  navigate('/library');
+                }}
+              >
+                Thêm vào thư viện
+              </button>
+              <button 
+                className="btn btn-secondary" 
+                style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)' }}
+                onClick={() => {
+                  setShowLibraryPrompt(false);
+                  navigate('/library');
+                }}
+              >
+                Không, cảm ơn
+              </button>
+              <button 
+                style={{ width: '100%', padding: '8px', background: 'transparent', border: 'none', color: 'rgba(255, 255, 255, 0.4)', fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'underline' }}
+                onClick={() => setShowLibraryPrompt(false)}
+              >
+                Ở lại đọc tiếp
+              </button>
+            </div>
           </div>
         </div>,
         document.body
