@@ -514,7 +514,7 @@ public class ChapterService {
     private void sendNewChapterNotifications(Story story, Chapter chapter) {
         Long authorId = story.getAuthor().getId();
         List<com.abora.backend.library.ReadingHistory> histories = readingHistoryRepository.findAllByStoryId(story.getId());
-        String targetUrl = "/story/" + story.getSlug() + "/" + chapter.getSlug();
+        String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getSlug();
         String message = "Truyện \"" + story.getTitle() + "\" vừa cập nhật chương mới: " + chapter.getTitle();
 
         for (com.abora.backend.library.ReadingHistory rh : histories) {
