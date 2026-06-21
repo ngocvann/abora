@@ -61,6 +61,38 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
     setIsParagraphExpanded(false);
   }, [paragraphHash]);
 
+  useEffect(() => {
+    if (!isOpen || isPinned) return;
+
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // If clicking inside the sidebar, don't close
+      if (sidebarRef.current && sidebarRef.current.contains(target)) {
+        return;
+      }
+      
+      // If clicking on comment toggle buttons or paragraph comments, don't close
+      if (
+        target.closest('.paragraph-comment-indicator') ||
+        target.closest('.action-btn')
+      ) {
+        return;
+      }
+
+      onClose();
+    };
+
+    const timer = setTimeout(() => {
+      document.addEventListener('click', handleGlobalClick);
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('click', handleGlobalClick);
+    };
+  }, [isOpen, isPinned, onClose]);
+
   const getCleanedParagraphText = (html: string | null): string => {
     if (!html) return '';
     const temp = document.createElement('div');

@@ -5,7 +5,7 @@
   width: 100%;
   height: calc(100vh - (var(--navbar-height, 56px) + 50px));
   background-color: rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+  z-index: 45; /* Under navbar (50) and its dropdowns (100/200), but above reader content */
   display: flex;
   justify-content: flex-end;
   opacity: 0;
@@ -17,6 +17,7 @@
   background-color: transparent;
   top: var(--navbar-height, 56px);
   height: calc(100vh - var(--navbar-height, 56px));
+  z-index: 35; /* Under reader top bar (40), TOC popover (50), and navbar (50) */
 }
 
 .comment-sidebar {
