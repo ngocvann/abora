@@ -319,9 +319,9 @@ export const StoryDetailPage: React.FC = () => {
           </div>
 
           <div className="story-header-actions">
-            <Link to={story.chapters?.length > 0 ? `/story/${story.id}-${story.slug}/chapter/${story.chapters[0].slug}` : '#'}>
+            <Link to={story.chapters?.length > 0 ? `/story/${story.id}-${story.slug}/chapter/${markedChapterSlug || story.chapters[0].slug}` : '#'}>
               <Button variant="primary" size="lg" disabled={!story.chapters || story.chapters.length === 0} style={{ display: 'flex', alignItems: 'center' }}>
-                <BookOpen size={20} style={{ marginRight: '8px' }} /> Đọc truyện
+                <BookOpen size={20} style={{ marginRight: '8px' }} /> {currentHistoryItem?.lastReadChapterSlug ? "Đọc tiếp" : "Đọc truyện"}
               </Button>
             </Link>
             
