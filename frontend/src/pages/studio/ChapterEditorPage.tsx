@@ -114,7 +114,21 @@ export const ChapterEditorPage: React.FC = () => {
   }, [chapter, isEditMode, chapterId, initializedChapterId, chapters]);
 
   // Kiểm tra xem có sự thay đổi nào so với dữ liệu gốc trên server hay không
-  const hasChanges = chapter ? (title !== chapter.title || content !== chapter.content) : false;
+  const hasChanges = isEditMode
+    ? (chapter ? (title !== chapter.title || content !== chapter.content) : false)
+    : (title !== '' || content !== '');
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = 'Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn rời đi?';
+        return e.returnValue;
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasChanges]);
 
 
 
@@ -266,6 +280,32 @@ export const ChapterEditorPage: React.FC = () => {
     saveMutation.mutate(status);
   };
 
+  const handleBack = async () => {
+    if (status === 'DRAFT' && hasChanges) {
+      setSaveStatus('SAVING');
+      try {
+        const payload = {
+          title: title || 'Chưa đặt tiêu đề',
+          chapterNumber,
+          content: content || '',
+          status: 'DRAFT' as const
+        };
+        
+        if (currentChapterId === 'new') {
+          await api.post(`/stories/${storyId}/chapters`, payload);
+        } else {
+          await api.put(`/stories/${storyId}/chapters/${currentChapterId}`, payload);
+        }
+        queryClient.invalidateQueries({ queryKey: ['management-chapters', storyId] });
+        setSaveStatus('SAVED');
+      } catch (err) {
+        console.error('Lỗi khi tự động lưu trước khi thoát:', err);
+        setSaveStatus('ERROR');
+      }
+    }
+    navigate(`/studio/story/${storyId}/chapters`);
+  };
+
   const handlePreview = () => {
     if (!story) return;
     const isCurrentlyEdit = currentChapterId !== 'new';
@@ -306,7 +346,7 @@ export const ChapterEditorPage: React.FC = () => {
       {/* Sticky Top Bar */}
       <div className="editor-sticky-header">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" onClick={() => navigate(`/studio/story/${storyId}/chapters`)} className="px-2 btn-pill" title="Quay lại">
+          <Button variant="ghost" onClick={handleBack} className="px-2 btn-pill" title="Quay lại">
             <ArrowLeft size={20} />
           </Button>
 
