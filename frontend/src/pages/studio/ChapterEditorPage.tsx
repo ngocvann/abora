@@ -10,6 +10,13 @@ import { getImageUrl } from '../../utils/image';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './Studio.css';
 
+const Quill = ReactQuill.Quill;
+if (Quill) {
+  const icons = Quill.import('ui/icons') as any;
+  icons['undo'] = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>`;
+  icons['redo'] = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>`;
+}
+
 interface Chapter {
   id: number;
   title: string;
@@ -317,12 +324,28 @@ export const ChapterEditorPage: React.FC = () => {
   };
 
   const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'header': [2, 3, false] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image', 'clean']
-    ],
+    toolbar: {
+      container: [
+        ['undo', 'redo'],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'header': [2, 3, false] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image', 'clean']
+      ],
+      handlers: {
+        undo: function(this: any) {
+          this.quill.history.undo();
+        },
+        redo: function(this: any) {
+          this.quill.history.redo();
+        }
+      }
+    },
+    history: {
+      delay: 1000,
+      maxStack: 500,
+      userOnly: true
+    }
   };
 
 
