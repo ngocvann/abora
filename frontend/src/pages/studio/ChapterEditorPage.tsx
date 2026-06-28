@@ -49,16 +49,12 @@ export const ChapterEditorPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isEditMode = chapterId !== 'new';
-  const isLoadedRef = useRef(false);
   const quillRef = useRef<ReactQuill>(null);
-
-  const [currentChapterId, setCurrentChapterId] = useState(chapterId);
-  if (chapterId !== currentChapterId) {
-    setCurrentChapterId(chapterId);
-    isLoadedRef.current = false;
-  }
+  const isEditorReadyRef = useRef(false);
+  const isInitializingRef = useRef(false);
+  const loadedChapterIdRef = useRef<string | null>(null);
+  
   const [saveStatus, setSaveStatus] = useState<'SAVED' | 'SAVING' | 'ERROR'>('SAVED');
-  const [initializedChapterId, setInitializedChapterId] = useState<string | null>(null);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -110,12 +106,14 @@ export const ChapterEditorPage: React.FC = () => {
 
   // Set form data when chapter is loaded
   useEffect(() => {
-    if (isEditMode && chapter && initializedChapterId !== chapterId) {
+    if (isEditMode && chapter && loadedChapterIdRef.current !== chapterId) {
+      isInitializingRef.current = true;
+      loadedChapterIdRef.current = chapterId || null;
+      
       setTitle(chapter.title || '');
       setContent(chapter.content || '');
       setChapterNumber(chapter.chapterNumber);
       setStatus(chapter.status as 'DRAFT' | 'PUBLISHED');
-      setInitializedChapterId(chapterId || null);
       
       // Wait for state updates to propagate before enabling autosave
       const timer = setTimeout(() => {
@@ -128,19 +126,20 @@ export const ChapterEditorPage: React.FC = () => {
             history.clear();
           }
         }
-        isLoadedRef.current = true;
-      }, 100);
+        isInitializingRef.current = false;
+        isEditorReadyRef.current = true;
+      }, 150);
       return () => clearTimeout(timer);
-    } else if (!isEditMode && initializedChapterId !== 'new') {
-      // Switch to create mode - reset all form states to avoid carrying over content from previously edited chapter
+    } else if (!isEditMode && loadedChapterIdRef.current !== 'new') {
+      isInitializingRef.current = true;
+      loadedChapterIdRef.current = 'new';
+      
       setTitle('');
       setContent('');
       const nextNum = chapters && chapters.length > 0 ? chapters[chapters.length - 1].chapterNumber + 1 : 1;
       setChapterNumber(nextNum);
       setStatus('DRAFT');
-      setInitializedChapterId('new');
       
-      isLoadedRef.current = false;
       const timer = setTimeout(() => {
         if (quillRef.current) {
           const quillInstance = quillRef.current.getEditor();
@@ -150,11 +149,12 @@ export const ChapterEditorPage: React.FC = () => {
             history.clear();
           }
         }
-        isLoadedRef.current = true;
-      }, 100);
+        isInitializingRef.current = false;
+        isEditorReadyRef.current = true;
+      }, 150);
       return () => clearTimeout(timer);
     }
-  }, [chapter, isEditMode, chapterId, initializedChapterId, chapters]);
+  }, [chapter, isEditMode, chapterId, chapters]);
 
   // Kiểm tra xem có sự thay đổi nào so với dữ liệu gốc trên server hay không
   const hasChanges = isEditMode
@@ -249,9 +249,14 @@ export const ChapterEditorPage: React.FC = () => {
 
   // Debounced Auto Save Effect
   useEffect(() => {
-    if (!isLoadedRef.current) return;
+    if (!isEditorReadyRef.current || isInitializingRef.current) return;
     if (status === 'PUBLISHED') return; // Không tự động lưu khi chương đã được đăng tải để tác giả chủ động bấm "Đăng các thay đổi"
-    if (!title && !content) return; // Do not auto-save empty drafts
+    
+    // Kiểm tra nội dung text thuần (tránh lỗi Validation @NotBlank của Backend khi content trống)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    const plainContent = (tempDiv.textContent || tempDiv.innerText || '').trim();
+    if (!plainContent) return; // Không tự động lưu nháp khi nội dung trống
 
     // Chỉ tự động lưu nếu tiêu đề hoặc nội dung có sự thay đổi so với dữ liệu gốc tải về
     if (chapter && title === chapter.title && content === chapter.content) {
@@ -268,16 +273,17 @@ export const ChapterEditorPage: React.FC = () => {
           status: 'DRAFT' as const
         };
 
-        if (currentChapterId === 'new') {
+        const targetId = loadedChapterIdRef.current;
+        if (targetId === 'new') {
           const { data } = await api.post(`/stories/${storyId}/chapters`, payload);
+          loadedChapterIdRef.current = data.id.toString();
           queryClient.setQueryData(['chapter', storyId, data.id.toString()], data);
-          setInitializedChapterId(data.id.toString()); 
-          setCurrentChapterId(data.id.toString());
           queryClient.invalidateQueries({ queryKey: ['management-chapters', storyId] });
+          setSaveStatus('SAVED');
           navigate(`/studio/story/${storyId}/chapters/${data.id}`, { replace: true });
         } else {
-          await api.put(`/stories/${storyId}/chapters/${currentChapterId}`, payload);
-          queryClient.setQueryData(['chapter', storyId, currentChapterId], (oldData: any) => ({
+          await api.put(`/stories/${storyId}/chapters/${targetId}`, payload);
+          queryClient.setQueryData(['chapter', storyId, targetId], (oldData: any) => ({
              ...oldData,
              title: payload.title,
              content: payload.content,
@@ -285,8 +291,8 @@ export const ChapterEditorPage: React.FC = () => {
              chapterNumber: payload.chapterNumber
           }));
           queryClient.invalidateQueries({ queryKey: ['management-chapters', storyId] });
+          setSaveStatus('SAVED');
         }
-        setSaveStatus('SAVED');
       } catch (error) {
         console.error('Lỗi tự động lưu:', error);
         setSaveStatus('ERROR');
@@ -294,7 +300,7 @@ export const ChapterEditorPage: React.FC = () => {
     }, 1500); // 1.5s debounce
 
     return () => clearTimeout(delayDebounceFn);
-  }, [title, content, currentChapterId, storyId, chapterNumber, navigate, queryClient, chapter]);
+  }, [title, content, storyId, chapterNumber, navigate, queryClient, chapter]);
 
   const saveMutation = useMutation({
     mutationFn: async (status: 'DRAFT' | 'PUBLISHED') => {
@@ -305,9 +311,10 @@ export const ChapterEditorPage: React.FC = () => {
         status
       };
       
-      const isCurrentlyEdit = currentChapterId !== 'new';
+      const targetId = loadedChapterIdRef.current;
+      const isCurrentlyEdit = targetId !== 'new';
       if (isCurrentlyEdit) {
-        return api.put(`/stories/${storyId}/chapters/${currentChapterId}`, payload);
+        return api.put(`/stories/${storyId}/chapters/${targetId}`, payload);
       } else {
         return api.post(`/stories/${storyId}/chapters`, payload);
       }
@@ -334,10 +341,11 @@ export const ChapterEditorPage: React.FC = () => {
           status: 'DRAFT' as const
         };
         
-        if (currentChapterId === 'new') {
+        const targetId = loadedChapterIdRef.current;
+        if (targetId === 'new') {
           await api.post(`/stories/${storyId}/chapters`, payload);
         } else {
-          await api.put(`/stories/${storyId}/chapters/${currentChapterId}`, payload);
+          await api.put(`/stories/${storyId}/chapters/${targetId}`, payload);
         }
         queryClient.invalidateQueries({ queryKey: ['management-chapters', storyId] });
         setSaveStatus('SAVED');
@@ -351,7 +359,8 @@ export const ChapterEditorPage: React.FC = () => {
 
   const handlePreview = () => {
     if (!story) return;
-    const isCurrentlyEdit = currentChapterId !== 'new';
+    const targetId = loadedChapterIdRef.current;
+    const isCurrentlyEdit = targetId !== 'new';
     if (isCurrentlyEdit && chapter?.slug) {
       window.open(`/story/${storyId}-${story.slug}/chapter/${chapter.slug}`, '_blank');
     } else {
@@ -366,7 +375,7 @@ export const ChapterEditorPage: React.FC = () => {
     ? title.toUpperCase()
     : `CHƯƠNG ${chapterNumber}: CHƯA ĐẶT TIÊU ĐỀ`;
 
-  if (isEditMode && ((isLoading && !chapter) || initializedChapterId !== chapterId)) {
+  if (isEditMode && ((isLoading && !chapter) || loadedChapterIdRef.current !== chapterId)) {
     return (
       <div className="editor-page-wrapper flex justify-center items-center" style={{ minHeight: '100vh', paddingTop: 'var(--navbar-height, 56px)' }}>
         <div className="flex flex-col items-center gap-4 text-gray-400">
@@ -419,7 +428,7 @@ export const ChapterEditorPage: React.FC = () => {
                   {chapters && chapters.map((ch: any) => (
                     <div 
                       key={ch.id} 
-                      className={`chapter-toc-item ${ch.id.toString() === currentChapterId ? 'active' : ''}`}
+                      className={`chapter-toc-item ${ch.id.toString() === loadedChapterIdRef.current ? 'active' : ''}`}
                       onClick={() => {
                         setIsTocOpen(false);
                         navigate(`/studio/story/${storyId}/chapters/${ch.id}`);
