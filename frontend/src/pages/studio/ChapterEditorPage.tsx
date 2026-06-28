@@ -30,6 +30,7 @@ export const ChapterEditorPage: React.FC = () => {
   const queryClient = useQueryClient();
   const isEditMode = chapterId !== 'new';
   const isLoadedRef = useRef(false);
+  const quillRef = useRef<ReactQuill>(null);
 
   const [currentChapterId, setCurrentChapterId] = useState(chapterId);
   if (chapterId !== currentChapterId) {
@@ -99,6 +100,14 @@ export const ChapterEditorPage: React.FC = () => {
       // Wait for state updates to propagate before enabling autosave
       const timer = setTimeout(() => {
         isLoadedRef.current = true;
+        // Clear history stack so the initial loading is not undoable!
+        if (quillRef.current) {
+          const quillInstance = quillRef.current.getEditor();
+          const history = quillInstance?.getModule('history') as any;
+          if (history) {
+            history.clear();
+          }
+        }
       }, 100);
       return () => clearTimeout(timer);
     } else if (!isEditMode && initializedChapterId !== 'new') {
@@ -113,6 +122,13 @@ export const ChapterEditorPage: React.FC = () => {
       isLoadedRef.current = false;
       const timer = setTimeout(() => {
         isLoadedRef.current = true;
+        if (quillRef.current) {
+          const quillInstance = quillRef.current.getEditor();
+          const history = quillInstance?.getModule('history') as any;
+          if (history) {
+            history.clear();
+          }
+        }
       }, 100);
       return () => clearTimeout(timer);
     }
@@ -600,6 +616,7 @@ export const ChapterEditorPage: React.FC = () => {
         />
 
         <ReactQuill 
+          ref={quillRef}
           theme="snow" 
           value={content} 
           onChange={setContent} 
