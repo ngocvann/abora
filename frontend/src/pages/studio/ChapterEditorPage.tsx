@@ -6,8 +6,8 @@ import 'react-quill-new/dist/quill.snow.css';
 
 // Register custom icons for undo and redo in Quill
 const icons = Quill.import('ui/icons') as any;
-icons['undo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>`;
-icons['redo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/></svg>`;
+icons['undo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ql-stroke" d="M9 14 4 9l5-5"/><path class="ql-stroke" d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>`;
+icons['redo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ql-stroke" d="m15 14 5-5-5-5"/><path class="ql-stroke" d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/></svg>`;
 import api from '../../services/api';
 import { Button } from '../../components/ui/Button';
 import { ArrowLeft, MoreHorizontal, Eye, ChevronDown } from 'lucide-react';
@@ -325,10 +325,10 @@ export const ChapterEditorPage: React.FC = () => {
     toolbar: {
       container: [
         ['bold', 'italic', 'underline', 'strike'],
+        ['undo', 'redo'],
         [{ 'header': [2, 3, false] }],
         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['link', 'image', 'clean'],
-        ['undo', 'redo']
+        ['link', 'image', 'clean']
       ],
       handlers: {
         undo: function(this: any) {

@@ -509,11 +509,11 @@ body.editor-scrolled .navbar {
     flex-direction: column;
     align-items: center;
     border-radius: 12px;
-    padding: 0.6rem 0.25rem !important;
+    padding: 0.4rem 0.2rem !important;
     width: 36px !important;
     height: auto;
     margin: 0;
-    gap: 4px;
+    gap: 2px;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     background: rgba(30, 41, 59, 0.8) !important;
     backdrop-filter: blur(12px);
@@ -531,11 +531,11 @@ body.editor-scrolled .navbar {
     flex-direction: column;
     align-items: center;
     margin-right: 0 !important;
-    margin-bottom: 4px;
-    padding-bottom: 4px;
+    margin-bottom: 2px;
+    padding-bottom: 2px;
     border-right: none !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    gap: 4px;
+    gap: 2px;
     width: 100%;
   }
 
@@ -551,7 +551,7 @@ body.editor-scrolled .navbar {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    margin: 1px 0 !important;
+    margin: 0 !important;
     width: 26px !important;
     height: 26px !important;
     padding: 0 !important;
