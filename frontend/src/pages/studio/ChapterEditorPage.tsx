@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import ReactQuill from 'react-quill-new';
+import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
-// Register custom undo/redo icons for Quill editor
-const icons = ReactQuill.Quill.import('ui/icons') as any;
-icons['undo'] = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>`;
-icons['redo'] = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>`;
-
+// Register custom icons for undo and redo in Quill
+const icons = Quill.import('ui/icons') as any;
+icons['undo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>`;
+icons['redo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/></svg>`;
 import api from '../../services/api';
 import { Button } from '../../components/ui/Button';
 import { ArrowLeft, MoreHorizontal, Eye, ChevronDown } from 'lucide-react';
@@ -325,25 +324,20 @@ export const ChapterEditorPage: React.FC = () => {
   const modules = {
     toolbar: {
       container: [
-        ['undo', 'redo'],
         ['bold', 'italic', 'underline', 'strike'],
         [{ 'header': [2, 3, false] }],
         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['link', 'image', 'clean']
+        ['link', 'image', 'clean'],
+        ['undo', 'redo']
       ],
       handlers: {
-        undo: function(this: { quill: any }) {
+        undo: function(this: any) {
           this.quill.history.undo();
         },
-        redo: function(this: { quill: any }) {
+        redo: function(this: any) {
           this.quill.history.redo();
         }
       }
-    },
-    history: {
-      delay: 1000,
-      maxStack: 100,
-      userOnly: true
     }
   };
 
