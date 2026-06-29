@@ -1527,7 +1527,7 @@ export const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId
                 </div>
               )}
             </div>
-            {!isReply && user && (
+            {user && (
               <div style={{ paddingLeft: '0.5rem', marginTop: '0.3rem' }}>
                 <button 
                   onClick={() => {
