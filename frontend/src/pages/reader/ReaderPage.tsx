@@ -29,6 +29,27 @@ const fetchStoryDetail = async (slug: string): Promise<PublicStoryDetail> => {
   return data;
 };
 
+/**
+ * Rewrite relative img src URLs in an HTML string to absolute backend URLs.
+ * This handles images inserted by the editor that are stored as /uploads/... paths.
+ */
+const rewriteImgSrcs = (html: string): string => {
+  const backendBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api').replace(/\/api$/, '');
+  return html.replace(/<img(\s[^>]*?)?src=["']([^"']+)["']/gi, (_match, attrs, src) => {
+    const safeAttrs = attrs || '';
+    let absoluteSrc = src.trim();
+    if (
+      !absoluteSrc.startsWith('http://') &&
+      !absoluteSrc.startsWith('https://') &&
+      !absoluteSrc.startsWith('data:') &&
+      !absoluteSrc.startsWith('blob:')
+    ) {
+      absoluteSrc = `${backendBase}${absoluteSrc.startsWith('/') ? '' : '/'}${absoluteSrc}`;
+    }
+    return `<img${safeAttrs}src="${absoluteSrc}"`;
+  });
+};
+
 const parseParagraphs = (htmlContent: string): string[] => {
   if (!htmlContent) return [];
   
@@ -55,16 +76,18 @@ const parseParagraphs = (htmlContent: string): string[] => {
       const element = node as HTMLElement;
       const tagName = element.tagName.toLowerCase();
       
-      // If it's a block level container
-      if (['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'li', 'ul', 'ol', 'section'].includes(tagName)) {
+      // Treat <img> as block-level so it gets its own paragraph slot
+      // and treat standard block containers similarly
+      if (['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'li', 'ul', 'ol', 'section', 'img', 'figure'].includes(tagName)) {
         if (currentText.trim()) {
           parsed.push(`<p>${currentText.trim()}</p>`);
           currentText = '';
         }
-        parsed.push(element.outerHTML);
+        // Rewrite img src to absolute URL before pushing
+        parsed.push(rewriteImgSrcs(element.outerHTML));
       } else {
-        // Accumulate inline nodes
-        currentText += element.outerHTML;
+        // Accumulate inline nodes (rewrite any img srcs inside them too)
+        currentText += rewriteImgSrcs(element.outerHTML);
       }
     } else if (node.nodeType === Node.TEXT_NODE) {
       currentText += node.textContent || '';
@@ -86,15 +109,15 @@ const parseParagraphs = (htmlContent: string): string[] => {
       if (splitText.length > 1) {
         return splitText.map(p => {
           if (!p.startsWith('<p>') && !p.startsWith('<div')) {
-            return `<p>${p}</p>`;
+            return `<p>${rewriteImgSrcs(p)}</p>`;
           }
-          return p;
+          return rewriteImgSrcs(p);
         });
       }
     }
   }
   
-  return parsed.length > 0 ? parsed : [cleanedHtml];
+  return parsed.length > 0 ? parsed : [rewriteImgSrcs(cleanedHtml)];
 };
 
 export const ReaderPage: React.FC = () => {

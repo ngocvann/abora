@@ -763,6 +763,24 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   margin-bottom: 0 !important;
 }
 
+/* Images inside chapter content */
+.paragraph-text img,
+.paragraph-wrapper img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0.5rem auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  object-fit: contain;
+}
+
+/* When img is the sole content of a paragraph-wrapper, center the wrapper */
+.paragraph-wrapper:has(> .paragraph-text > img:only-child),
+.paragraph-wrapper:has(> .paragraph-text > p > img:only-child) {
+  text-align: center;
+}
+
 .paragraph-comment-indicator {
   /* Nằm ngay bên phải cột text, không ảnh hưởng layout chút nào */
   position: absolute;
