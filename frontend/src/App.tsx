@@ -1,8 +1,28 @@
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AppRouter } from './routes/AppRouter';
 import { FacebookChatWidget } from './components/chat/FacebookChatWidget';
+
+class WidgetErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('Widget Error Boundary caught an error:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null;
+    }
+    return this.props.children;
+  }
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +38,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AppRouter />
-        <FacebookChatWidget />
+        <WidgetErrorBoundary>
+          <FacebookChatWidget />
+        </WidgetErrorBoundary>
         <Toaster 
           position="top-center" 
           containerStyle={{

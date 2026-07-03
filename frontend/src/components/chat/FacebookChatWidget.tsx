@@ -46,10 +46,10 @@ const SingleChatWindow: React.FC<{
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
-  const partnerNickname = nicknames[partner.id];
+  const partnerNickname = (nicknames && typeof nicknames === 'object') ? nicknames[partner.id] : undefined;
   const displayPartnerName = partnerNickname || partner.displayName || partner.username;
-  const isMuted = mutedPartnerIds.includes(partner.id);
-  const isBlocked = blockedUserIds.includes(partner.id);
+  const isMuted = Array.isArray(mutedPartnerIds) ? mutedPartnerIds.includes(partner.id) : false;
+  const isBlocked = Array.isArray(blockedUserIds) ? blockedUserIds.includes(partner.id) : false;
 
   // Fetch relationship (isFriend)
   const { data: relationship } = useQuery({
@@ -522,7 +522,7 @@ export const FacebookChatWidget: React.FC = () => {
               <div
                 className="fb-chat-bubble-avatar"
                 onClick={() => expandChat(chat.user.id)}
-                title={useChatStore.getState().nicknames[chat.user.id] || chat.user.displayName || chat.user.username}
+                title={(useChatStore.getState().nicknames && useChatStore.getState().nicknames[chat.user.id]) || chat.user?.displayName || chat.user?.username}
               >
                 <img
                   src={getImageUrl(chat.user.avatarUrl, 'avatar', chat.user.displayName || chat.user.username)}

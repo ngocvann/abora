@@ -12,13 +12,26 @@ export interface ActiveChatWindow {
   isMinimized: boolean;
 }
 
-// Helpers for localStorage persistence
-const getStoredJSON = <T>(key: string, fallback: T): T => {
+// Defensive Helpers for localStorage persistence
+const getStoredObject = (key: string): Record<number, string> => {
   try {
     const val = localStorage.getItem(key);
-    return val ? JSON.parse(val) : fallback;
+    if (!val) return {};
+    const parsed = JSON.parse(val);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
   } catch {
-    return fallback;
+    return {};
+  }
+};
+
+const getStoredArray = (key: string): number[] => {
+  try {
+    const val = localStorage.getItem(key);
+    if (!val) return [];
+    const parsed = JSON.parse(val);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
   }
 };
 
@@ -49,23 +62,24 @@ export const useChatStore = create<ChatStoreState>((set) => ({
   totalUnreadCount: 0,
   isMessengerDropdownOpen: false,
   isDockVisible: true,
-  nicknames: getStoredJSON<Record<number, string>>('abora_chat_nicknames', {}),
-  mutedPartnerIds: getStoredJSON<number[]>('abora_chat_muted', []),
-  blockedUserIds: getStoredJSON<number[]>('abora_chat_blocked', []),
+  nicknames: getStoredObject('abora_chat_nicknames'),
+  mutedPartnerIds: getStoredArray('abora_chat_muted'),
+  blockedUserIds: getStoredArray('abora_chat_blocked'),
 
   openChat: (partner) =>
     set((state) => {
-      const existing = state.activeChats.find((c) => c.user.id === partner.id);
+      const activeChats = Array.isArray(state.activeChats) ? state.activeChats : [];
+      const existing = activeChats.find((c) => c.user && c.user.id === partner.id);
       if (existing) {
         return {
-          activeChats: state.activeChats.map((c) =>
-            c.user.id === partner.id ? { ...c, isMinimized: false } : c
+          activeChats: activeChats.map((c) =>
+            c.user && c.user.id === partner.id ? { ...c, isMinimized: false } : c
           ),
           isMessengerDropdownOpen: false,
           isDockVisible: true
         };
       }
-      const newChats = [...state.activeChats];
+      const newChats = [...activeChats];
       if (newChats.length >= 3) {
         newChats.shift();
       }
@@ -75,21 +89,21 @@ export const useChatStore = create<ChatStoreState>((set) => ({
 
   minimizeChat: (partnerId) =>
     set((state) => ({
-      activeChats: state.activeChats.map((c) =>
-        c.user.id === partnerId ? { ...c, isMinimized: true } : c
+      activeChats: (Array.isArray(state.activeChats) ? state.activeChats : []).map((c) =>
+        c.user && c.user.id === partnerId ? { ...c, isMinimized: true } : c
       ),
     })),
 
   expandChat: (partnerId) =>
     set((state) => ({
-      activeChats: state.activeChats.map((c) =>
-        c.user.id === partnerId ? { ...c, isMinimized: false } : c
+      activeChats: (Array.isArray(state.activeChats) ? state.activeChats : []).map((c) =>
+        c.user && c.user.id === partnerId ? { ...c, isMinimized: false } : c
       ),
     })),
 
   closeChat: (partnerId) =>
     set((state) => ({
-      activeChats: state.activeChats.filter((c) => c.user.id !== partnerId),
+      activeChats: (Array.isArray(state.activeChats) ? state.activeChats : []).filter((c) => c.user && c.user.id !== partnerId),
     })),
 
   toggleMessengerDropdown: () =>
@@ -103,27 +117,30 @@ export const useChatStore = create<ChatStoreState>((set) => ({
 
   setNickname: (partnerId, nickname) =>
     set((state) => {
-      const updated = { ...state.nicknames, [partnerId]: nickname };
+      const nicknames = (state.nicknames && typeof state.nicknames === 'object') ? state.nicknames : {};
+      const updated = { ...nicknames, [partnerId]: nickname };
       try { localStorage.setItem('abora_chat_nicknames', JSON.stringify(updated)); } catch {}
       return { nicknames: updated };
     }),
 
   toggleMutePartner: (partnerId) =>
     set((state) => {
-      const isMuted = state.mutedPartnerIds.includes(partnerId);
+      const mutedPartnerIds = Array.isArray(state.mutedPartnerIds) ? state.mutedPartnerIds : [];
+      const isMuted = mutedPartnerIds.includes(partnerId);
       const updated = isMuted
-        ? state.mutedPartnerIds.filter((id) => id !== partnerId)
-        : [...state.mutedPartnerIds, partnerId];
+        ? mutedPartnerIds.filter((id) => id !== partnerId)
+        : [...mutedPartnerIds, partnerId];
       try { localStorage.setItem('abora_chat_muted', JSON.stringify(updated)); } catch {}
       return { mutedPartnerIds: updated };
     }),
 
   toggleBlockUser: (partnerId) =>
     set((state) => {
-      const isBlocked = state.blockedUserIds.includes(partnerId);
+      const blockedUserIds = Array.isArray(state.blockedUserIds) ? state.blockedUserIds : [];
+      const isBlocked = blockedUserIds.includes(partnerId);
       const updated = isBlocked
-        ? state.blockedUserIds.filter((id) => id !== partnerId)
-        : [...state.blockedUserIds, partnerId];
+        ? blockedUserIds.filter((id) => id !== partnerId)
+        : [...blockedUserIds, partnerId];
       try { localStorage.setItem('abora_chat_blocked', JSON.stringify(updated)); } catch {}
       return { blockedUserIds: updated };
     }),
