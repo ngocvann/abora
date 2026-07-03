@@ -307,6 +307,25 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
                       Báo cáo
                     </button>
                   )}
+                  {user?.roles?.includes('ROLE_ADMIN') && user?.username !== comment.userName && (
+                    <>
+                      <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '2px 0' }} />
+                      <button
+                        style={{ width: '100%', padding: '8px 16px', background: 'transparent', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                        onClick={() => {
+                          setConfirmModal({
+                            isOpen: true,
+                            title: '[Admin] Xóa bình luận',
+                            message: 'Bạn có chắc muốn xóa bình luận này với quyền Admin?',
+                            onConfirm: () => deleteCommentMutation.mutate(comment.id)
+                          });
+                          setOpenMenuCommentId(null);
+                        }}
+                      >
+                        Xóa (Admin)
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
