@@ -49,8 +49,6 @@ const formatRelativeTime = (dateStr: string) => {
 
 export const ForumPage: React.FC = () => {
   const { user } = useAuthStore();
-  console.log('[DEBUG] user object:', JSON.stringify(user));
-  console.log('[DEBUG] isAdmin result:', isAdmin(user));
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [newPostContent, setNewPostContent] = useState('');
@@ -480,29 +478,7 @@ export const ForumPage: React.FC = () => {
                           )}
                         </div>
                       )}
-                      {isAdmin(user) && user.username !== comment.userUsername && (
-                        <>
-                          <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
-                          <button
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setConfirmModal({
-                                isOpen: true,
-                                title: '[Admin] Xoa binh luan',
-                                message: 'Ban co chac muon xoa binh luan nay voi quyen Admin?',
-                                onConfirm: () => deleteCommentMutation.mutate(comment.id)
-                              });
-                              setOpenMenuCommentId(null);
-                            }}
-                            style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                          >
-                            <Trash2 size={12} /> Xoa (Admin)
-                          </button>
-                        </>
-                      )}
+
                     </div>
                   </div>
 

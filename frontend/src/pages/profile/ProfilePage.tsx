@@ -810,7 +810,7 @@ export const ProfilePage: React.FC = () => {
                                     <Flag size={14} /> Báo cáo
                                   </button>
                                 )}
-                                {currentisAdmin(user) && currentUser.username !== post.userUsername && (
+                                {isAdmin(currentUser) && currentUser.username !== post.userUsername && (
                                   <>
                                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
                                     <button
