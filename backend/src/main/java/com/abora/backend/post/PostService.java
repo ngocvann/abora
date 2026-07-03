@@ -32,6 +32,8 @@ public class PostService {
         post.setUser(user);
         post.setContent(request.content());
         post.setType(request.type());
+        post.setMediaUrl(request.mediaUrl());
+        post.setMediaType(request.mediaType());
         
         Post savedPost = postRepository.save(post);
         return toPostResponse(savedPost, userId);
@@ -46,7 +48,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<PostResponse> getForumPosts(Pageable pageable, Long currentUserId) {
-        Page<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Post> posts = postRepository.findByTypeOrderByCreatedAtDesc(PostType.FORUM, pageable);
         return posts.map(post -> toPostResponse(post, currentUserId));
     }
 
@@ -137,15 +139,29 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, Long userId) {
+    public void deletePost(Long postId, Long userId, String reason) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Bài viết không tồn tại"));
         
         User currentUser = userRepository.findById(userId).orElse(null);
         boolean isAdmin = currentUser != null && currentUser.getRole() == com.abora.backend.user.UserRole.ADMIN;
+        boolean isOwner = post.getUser().getId().equals(userId);
 
-        if (!post.getUser().getId().equals(userId) && !isAdmin) {
+        if (!isOwner && !isAdmin) {
             throw new IllegalArgumentException("Không có quyền xóa bài viết này");
+        }
+        
+        if (isAdmin && !isOwner) {
+            String reasonText = (reason != null && !reason.trim().isEmpty()) ? reason : "Nội dung vi phạm tiêu chuẩn cộng đồng";
+            notificationService.createNotification(
+                post.getUser().getId(),
+                userId,
+                com.abora.backend.notification.NotificationType.CONTENT_DELETED,
+                "POST",
+                postId,
+                "Bài viết của bạn đã bị xóa bởi Quản trị viên. Lý do: " + reasonText,
+                "/forum"
+            );
         }
         
         postCommentRepository.deleteByPostId(postId);
@@ -182,7 +198,7 @@ public class PostService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long userId) {
+    public void deleteComment(Long commentId, Long userId, String reason) {
         PostComment comment = postCommentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy bình luận"));
                 
@@ -193,6 +209,19 @@ public class PostService {
         
         if (!isCommentAuthor && !isPostAuthor && !isAdmin) {
             throw new IllegalArgumentException("Không có quyền xóa bình luận này");
+        }
+
+        if (isAdmin && !isCommentAuthor) {
+            String reasonText = (reason != null && !reason.trim().isEmpty()) ? reason : "Nội dung vi phạm tiêu chuẩn cộng đồng";
+            notificationService.createNotification(
+                comment.getUser().getId(),
+                userId,
+                com.abora.backend.notification.NotificationType.CONTENT_DELETED,
+                "COMMENT",
+                commentId,
+                "Bình luận của bạn đã bị xóa bởi Quản trị viên. Lý do: " + reasonText,
+                "/forum"
+            );
         }
         
         postCommentRepository.delete(comment);
@@ -229,6 +258,8 @@ public class PostService {
                 author.getAvatarUrl(),
                 post.getContent(),
                 post.getType(),
+                post.getMediaUrl(),
+                post.getMediaType(),
                 post.getCreatedAt(),
                 likeCount,
                 commentCount,

@@ -7,6 +7,7 @@ import { getImageUrl } from '../../utils/image';
 import { Button } from '../ui/Button';
 import { ReportModal } from '../ui/ReportModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
+import { AdminDeleteReasonModal } from '../ui/AdminDeleteReasonModal';
 import './CommentSidebar.css';
 
 interface Comment {
@@ -175,9 +176,12 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
     onError: () => alert('Không thể cập nhật bình luận.')
   });
 
+  const [adminDeleteCommentId, setAdminDeleteCommentId] = useState<number | null>(null);
+
   const deleteCommentMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await api.delete(`/chapters/${chapterId}/comments/${id}`);
+    mutationFn: async ({ id, reason }: { id: number; reason?: string }) => {
+      const url = reason ? `/chapters/${chapterId}/comments/${id}?reason=${encodeURIComponent(reason)}` : `/chapters/${chapterId}/comments/${id}`;
+      await api.delete(url);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', chapterId] });
@@ -284,7 +288,7 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
                           isOpen: true,
                           title: 'Xác nhận xóa',
                           message: 'Bạn có chắc chắn muốn xóa bình luận này?',
-                          onConfirm: () => deleteCommentMutation.mutate(comment.id)
+                          onConfirm: () => deleteCommentMutation.mutate({ id: comment.id })
                         });
                         setOpenMenuCommentId(null);
                       }}
@@ -313,12 +317,7 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
                       <button
                         style={{ width: '100%', padding: '8px 16px', background: 'transparent', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
                         onClick={() => {
-                          setConfirmModal({
-                            isOpen: true,
-                            title: '[Admin] Xóa bình luận',
-                            message: 'Bạn có chắc muốn xóa bình luận này với quyền Admin?',
-                            onConfirm: () => deleteCommentMutation.mutate(comment.id)
-                          });
+                          setAdminDeleteCommentId(comment.id);
                           setOpenMenuCommentId(null);
                         }}
                       >
@@ -522,6 +521,17 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
             setConfirmModal(null);
           }}
           onCancel={() => setConfirmModal(null)}
+        />
+      )}
+      {adminDeleteCommentId && (
+        <AdminDeleteReasonModal
+          isOpen={!!adminDeleteCommentId}
+          itemType="COMMENT"
+          onClose={() => setAdminDeleteCommentId(null)}
+          onConfirm={(reason) => {
+            deleteCommentMutation.mutate({ id: adminDeleteCommentId, reason });
+            setAdminDeleteCommentId(null);
+          }}
         />
       )}
     </div>

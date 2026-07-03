@@ -164,7 +164,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, String reason) {
         Long userId = getCurrentUserId();
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("Comment not found"));
@@ -176,6 +176,19 @@ public class CommentService {
         
         if (!isCommentAuthor && !isStoryAuthor && !isAdmin) {
             throw new ForbiddenException("Not authorized to delete this comment");
+        }
+
+        if (isAdmin && !isCommentAuthor) {
+            String reasonText = (reason != null && !reason.trim().isEmpty()) ? reason : "Nội dung vi phạm tiêu chuẩn cộng đồng";
+            notificationService.createNotification(
+                comment.getUser().getId(),
+                userId,
+                com.abora.backend.notification.NotificationType.CONTENT_DELETED,
+                "COMMENT",
+                commentId,
+                "Bình luận của bạn đã bị xóa bởi Quản trị viên. Lý do: " + reasonText,
+                comment.getChapter() != null ? "/reader/" + comment.getChapter().getId() : "/"
+            );
         }
 
         comment.setStatus(CommentStatus.DELETED);

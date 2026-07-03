@@ -1,15 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Heart, MessageSquare, MessagesSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X } from 'lucide-react';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { Loader2, Heart, MessageSquare, MessagesSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X, Image as ImageIcon, Globe, Lock } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { ReportModal } from '../../components/ui/ReportModal';
+import { AdminDeleteReasonModal } from '../../components/ui/AdminDeleteReasonModal';
 import { getImageUrl } from '../../utils/image';
 import './ForumPage.css';
-
 
 interface Post {
   id: number;
@@ -19,6 +19,8 @@ interface Post {
   userAvatarUrl: string | null;
   content: string;
   type: 'FORUM' | 'PERSONAL';
+  mediaUrl?: string | null;
+  mediaType?: string | null;
   createdAt: string;
   likeCount: number;
   commentCount: number;
@@ -52,6 +54,12 @@ export const ForumPage: React.FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [newPostContent, setNewPostContent] = useState('');
+  const [postType, setPostType] = useState<'FORUM' | 'PERSONAL'>('FORUM');
+  const [mediaUrl, setMediaUrl] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<'IMAGE' | 'VIDEO' | null>(null);
+  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+  const mediaInputRef = useRef<HTMLInputElement>(null);
+
   const [openCommentsPostId, setOpenCommentsPostId] = useState<number | null>(null);
 
   // Hashtag & Textarea Expand & Show More state
@@ -66,14 +74,34 @@ export const ForumPage: React.FC = () => {
     }
   };
 
-  const [expandedPosts, setExpandedPosts] = useState<Record<number, boolean>>({});
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [expandedPosts, setExpandedPosts] = useState<Record<number, boolean>>({});
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewPostContent(e.target.value);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  const handleMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingMedia(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setMediaUrl(res.data.url);
+      setMediaType(res.data.mediaType === 'VIDEO' ? 'VIDEO' : 'IMAGE');
+    } catch {
+      alert('Tải tập tin đa phương tiện thất bại.');
+    } finally {
+      setIsUploadingMedia(false);
     }
   };
 
@@ -86,15 +114,13 @@ export const ForumPage: React.FC = () => {
             key={idx}
             onClick={(e) => {
               e.stopPropagation();
-              const tag = word.trim();
-              setSelectedHashtag(selectedHashtag === tag ? null : tag);
+              setSelectedHashtag(word.trim());
             }}
             style={{
               color: 'var(--primary-color, #a855f7)',
               fontWeight: 600,
-              cursor: 'pointer',
+              cursor: 'pointer'
             }}
-            className="hover:underline"
           >
             {word}
           </span>
@@ -166,6 +192,12 @@ export const ForumPage: React.FC = () => {
   } | null>(null);
   const [reportTarget, setReportTarget] = useState<{ type: 'STORY' | 'CHAPTER' | 'COMMENT' | 'USER' | 'POST', id: number } | null>(null);
 
+  const [adminDeleteModal, setAdminDeleteModal] = useState<{
+    isOpen: boolean;
+    type: 'POST' | 'COMMENT';
+    id: number;
+  } | null>(null);
+
   // Fetch Forum Posts
   const { data: postsData, isLoading, isError } = useQuery({
     queryKey: ['forum-posts'],
@@ -184,16 +216,19 @@ export const ForumPage: React.FC = () => {
 
   // Create Post Mutation
   const createPostMutation = useMutation({
-    mutationFn: async (content: string) => {
-      const res = await api.post('/posts', { content, type: 'FORUM' });
+    mutationFn: async ({ content, type, mediaUrl, mediaType }: { content: string; type: 'FORUM' | 'PERSONAL'; mediaUrl?: string | null; mediaType?: string | null }) => {
+      const res = await api.post('/posts', { content, type, mediaUrl, mediaType });
       return res.data;
     },
     onSuccess: () => {
       setNewPostContent('');
+      setMediaUrl(null);
+      setMediaType(null);
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
       }
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
     },
     onError: () => {
       alert('Không thể đăng bài viết. Vui lòng thử lại.');
@@ -207,18 +242,19 @@ export const ForumPage: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
-      // Invalidate specific user timelines just in case
       queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
     }
   });
 
   // ─── Delete Post Mutation ──────────────────────────────────────────────────
   const deletePostMutation = useMutation({
-    mutationFn: async (postId: number) => {
-      await api.delete(`/posts/${postId}`);
+    mutationFn: async ({ id, reason }: { id: number; reason?: string }) => {
+      const url = reason ? `/posts/${id}?reason=${encodeURIComponent(reason)}` : `/posts/${id}`;
+      await api.delete(url);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
     },
     onError: () => alert('Không thể xóa bài viết.')
   });
@@ -238,8 +274,8 @@ export const ForumPage: React.FC = () => {
 
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPostContent.trim()) return;
-    createPostMutation.mutate(newPostContent);
+    if (!newPostContent.trim() && !mediaUrl) return;
+    createPostMutation.mutate({ content: newPostContent, type: postType, mediaUrl, mediaType });
   };
 
   const handleAuthorClick = (username: string) => {
@@ -251,24 +287,13 @@ export const ForumPage: React.FC = () => {
   };
 
   // Fetch top authors
-  const { data: topAuthors = [], isLoading: isAuthorsLoading } = useQuery<any[]>({
+  const { data: topAuthors = [] } = useQuery<any[]>({
     queryKey: ['top-authors'],
     queryFn: async () => {
       const res = await api.get('/stories/leaderboard/authors');
-      return res.data.slice(0, 5); // Display top 5
+      return res.data.slice(0, 5);
     }
   });
-
-  const handleFakeFollowToggle = (_authorId: number) => {
-    // Tạm thời hiển thị alert hoặc call API follow sau
-    if (!user) {
-      alert('Vui lòng đăng nhập để theo dõi!');
-      return;
-    }
-    // TODO: Connect to real follow API
-    alert('Tính năng theo dõi đang được hoàn thiện!');
-  };
-
 
   return (
     <div className="forum-page fade-in">
@@ -289,30 +314,123 @@ export const ForumPage: React.FC = () => {
                     (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', user.displayName || user.username);
                   }}
                 />
-                <span style={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>
-                  {user.displayName}
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <span style={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>
+                    {user.displayName}
+                  </span>
+                  {/* Scope Selector */}
+                  <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setPostType('FORUM')}
+                      style={{
+                        background: postType === 'FORUM' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255,255,255,0.05)',
+                        border: `1px solid ${postType === 'FORUM' ? '#a855f7' : 'rgba(255,255,255,0.1)'}`,
+                        color: postType === 'FORUM' ? '#d8b4fe' : 'rgba(255,255,255,0.6)',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <Globe size={12} /> Diễn đàn (Công khai)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPostType('PERSONAL')}
+                      style={{
+                        background: postType === 'PERSONAL' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255,255,255,0.05)',
+                        border: `1px solid ${postType === 'PERSONAL' ? '#3b82f6' : 'rgba(255,255,255,0.1)'}`,
+                        color: postType === 'PERSONAL' ? '#93c5fd' : 'rgba(255,255,255,0.6)',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <Lock size={12} /> Nhật ký cá nhân
+                    </button>
+                  </div>
+                </div>
               </div>
-              <form onSubmit={handleCreatePost}>
+
+              <form onSubmit={handleCreatePost} style={{ marginTop: '0.75rem' }}>
                 <textarea
                   ref={textareaRef}
-                  placeholder="Hôm nay bạn muốn chia sẻ hay thảo luận điều gì?"
+                  placeholder={postType === 'FORUM' ? "Chia sẻ ý kiến với cộng đồng..." : "Viết dòng nhật ký cá nhân..."}
                   value={newPostContent}
                   onChange={handleTextareaChange}
                   maxLength={2000}
                   rows={1}
                 />
-                <div className="creator-actions">
+
+                {/* Media Preview */}
+                {mediaUrl && (
+                  <div style={{ position: 'relative', marginTop: '0.5rem', marginBottom: '0.5rem', width: 'fit-content' }}>
+                    {mediaType === 'VIDEO' ? (
+                      <video src={mediaUrl} controls style={{ maxHeight: '180px', borderRadius: '8px' }} />
+                    ) : (
+                      <img src={mediaUrl} alt="Preview" style={{ maxHeight: '180px', borderRadius: '8px', objectFit: 'cover' }} />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => { setMediaUrl(null); setMediaType(null); }}
+                      style={{
+                        position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.7)',
+                        border: 'none', color: '#fff', borderRadius: '50%', width: 22, height: 22,
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                      }}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+
+                <div className="creator-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => mediaInputRef.current?.click()}
+                    disabled={isUploadingMedia}
+                    style={{
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      color: 'rgba(255,255,255,0.8)',
+                      padding: '4px 10px',
+                      borderRadius: '16px',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    {isUploadingMedia ? <Loader2 className="animate-spin" size={14} /> : <ImageIcon size={14} />}
+                    Đính kèm Ảnh/Video
+                  </button>
+                  <input
+                    type="file"
+                    ref={mediaInputRef}
+                    style={{ display: 'none' }}
+                    accept="image/*,video/*"
+                    onChange={handleMediaUpload}
+                  />
+
                   <Button
                     type="submit"
                     variant="primary"
                     className="publish-btn"
-                    disabled={createPostMutation.isPending || !newPostContent.trim()}
+                    disabled={createPostMutation.isPending || (!newPostContent.trim() && !mediaUrl)}
                   >
                     {createPostMutation.isPending ? (
                       <><Loader2 className="animate-spin mr-2" size={16} /> Đang đăng...</>
                     ) : (
-                      'Đăng thảo luận'
+                      'Đăng bài'
                     )}
                   </Button>
                 </div>
@@ -378,21 +496,40 @@ export const ForumPage: React.FC = () => {
                 <div key={post.id} className="glass-card post-card">
                   
                   {/* Post Author Info */}
-                  <div className="post-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div className="post-author-info" onClick={() => handleAuthorClick(post.userUsername)}>
+                  <div className="post-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div 
+                      className="author-info" 
+                      onClick={() => handleAuthorClick(post.userUsername)} 
+                      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+                    >
                       <img 
                         src={getImageUrl(post.userAvatarUrl, 'avatar', post.userDisplayName || post.userUsername)} 
-                        alt="Avatar" 
-                        className="creator-avatar" 
+                        alt={post.userDisplayName} 
+                        className="author-avatar" 
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', post.userDisplayName || post.userUsername);
                         }}
                       />
-                      <div className="post-author-details">
-                        <span className="post-author-name">{post.userDisplayName}</span>
-                        <span className="post-author-username">@{post.userUsername}</span>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <span className="author-name hover-link">{post.userDisplayName}</span>
+                          <span 
+                            style={{ 
+                              fontSize: '0.7rem', 
+                              padding: '1px 6px', 
+                              borderRadius: '8px', 
+                              background: post.type === 'PERSONAL' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(168, 85, 247, 0.15)',
+                              color: post.type === 'PERSONAL' ? '#93c5fd' : '#d8b4fe',
+                              border: `1px solid ${post.type === 'PERSONAL' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(168, 85, 247, 0.3)'}` 
+                            }}
+                          >
+                            {post.type === 'PERSONAL' ? 'Nhật ký' : 'Diễn đàn'}
+                          </span>
+                        </div>
+                        <span className="author-username">@{post.userUsername}</span>
                       </div>
                     </div>
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <span className="post-time">{formatRelativeTime(post.createdAt)}</span>
                       {user && (
@@ -424,7 +561,7 @@ export const ForumPage: React.FC = () => {
                                         isOpen: true,
                                         title: 'Xóa bài viết',
                                         message: 'Bạn có chắc chắn muốn xóa bài viết này?',
-                                        onConfirm: () => deletePostMutation.mutate(post.id)
+                                        onConfirm: () => deletePostMutation.mutate({ id: post.id })
                                       });
                                       setOpenMenuPostId(null); 
                                     }}
@@ -458,12 +595,7 @@ export const ForumPage: React.FC = () => {
                                     onMouseDown={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
-                                      setConfirmModal({
-                                        isOpen: true,
-                                        title: '[Admin] Xóa bài viết',
-                                        message: 'Bạn có chắc muốn xóa bài viết này với quyền Admin?',
-                                        onConfirm: () => deletePostMutation.mutate(post.id)
-                                      });
+                                      setAdminDeleteModal({ isOpen: true, type: 'POST', id: post.id });
                                       setOpenMenuPostId(null);
                                     }}
                                     style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
@@ -478,41 +610,55 @@ export const ForumPage: React.FC = () => {
                           )}
                         </div>
                       )}
-
                     </div>
                   </div>
 
                   {/* Post Content */}
                   {editingPostId === post.id ? (
-                    <div className="post-content" style={{ margin: '0.5rem 0' }}>
+                    <div style={{ margin: '0.75rem 0' }}>
                       <textarea
                         value={editPostContent}
                         onChange={(e) => setEditPostContent(e.target.value)}
-                        style={{ width: '100%', minHeight: '60px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '8px', padding: '0.5rem' }}
+                        style={{ width: '100%', minHeight: '80px', padding: '0.5rem', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: 'white', fontSize: '0.9rem' }}
                       />
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
                         <Button size="sm" variant="secondary" onClick={() => setEditingPostId(null)}>Hủy</Button>
-                        <Button size="sm" variant="primary" disabled={updatePostMutation.isPending || !editPostContent.trim()} onClick={() => updatePostMutation.mutate({ id: post.id, content: editPostContent })}>
-                          {updatePostMutation.isPending ? 'Đang lưu...' : 'Lưu'}
-                        </Button>
+                        <Button size="sm" variant="primary" disabled={updatePostMutation.isPending || !editPostContent.trim()} onClick={() => updatePostMutation.mutate({ id: post.id, content: editPostContent })}>Lưu</Button>
                       </div>
                     </div>
                   ) : (
                     renderPostText(post)
                   )}
 
-                  {/* Post Interactions */}
+                  {/* Post Media Attachment */}
+                  {post.mediaUrl && (
+                    <div style={{ marginTop: '0.75rem', borderRadius: '12px', overflow: 'hidden', maxHeight: '450px', background: 'rgba(0,0,0,0.3)' }}>
+                      {post.mediaType === 'VIDEO' ? (
+                        <video src={post.mediaUrl} controls style={{ width: '100%', maxHeight: '450px', borderRadius: '12px', display: 'block' }} />
+                      ) : (
+                        <img src={post.mediaUrl} alt="Post media" style={{ width: '100%', maxHeight: '450px', objectFit: 'cover', borderRadius: '12px', display: 'block' }} />
+                      )}
+                    </div>
+                  )}
+
+                  {/* Post Actions (Like, Comment count) */}
                   <div className="post-footer">
-                    <button
-                      className={`interaction-btn ${post.isLikedByMe ? 'liked' : ''}`}
-                      onClick={() => toggleLikeMutation.mutate(post.id)}
-                      disabled={!user}
+                    <button 
+                      className={`action-btn like-btn ${post.isLikedByMe ? 'liked' : ''}`}
+                      onClick={() => {
+                        if (!user) {
+                          alert('Vui lòng đăng nhập để thích bài viết.');
+                          return;
+                        }
+                        toggleLikeMutation.mutate(post.id);
+                      }}
                     >
-                      <Heart size={18} fill={post.isLikedByMe ? 'currentColor' : 'none'} />
+                      <Heart size={18} fill={post.isLikedByMe ? '#ef4444' : 'none'} color={post.isLikedByMe ? '#ef4444' : 'currentColor'} />
                       <span>{post.likeCount}</span>
                     </button>
-                    <button
-                      className="interaction-btn"
+
+                    <button 
+                      className="action-btn comment-btn"
                       onClick={() => setOpenCommentsPostId(openCommentsPostId === post.id ? null : post.id)}
                     >
                       <MessageSquare size={18} />
@@ -520,11 +666,14 @@ export const ForumPage: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Comments Collapsible Area */}
+                  {/* Comment Section Sub-component */}
                   {openCommentsPostId === post.id && (
-                    <PostCommentsSection postId={post.id} postOwnerUsername={post.userUsername} />
+                    <PostCommentsSection 
+                      postId={post.id} 
+                      postOwnerUsername={post.userUsername} 
+                      onAdminDeleteComment={(commentId) => setAdminDeleteModal({ isOpen: true, type: 'COMMENT', id: commentId })}
+                    />
                   )}
-
                 </div>
               ))}
             </div>
@@ -532,63 +681,76 @@ export const ForumPage: React.FC = () => {
 
         </div>
 
-        {/* Sidebar Column */}
+        {/* Sidebar Column: Top Authors / Rules */}
         <div className="forum-sidebar">
           
-          <div className="glass-card">
-            <h3 className="sidebar-title">
-              <Award className="mr-2 inline" size={20} style={{ verticalAlign: 'middle', color: '#eab308' }} />
+          {/* Top Authors */}
+          <div className="glass-card sidebar-widget">
+            <h3 className="widget-title">
+              <Award size={18} style={{ color: '#eab308', marginRight: '8px' }} />
               Tác giả nổi bật
             </h3>
-            
-            <div className="featured-authors-list">
-              {isAuthorsLoading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>
-                  <Loader2 className="animate-spin text-gray-500" />
-                </div>
-              ) : topAuthors.length > 0 ? (
-                topAuthors.map((author) => (
-                  <div key={author.id} className="author-item">
-                    <div className="author-info-wrapper" onClick={() => handleAuthorClick(author.username)}>
-                      <img 
-                        src={getImageUrl(author.avatarUrl, 'avatar', author.displayName || author.username)} 
-                        alt={author.displayName} 
-                        className="creator-avatar" 
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', author.displayName || author.username);
-                        }}
-                      />
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span className="author-name">{author.displayName}</span>
-                        <span className="author-bio-snippet" title={`Người theo dõi: ${author.followerCount || 0}`}>
-                          {author.followerCount || 0} người theo dõi
-                        </span>
-                      </div>
+            {topAuthors.length > 0 ? (
+              <div className="authors-list">
+                {topAuthors.map((author) => (
+                  <div 
+                    key={author.authorId} 
+                    className="author-item"
+                    onClick={() => handleAuthorClick(author.authorUsername)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <img 
+                      src={getImageUrl(author.authorAvatarUrl, 'avatar', author.authorDisplayName || author.authorUsername)} 
+                      alt={author.authorDisplayName} 
+                      className="item-avatar"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', author.authorDisplayName || author.authorUsername);
+                      }}
+                    />
+                    <div className="item-info">
+                      <span className="item-name hover-link">{author.authorDisplayName}</span>
+                      <span className="item-sub">{author.followerCount || 0} người theo dõi</span>
                     </div>
-                    <button
-                      className={`follow-toggle-btn follow`}
-                      onClick={() => handleFakeFollowToggle(author.id)}
+                    <Button 
+                      size="sm" 
+                      variant="secondary" 
+                      className="follow-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAuthorClick(author.authorUsername);
+                      }}
                     >
                       Theo dõi
-                    </button>
+                    </Button>
                   </div>
-                ))
-              ) : (
-                <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.85rem' }}>Chưa có tác giả nổi bật.</p>
-              )}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-secondary">Chưa có thông tin tác giả.</p>
+            )}
           </div>
 
-          <div className="glass-card" style={{ padding: '1.25rem' }}>
-            <h4 style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.5rem' }}>Nội quy thảo luận</h4>
-            <p style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: '0.8rem', lineHeight: 1.5 }}>
-              Vui lòng giữ lịch sự, tôn trọng các thành viên khác. Không spam, quảng cáo trái phép hoặc đăng tải nội dung nhạy cảm, độc hại. Hãy chung tay xây dựng cộng đồng văn minh tại Abora!
+          {/* Forum Rules */}
+          <div className="glass-card sidebar-widget rules-widget">
+            <h3 className="widget-title">Nội quy thảo luận</h3>
+            <p className="rules-desc">
+              Vui lòng giữ lịch sự, tôn trọng các thành viên khác. Không spam, quảng cáo trái phép hoặc đăng tải nội dung vi phạm tiêu chuẩn cộng đồng Abora.
             </p>
           </div>
 
         </div>
 
       </div>
+
+      {reportTarget && (
+        <ReportModal 
+          isOpen={!!reportTarget}
+          onClose={() => setReportTarget(null)}
+          targetType={reportTarget.type}
+          targetId={reportTarget.id}
+        />
+      )}
+
       {confirmModal && (
         <ConfirmModal
           isOpen={confirmModal.isOpen}
@@ -604,44 +766,43 @@ export const ForumPage: React.FC = () => {
           onCancel={() => setConfirmModal(null)}
         />
       )}
-      {reportTarget && (
-        <ReportModal 
-          isOpen={!!reportTarget}
-          onClose={() => setReportTarget(null)}
-          targetType={reportTarget.type}
-          targetId={reportTarget.id}
+
+      {adminDeleteModal && (
+        <AdminDeleteReasonModal
+          isOpen={adminDeleteModal.isOpen}
+          itemType={adminDeleteModal.type}
+          onClose={() => setAdminDeleteModal(null)}
+          onConfirm={(reason) => {
+            if (adminDeleteModal.type === 'POST') {
+              deletePostMutation.mutate({ id: adminDeleteModal.id, reason });
+            } else {
+              api.delete(`/posts/comments/${adminDeleteModal.id}?reason=${encodeURIComponent(reason)}`).then(() => {
+                queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+                queryClient.invalidateQueries({ queryKey: ['post-comments'] });
+              });
+            }
+            setAdminDeleteModal(null);
+          }}
         />
       )}
     </div>
   );
 };
 
+
 // ─── Sub-component to manage specific comments ──────────────────────────────
-
-interface PostCommentsSectionProps {
-  postId: number;
-  postOwnerUsername: string;
-}
-
-const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId, postOwnerUsername }) => {
+const PostCommentsSection: React.FC<{ postId: number, postOwnerUsername: string, onAdminDeleteComment: (commentId: number) => void }> = ({ postId, postOwnerUsername, onAdminDeleteComment }) => {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
+  const [commentText, setCommentText] = useState('');
+  const [replyingTo, setReplyingTo] = useState<{ id: number; name: string; username: string; isSubReply?: boolean } | null>(null);
   const [replyText, setReplyText] = useState('');
-  const [replyingTo, setReplyingTo] = useState<{ id: number, name: string, username: string, isSubReply: boolean } | null>(null);
-  
-  const [openMenuCommentId, setOpenMenuCommentId] = useState<number | null>(null);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editCommentText, setEditCommentText] = useState('');
+  const [openMenuCommentId, setOpenMenuCommentId] = useState<number | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean; title: string; message: string; onConfirm: () => void } | null>(null);
   const [reportTarget, setReportTarget] = useState<{ type: 'STORY' | 'CHAPTER' | 'COMMENT' | 'USER' | 'POST', id: number } | null>(null);
-
-  const [confirmModal, setConfirmModal] = useState<{
-    isOpen: boolean;
-    title: string;
-    message: string;
-    onConfirm: () => void;
-  } | null>(null);
 
   // Fetch comments for this specific post
   const { data: comments = [], isLoading } = useQuery<any[]>({
@@ -652,27 +813,20 @@ const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId, postO
     }
   });
 
-  // Add Comment Mutation
   const addCommentMutation = useMutation({
-    mutationFn: async ({ content, parentId }: { content: string, parentId?: number }) => {
-      const payload: any = { content };
-      if (parentId) {
-        payload.parentId = parentId;
-      }
+    mutationFn: async (payload: { content: string; parentId?: number }) => {
       const res = await api.post(`/posts/${postId}/comments`, payload);
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['post-comments', postId] });
-
+      setCommentText('');
       setReplyText('');
       setReplyingTo(null);
+      queryClient.invalidateQueries({ queryKey: ['post-comments', postId] });
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
       queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
     },
-    onError: () => {
-      alert('Không thể đăng bình luận.');
-    }
+    onError: () => alert('Không thể gửi bình luận.')
   });
 
   const updateCommentMutation = useMutation({
@@ -699,39 +853,39 @@ const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId, postO
     onError: () => alert('Không thể xóa bình luận.')
   });
 
+  const handleSendComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+    addCommentMutation.mutate({ content: commentText });
+  };
 
-
-
-  const handleSendReply = (e: React.FormEvent, parentId: number) => {
+  const handleSendReply = (e: React.FormEvent, targetParentId: number) => {
     e.preventDefault();
     if (!replyText.trim()) return;
-    
-    let finalContent = replyText;
-    if (replyingTo) {
-      finalContent = `[@${replyingTo.username}:${replyingTo.name}] ${replyText}`;
-    }
-    
-    addCommentMutation.mutate({ content: finalContent, parentId });
+    addCommentMutation.mutate({ content: `@${replyingTo?.username} ${replyText}`, parentId: targetParentId });
   };
 
   const renderCommentContent = (content: string) => {
-    const match = content.match(/^\[@([^:]+):([^\]]+)\]\s*(.*)$/);
-    if (match) {
-      const username = match[1];
-      const displayName = match[2];
-      const text = match[3];
-      return (
-        <>
-          <Link
-            to={`/${username}`}
-            onClick={(e) => e.stopPropagation()}
-            style={{ color: '#a855f7', fontWeight: 600, cursor: 'pointer', marginRight: '0.25rem', textDecoration: 'none' }}
-          >
-            {displayName}
-          </Link>
-          {text}
-        </>
-      );
+    if (content.startsWith('@')) {
+      const firstSpaceIndex = content.indexOf(' ');
+      if (firstSpaceIndex !== -1) {
+        const mention = content.substring(0, firstSpaceIndex);
+        const rest = content.substring(firstSpaceIndex);
+        return (
+          <>
+            <span 
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/${mention.replace('@', '')}`);
+              }} 
+              style={{ color: '#93c5fd', fontWeight: 600, cursor: 'pointer', marginRight: '4px' }}
+            >
+              {mention}
+            </span>
+            {rest}
+          </>
+        );
+      }
     }
     return content;
   };
@@ -740,119 +894,132 @@ const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId, postO
     const isActiveReplyBox = replyingTo?.id === comment.id && !isReply;
 
     return (
-    <div key={comment.id} className="comment-item-container" style={{ marginLeft: isReply ? '3rem' : '0', marginTop: isReply ? '0.2rem' : '0' }}>
-      <div className="comment-item">
-        <div onClick={() => navigate(`/${comment.userUsername}`)} style={{ cursor: 'pointer' }}>
-          <img 
-            src={getImageUrl(comment.userAvatarUrl, 'avatar', comment.userDisplayName || comment.userUsername)} 
-            alt="Avatar" 
-            className="comment-avatar" 
-            style={{ width: isReply ? '24px' : '32px', height: isReply ? '24px' : '32px' }} 
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', comment.userDisplayName || comment.userUsername);
-            }}
-          />
-        </div>
-        <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
+      <div key={comment.id} className="comment-item-container" style={{ marginLeft: isReply ? '3rem' : '0', marginTop: isReply ? '0.2rem' : '0' }}>
+        <div className="comment-item">
+          <div onClick={() => navigate(`/${comment.userUsername}`)} style={{ cursor: 'pointer' }}>
+            <img 
+              src={getImageUrl(comment.userAvatarUrl, 'avatar', comment.userDisplayName || comment.userUsername)} 
+              className="comment-avatar" 
+              alt={comment.userDisplayName} 
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', comment.userDisplayName || comment.userUsername);
+              }}
+            />
+          </div>
           <div className="comment-bubble" style={{ position: 'relative' }}>
             <div className="comment-author-header" style={{ paddingRight: '1.5rem' }}>
-                <span 
-                  className="comment-author-name hover-link" 
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    if (window.location.pathname === `/${comment.userUsername}`) {
-                      window.location.reload();
-                    } else {
-                      navigate(`/${comment.userUsername}`);
-                    }
-                  }}
-                >
-                  {comment.userDisplayName}
-                </span>
+              <span 
+                className="comment-author-name hover-link" 
+                onClick={() => {
+                  if (window.location.pathname === `/${comment.userUsername}`) {
+                    window.location.reload();
+                  } else {
+                    navigate(`/${comment.userUsername}`);
+                  }
+                }}
+              >
+                {comment.userDisplayName}
+              </span>
               <span className="comment-time">
                 {formatRelativeTime(comment.createdAt)}
               </span>
             </div>
-            
+
             {editingCommentId === comment.id ? (
-              <div style={{ marginTop: '0.5rem' }}>
+              <div style={{ margin: '0.4rem 0' }}>
                 <textarea
                   value={editCommentText}
                   onChange={(e) => setEditCommentText(e.target.value)}
-                  style={{ width: '100%', minHeight: '40px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '4px', padding: '0.4rem', fontSize: '0.85rem' }}
+                  style={{ width: '100%', minHeight: '60px', padding: '0.4rem', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: 'white', fontSize: '0.85rem' }}
                 />
-                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.2rem' }}>
+                <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', marginTop: '0.3rem' }}>
                   <Button size="sm" variant="secondary" onClick={() => setEditingCommentId(null)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}>Hủy</Button>
-                  <Button size="sm" variant="primary" disabled={updateCommentMutation.isPending || !editCommentText.trim()} onClick={() => updateCommentMutation.mutate({ id: comment.id, content: editCommentText })} style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}>
-                    {updateCommentMutation.isPending ? 'Đang lưu...' : 'Lưu'}
-                  </Button>
+                  <Button size="sm" variant="primary" disabled={updateCommentMutation.isPending || !editCommentText.trim()} onClick={() => updateCommentMutation.mutate({ id: comment.id, content: editCommentText })} style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}>Lưu</Button>
                 </div>
               </div>
             ) : (
               <p className="comment-text">{renderCommentContent(comment.content)}</p>
             )}
-             {/* Comment Menu */}
-             {user && (
-               <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}>
-                 <button 
-                   onClick={(e) => { e.stopPropagation(); setOpenMenuCommentId(openMenuCommentId === comment.id ? null : comment.id); }}
-                   onBlur={() => setTimeout(() => setOpenMenuCommentId(null), 150)}
-                   style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', padding: '0.2rem' }}
-                 >
-                   <MoreHorizontal size={14} />
-                 </button>
-                 {openMenuCommentId === comment.id && (
-                   <div style={{ position: 'absolute', right: 0, top: '100%', background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0.25rem', zIndex: 10, minWidth: '100px', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                     {user.username === comment.userUsername && (
-                       <button 
-                         onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setEditingCommentId(comment.id); setEditCommentText(comment.content); setOpenMenuCommentId(null); }}
-                         style={{ background: 'none', border: 'none', color: '#93c5fd', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
-                         onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                         onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                       >
-                         <Edit3 size={12} /> Sửa
-                       </button>
-                     )}
-                     {(user.username === comment.userUsername || user.username === postOwnerUsername) && (
-                       <button 
-                         onMouseDown={(e) => { 
-                           e.preventDefault(); 
-                           e.stopPropagation(); 
-                           setConfirmModal({
-                             isOpen: true,
-                             title: 'Xóa bình luận',
-                             message: 'Bạn có chắc chắn muốn xóa bình luận này?',
-                             onConfirm: () => deleteCommentMutation.mutate(comment.id)
-                           });
-                           setOpenMenuCommentId(null); 
-                         }}
-                         style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
-                         onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                         onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                       >
-                         <Trash2 size={12} /> Xóa
-                       </button>
-                     )}
-                     {user.username !== comment.userUsername && (
-                       <button 
-                         onMouseDown={(e) => { 
-                           e.preventDefault(); 
-                           e.stopPropagation(); 
-                           setReportTarget({ type: 'COMMENT', id: comment.id }); 
-                           setOpenMenuCommentId(null); 
-                         }}
-                         style={{ background: 'none', border: 'none', color: '#f59e0b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
-                         onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                         onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                       >
-                         <Flag size={12} /> Báo cáo
-                       </button>
-                     )}
-                   </div>
-                 )}
-               </div>
-             )}
-           </div>
+
+            {user && (
+              <div style={{ position: 'absolute', right: '0.4rem', top: '0.4rem' }}>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setOpenMenuCommentId(openMenuCommentId === comment.id ? null : comment.id); }}
+                  onBlur={() => setTimeout(() => setOpenMenuCommentId(null), 150)}
+                  style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', padding: '0.1rem', display: 'flex', alignItems: 'center' }}
+                >
+                  <MoreHorizontal size={14} />
+                </button>
+                {openMenuCommentId === comment.id && (
+                  <div style={{ position: 'absolute', right: 0, top: '100%', background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', padding: '0.2rem', zIndex: 10, minWidth: '90px', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                    {user.username === comment.userUsername && (
+                      <button 
+                        onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setEditingCommentId(comment.id); setEditCommentText(comment.content); setOpenMenuCommentId(null); }}
+                        style={{ background: 'none', border: 'none', color: '#93c5fd', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                      >
+                        <Edit3 size={12} /> Sửa
+                      </button>
+                    )}
+                    {(user.username === comment.userUsername || user.username === postOwnerUsername) && (
+                      <button 
+                        onMouseDown={(e) => { 
+                          e.preventDefault(); 
+                          e.stopPropagation(); 
+                          setConfirmModal({
+                            isOpen: true,
+                            title: 'Xóa bình luận',
+                            message: 'Bạn có chắc chắn muốn xóa bình luận này?',
+                            onConfirm: () => deleteCommentMutation.mutate(comment.id)
+                          });
+                          setOpenMenuCommentId(null); 
+                        }}
+                        style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                      >
+                        <Trash2 size={12} /> Xóa
+                      </button>
+                    )}
+                    {user.username !== comment.userUsername && (
+                      <button 
+                        onMouseDown={(e) => { 
+                          e.preventDefault(); 
+                          e.stopPropagation(); 
+                          setReportTarget({ type: 'COMMENT', id: comment.id }); 
+                          setOpenMenuCommentId(null); 
+                        }}
+                        style={{ background: 'none', border: 'none', color: '#f59e0b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                      >
+                        <Flag size={12} /> Báo cáo
+                      </button>
+                    )}
+                    {isAdmin(user) && user.username !== comment.userUsername && (
+                      <>
+                        <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
+                        <button
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onAdminDeleteComment(comment.id);
+                            setOpenMenuCommentId(null);
+                          }}
+                          style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', padding: '0.4rem 0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                        >
+                          <Trash2 size={12} /> Xóa (Admin)
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
           {user && (
             <div style={{ paddingLeft: '0.5rem', marginTop: '0.3rem' }}>
               <button 
@@ -872,59 +1039,89 @@ const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId, postO
             </div>
           )}
         </div>
-      </div>
-      {comment.replies && comment.replies.length > 0 && (
-        <div className="comment-replies">
-          {comment.replies.map((reply: any) => renderComment(reply, true))}
-        </div>
-      )}
-      {isActiveReplyBox && (
-        <div style={{ marginLeft: '3rem', marginTop: '0.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <form 
-            onSubmit={(e) => handleSendReply(e, comment.id)} 
-            className="comment-input-wrapper" style={{ flex: 1, margin: 0 }}
-          >
-            <input
-              type="text"
-              placeholder={`Trả lời ${replyingTo?.name}...`}
-              value={replyText}
-              onChange={(e) => setReplyText(e.target.value)}
-              maxLength={1000}
-              autoFocus
-              style={{ flex: 1, padding: '0.4rem 0.8rem', fontSize: '0.85rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }}
-            />
-            <button
-              type="submit"
-              className="send-comment-btn"
-              disabled={addCommentMutation.isPending || !replyText.trim()}
-              style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: '#3b82f6', color: 'white', border: 'none', cursor: 'pointer', padding: 0 }}
+        {comment.replies && comment.replies.length > 0 && (
+          <div className="comment-replies">
+            {comment.replies.map((reply: any) => renderComment(reply, true))}
+          </div>
+        )}
+        {isActiveReplyBox && (
+          <div style={{ marginLeft: '3rem', marginTop: '0.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <form 
+              onSubmit={(e) => handleSendReply(e, comment.id)} 
+              className="comment-input-wrapper" style={{ flex: 1, margin: 0 }}
             >
-              {addCommentMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />}
-            </button>
-          </form>
-        </div>
-      )}
-    </div>
+              <input
+                type="text"
+                placeholder={`Trả lời ${replyingTo?.name}...`}
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                maxLength={1000}
+                autoFocus
+                style={{ flex: 1, padding: '0.4rem 0.8rem', fontSize: '0.85rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }}
+              />
+              <button
+                type="submit"
+                className="send-comment-btn"
+                disabled={addCommentMutation.isPending || !replyText.trim()}
+                style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: '#3b82f6', color: 'white', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                {addCommentMutation.isPending ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />}
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
     );
   };
 
   return (
-    <div className="comments-section">
-      
-      {/* Comments List */}
+    <div className="comments-section" style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
       {isLoading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem' }}>
-          <Loader2 className="animate-spin text-primary" size={20} />
+        <div style={{ textAlign: 'center', padding: '1rem', color: 'rgba(255,255,255,0.5)' }}>
+          <Loader2 className="animate-spin inline" size={16} /> Đang tải bình luận...
         </div>
-      ) : comments.length === 0 ? (
-        <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)', textAlign: 'center', padding: '1rem 0' }}>
-          Chưa có bình luận nào. Hãy bắt đầu cuộc trò chuyện!
-        </p>
       ) : (
-        <div className="comments-list" style={{ maxHeight: '400px', overflowY: 'auto', marginTop: '1rem' }}>
-          {comments.map((comment) => renderComment(comment))}
-        </div>
+        <>
+          <div className="comments-list">
+            {comments.map((comment) => renderComment(comment))}
+          </div>
+
+          {user ? (
+            <form onSubmit={handleSendComment} className="comment-input-wrapper" style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="text"
+                placeholder="Viết bình luận của bạn..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                maxLength={1000}
+                style={{ flex: 1, padding: '0.5rem 1rem', fontSize: '0.88rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }}
+              />
+              <button
+                type="submit"
+                className="send-comment-btn"
+                disabled={addCommentMutation.isPending || !commentText.trim()}
+                style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: '#3b82f6', color: 'white', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                {addCommentMutation.isPending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+              </button>
+            </form>
+          ) : (
+            <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.5rem' }}>
+              Vui lòng đăng nhập để bình luận.
+            </p>
+          )}
+        </>
       )}
+
+      {reportTarget && (
+        <ReportModal 
+          isOpen={!!reportTarget}
+          onClose={() => setReportTarget(null)}
+          targetType={reportTarget.type}
+          targetId={reportTarget.id}
+        />
+      )}
+
       {confirmModal && (
         <ConfirmModal
           isOpen={confirmModal.isOpen}
@@ -938,14 +1135,6 @@ const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId, postO
             setConfirmModal(null);
           }}
           onCancel={() => setConfirmModal(null)}
-        />
-      )}
-      {reportTarget && (
-        <ReportModal 
-          isOpen={!!reportTarget}
-          onClose={() => setReportTarget(null)}
-          targetType={reportTarget.type}
-          targetId={reportTarget.id}
         />
       )}
     </div>

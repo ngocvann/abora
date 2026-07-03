@@ -6,9 +6,11 @@ import { Loader2, Camera, Heart, MessageSquare, Send, X, Edit3, Calendar, Plus, 
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
+import { useChatStore } from '../../store/chatStore';
 import { Button } from '../../components/ui/Button';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { ReportModal } from '../../components/ui/ReportModal';
+import { AdminDeleteReasonModal } from '../../components/ui/AdminDeleteReasonModal';
 import { getImageUrl } from '../../utils/image';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './ProfilePage.css';
@@ -22,6 +24,8 @@ interface Post {
   userAvatarUrl: string | null;
   content: string;
   type: 'FORUM' | 'PERSONAL';
+  mediaUrl?: string | null;
+  mediaType?: string | null;
   createdAt: string;
   likeCount: number;
   commentCount: number;
@@ -91,6 +95,13 @@ export const ProfilePage: React.FC = () => {
     title: string;
     message: string;
     onConfirm: () => void;
+  } | null>(null);
+
+  const { openChat } = useChatStore();
+  const [adminDeleteModal, setAdminDeleteModal] = useState<{
+    isOpen: boolean;
+    type: 'POST' | 'COMMENT';
+    id: number;
   } | null>(null);
 
   const [openMenuProfileId, setOpenMenuProfileId] = useState<number | null>(null);
@@ -360,11 +371,13 @@ export const ProfilePage: React.FC = () => {
 
   // ─── Delete Post Mutation ──────────────────────────────────────────────────
   const deletePostMutation = useMutation({
-    mutationFn: async (postId: number) => {
-      await api.delete(`/posts/${postId}`);
+    mutationFn: async ({ id, reason }: { id: number; reason?: string }) => {
+      const url = reason ? `/posts/${id}?reason=${encodeURIComponent(reason)}` : `/posts/${id}`;
+      await api.delete(url);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-timeline', activeUserId] });
+      queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
     },
     onError: () => toast.error('Không thể xóa bài viết.')
   });
@@ -622,6 +635,27 @@ export const ProfilePage: React.FC = () => {
                           'Theo dõi'
                         )}
                       </button>
+
+                      <button
+                        type="button"
+                        onClick={() => openChat({ id: profile.id, username: profile.username, displayName: profile.displayName, avatarUrl: profile.avatarUrl })}
+                        style={{
+                          background: 'var(--primary-color, #3b82f6)',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '0.4rem 0.85rem',
+                          borderRadius: '20px',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                          marginLeft: '0.5rem'
+                        }}
+                      >
+                        <MessageSquare size={14} /> Nhắn tin
+                      </button>
                     </>
                   )
                 )}
@@ -787,7 +821,7 @@ export const ProfilePage: React.FC = () => {
                                           isOpen: true,
                                           title: 'Xóa bài viết',
                                           message: 'Bạn có chắc chắn muốn xóa bài viết này?',
-                                          onConfirm: () => deletePostMutation.mutate(post.id)
+                                          onConfirm: () => deletePostMutation.mutate({ id: post.id })
                                         });
                                         setOpenMenuPostId(null); 
                                       }}
@@ -814,21 +848,16 @@ export const ProfilePage: React.FC = () => {
                                   <>
                                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
                                     <button
-                                      onMouseDown={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setConfirmModal({
-                                          isOpen: true,
-                                          title: '[Admin] Xóa bài viết',
-                                          message: 'Bạn có chắc muốn xóa bài viết này với quyền Admin?',
-                                          onConfirm: () => deletePostMutation.mutate(post.id)
-                                        });
-                                        setOpenMenuPostId(null);
-                                      }}
-                                      className="menu-item delete"
-                                    >
-                                      <Trash2 size={14} /> Xóa (Admin)
-                                    </button>
+                                       onMouseDown={(e) => {
+                                         e.preventDefault();
+                                         e.stopPropagation();
+                                         setAdminDeleteModal({ isOpen: true, type: 'POST', id: post.id });
+                                         setOpenMenuPostId(null);
+                                       }}
+                                       className="menu-item delete"
+                                     >
+                                       <Trash2 size={14} /> Xóa (Admin)
+                                     </button>
                                   </>
                                 )}
                               </div>
@@ -1302,6 +1331,19 @@ export const ProfilePage: React.FC = () => {
           setSelectedFile(null);
         }}
       />
+      {adminDeleteModal && (
+        <AdminDeleteReasonModal
+          isOpen={adminDeleteModal.isOpen}
+          itemType={adminDeleteModal.type}
+          onClose={() => setAdminDeleteModal(null)}
+          onConfirm={(reason) => {
+            if (adminDeleteModal.type === 'POST') {
+              deletePostMutation.mutate({ id: adminDeleteModal.id, reason });
+            }
+            setAdminDeleteModal(null);
+          }}
+        />
+      )}
     </div>
   );
 };

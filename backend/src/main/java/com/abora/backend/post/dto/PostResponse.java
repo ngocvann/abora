@@ -11,6 +11,8 @@ public record PostResponse(
     String userAvatarUrl,
     String content,
     PostType type,
+    String mediaUrl,
+    String mediaType,
     Instant createdAt,
     long likeCount,
     long commentCount,

@@ -3,9 +3,11 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore, isAdmin } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { NotificationPopover } from '../ui/NotificationPopover';
-import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library } from 'lucide-react';
+import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library, MessageCircle } from 'lucide-react';
 import api from '../../services/api';
 import { getImageUrl } from '../../utils/image';
+import { useChatStore } from '../../store/chatStore';
+import { MessengerDropdown } from '../chat/MessengerDropdown';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
@@ -16,6 +18,19 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const messengerRef = useRef<HTMLDivElement>(null);
+
+  const { totalUnreadCount, isMessengerDropdownOpen, toggleMessengerDropdown, setMessengerDropdownOpen } = useChatStore();
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (messengerRef.current && !messengerRef.current.contains(e.target as Node)) {
+        setMessengerDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [setMessengerDropdownOpen]);
 
   // --- Search Optimization States ---
   const [searchQuery, setSearchQuery] = useState('');
@@ -330,11 +345,37 @@ export const Navbar: React.FC = () => {
                 )}
 
                 {/* Notification Bell */}
-                <div onClick={() => { setIsNotifOpen(v => !v); setIsDropdownOpen(false); }}>
+                <div onClick={() => { setIsNotifOpen(v => !v); setIsDropdownOpen(false); setMessengerDropdownOpen(false); }}>
                   <NotificationPopover
                     isOpen={isNotifOpen}
                     onClose={() => setIsNotifOpen(false)}
                   />
+                </div>
+
+                {/* Messenger Icon & Dropdown */}
+                <div className="messenger-popover-wrapper" ref={messengerRef}>
+                  <button
+                    className="messenger-bell-btn"
+                    onClick={() => {
+                      toggleMessengerDropdown();
+                      setIsNotifOpen(false);
+                      setIsDropdownOpen(false);
+                    }}
+                    title="Tin nhắn"
+                  >
+                    <MessageCircle size={20} />
+                    {totalUnreadCount > 0 && (
+                      <span className="messenger-badge">
+                        {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {isMessengerDropdownOpen && (
+                    <MessengerDropdown
+                      onClose={() => setMessengerDropdownOpen(false)}
+                    />
+                  )}
                 </div>
 
                 {/* Avatar + Dropdown */}

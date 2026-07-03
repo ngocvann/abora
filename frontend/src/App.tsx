@@ -2,6 +2,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AppRouter } from './routes/AppRouter';
+import { FacebookChatWidget } from './components/chat/FacebookChatWidget';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,6 +18,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AppRouter />
+        <FacebookChatWidget />
         <Toaster 
           position="top-center" 
           containerStyle={{

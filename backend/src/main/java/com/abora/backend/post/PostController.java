@@ -96,9 +96,10 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<MessageResponse> deletePost(
             @PathVariable("postId") Long postId,
+            @RequestParam(name = "reason", required = false) String reason,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ) {
-        postService.deletePost(postId, authenticatedUser.getId());
+        postService.deletePost(postId, authenticatedUser.getId(), reason);
         return ResponseEntity.ok(new MessageResponse("Đã xóa bài viết"));
     }
 
@@ -116,9 +117,10 @@ public class PostController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<MessageResponse> deleteComment(
             @PathVariable("commentId") Long commentId,
+            @RequestParam(name = "reason", required = false) String reason,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ) {
-        postService.deleteComment(commentId, authenticatedUser.getId());
+        postService.deleteComment(commentId, authenticatedUser.getId(), reason);
         return ResponseEntity.ok(new MessageResponse("Đã xóa bình luận"));
     }
 }

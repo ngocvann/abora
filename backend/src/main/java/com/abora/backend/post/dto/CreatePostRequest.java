@@ -11,5 +11,8 @@ public record CreatePostRequest(
     String content,
 
     @NotNull(message = "Loại bài đăng không được để trống")
-    PostType type
+    PostType type,
+
+    String mediaUrl,
+    String mediaType
 ) {}
