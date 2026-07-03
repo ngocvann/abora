@@ -52,6 +52,10 @@ const SingleChatWindow: React.FC<{
       queryClient.invalidateQueries({ queryKey: ['chat-conversations'] });
       queryClient.invalidateQueries({ queryKey: ['chat-unread-count'] });
     },
+    onError: (err: any) => {
+      const msg = err.response?.data?.message || 'Không thể gửi tin nhắn. Vui lòng thử lại!';
+      alert(msg);
+    },
   });
 
   const scrollToBottom = () => {
