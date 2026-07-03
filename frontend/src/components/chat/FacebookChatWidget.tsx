@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Minus, X, Send, Loader2 } from 'lucide-react';
+import { Minus, X, Send, Loader2, SquarePen } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
 import { useChatStore } from '../../store/chatStore';
@@ -147,7 +147,11 @@ const SingleChatWindow: React.FC<{
 
 export const FacebookChatWidget: React.FC = () => {
   const { user } = useAuthStore();
-  const { activeChats, minimizeChat, expandChat, closeChat, setTotalUnreadCount } = useChatStore();
+  const { activeChats, minimizeChat, expandChat, closeChat, setTotalUnreadCount, openChat } = useChatStore();
+
+  // New Chat window state
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
 
   // Poll total unread count
   const { data: unreadData } = useQuery({
@@ -158,6 +162,25 @@ export const FacebookChatWidget: React.FC = () => {
     },
     refetchInterval: 5000,
     enabled: !!user,
+  });
+
+  // Search users query for New Message box
+  const { data: searchedUsers = [], isLoading: isSearchingUsers } = useQuery<any[]>({
+    queryKey: ['chat-user-search', userSearchQuery],
+    queryFn: async () => {
+      if (!userSearchQuery.trim()) {
+        const res = await api.get('/chat/conversations');
+        return res.data.map((c: any) => ({
+          id: c.userId,
+          username: c.username,
+          displayName: c.displayName,
+          avatarUrl: c.avatarUrl
+        }));
+      }
+      const res = await api.get(`/users/search?q=${encodeURIComponent(userSearchQuery.trim())}`);
+      return res.data;
+    },
+    enabled: !!user && isNewChatOpen,
   });
 
   useEffect(() => {
@@ -175,6 +198,64 @@ export const FacebookChatWidget: React.FC = () => {
     <div className="fb-chat-widget-container">
       {/* Active Expanded Chat Windows */}
       <div className="fb-chat-windows-row">
+        {/* New Chat Window (Image 4) */}
+        {isNewChatOpen && (
+          <div className="fb-chat-box fb-new-chat-box">
+            <div className="fb-chat-header">
+              <span className="fb-chat-name">Tin nhắn mới</span>
+              <button className="fb-chat-btn close" onClick={() => setIsNewChatOpen(false)}>
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="fb-new-chat-to-row">
+              <span className="fb-new-chat-to-label">Đến:</span>
+              <input
+                type="text"
+                className="fb-new-chat-input"
+                placeholder="Nhập tên hoặc @username..."
+                value={userSearchQuery}
+                onChange={(e) => setUserSearchQuery(e.target.value)}
+                autoFocus
+              />
+            </div>
+
+            <div className="fb-new-chat-results">
+              {isSearchingUsers ? (
+                <div className="fb-chat-loading">
+                  <Loader2 className="animate-spin" size={18} />
+                </div>
+              ) : searchedUsers.length === 0 ? (
+                <div className="fb-chat-empty">
+                  <p>Không tìm thấy người dùng phù hợp.</p>
+                </div>
+              ) : (
+                searchedUsers.map((u: any) => (
+                  <div
+                    key={u.id}
+                    className="fb-new-chat-user-item"
+                    onClick={() => {
+                      openChat({ id: u.id, username: u.username, displayName: u.displayName, avatarUrl: u.avatarUrl });
+                      setIsNewChatOpen(false);
+                      setUserSearchQuery('');
+                    }}
+                  >
+                    <img
+                      src={getImageUrl(u.avatarUrl, 'avatar', u.displayName || u.username)}
+                      alt={u.displayName}
+                      className="fb-new-chat-user-avatar"
+                    />
+                    <div className="fb-new-chat-user-info">
+                      <span className="fb-new-chat-user-name">{u.displayName || u.username}</span>
+                      <span className="fb-new-chat-user-username">@{u.username}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
         {openChats.map((chat) => (
           <SingleChatWindow
             key={chat.user.id}
@@ -185,8 +266,17 @@ export const FacebookChatWidget: React.FC = () => {
         ))}
       </div>
 
-      {/* Minimized Floating Chat Bubbles on bottom right */}
+      {/* Minimized Floating Chat Bubbles & New Chat Button on bottom right (5px offset) */}
       <div className="fb-chat-bubbles-col">
+        {/* Floating New Chat Circular Action Button (Image 3) */}
+        <button
+          className="fb-chat-new-btn"
+          onClick={() => setIsNewChatOpen((v) => !v)}
+          title="Tin nhắn mới"
+        >
+          <SquarePen size={20} />
+        </button>
+
         {minimizedChats.map((chat) => (
           <div key={chat.user.id} className="fb-chat-bubble-wrapper">
             <div

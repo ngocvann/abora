@@ -638,23 +638,25 @@ export const ProfilePage: React.FC = () => {
 
                       <button
                         type="button"
+                        title={`Nhắn tin với ${profile.displayName}`}
                         onClick={() => openChat({ id: profile.id, username: profile.username, displayName: profile.displayName, avatarUrl: profile.avatarUrl })}
                         style={{
-                          background: 'var(--primary-color, #3b82f6)',
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #a855f7 0%, #1e1b4b 100%)',
                           color: '#fff',
-                          border: 'none',
-                          padding: '0.4rem 0.85rem',
-                          borderRadius: '20px',
-                          fontSize: '0.85rem',
-                          fontWeight: 600,
+                          border: '1px solid rgba(168, 85, 247, 0.4)',
                           cursor: 'pointer',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '0.35rem',
-                          marginLeft: '0.5rem'
+                          justifyContent: 'center',
+                          marginLeft: '0.5rem',
+                          boxShadow: '0 4px 12px rgba(168, 85, 247, 0.3)',
+                          transition: 'transform 0.2s ease, boxShadow 0.2s ease'
                         }}
                       >
-                        <MessageSquare size={14} /> Nhắn tin
+                        <MessageSquare size={18} />
                       </button>
                     </>
                   )

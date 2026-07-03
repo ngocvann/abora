@@ -186,7 +186,7 @@ export const Navbar: React.FC = () => {
             <div className="navbar-links">
               <Link to="/" className="nav-link">Trang chủ</Link>
               <Link to="/explore" className="nav-link">Khám phá</Link>
-              {/* <Link to="/forum" className="nav-link">Diễn đàn</Link> */}
+              <Link to="/forum" className="nav-link">Diễn đàn</Link>
               <Link to="/library" className="nav-link">Thư viện</Link>
               <Link to="/studio" className="nav-link">Viết truyện</Link>
             </div>
@@ -460,10 +460,10 @@ export const Navbar: React.FC = () => {
             <Compass size={18} />
             <span>Khám phá</span>
           </Link>
-          {/* <Link to="/forum" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
-            <MessageSquare size={18} />
+          <Link to="/forum" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <MessageCircle size={18} />
             <span>Diễn đàn</span>
-          </Link> */}
+          </Link>
           <Link to="/library" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
             <Library size={18} />
             <span>Thư viện</span>
