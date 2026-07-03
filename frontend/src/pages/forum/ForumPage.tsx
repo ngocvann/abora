@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Heart, MessageSquare, MessagesSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X } from 'lucide-react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, isAdmin } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { ReportModal } from '../../components/ui/ReportModal';
@@ -451,7 +451,7 @@ export const ForumPage: React.FC = () => {
                                   <Flag size={14} /> Báo cáo
                                 </button>
                               )}
-                              {user.roles?.includes('ADMIN') && user.username !== post.userUsername && (
+                              {isAdmin(user) && user.username !== post.userUsername && (
                                 <>
                                   <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
                                   <button
@@ -478,7 +478,7 @@ export const ForumPage: React.FC = () => {
                           )}
                         </div>
                       )}
-                      {user.roles?.includes('ADMIN') && user.username !== comment.userUsername && (
+                      {isAdmin(user) && user.username !== comment.userUsername && (
                         <>
                           <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
                           <button

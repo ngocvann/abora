@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Camera, Heart, MessageSquare, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, isAdmin } from '../../store/authStore';
 import { Button } from '../../components/ui/Button';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { ReportModal } from '../../components/ui/ReportModal';
@@ -810,7 +810,7 @@ export const ProfilePage: React.FC = () => {
                                     <Flag size={14} /> Báo cáo
                                   </button>
                                 )}
-                                {currentUser.roles?.includes('ADMIN') && currentUser.username !== post.userUsername && (
+                                {currentisAdmin(user) && currentUser.username !== post.userUsername && (
                                   <>
                                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
                                     <button
@@ -1543,7 +1543,7 @@ export const PostCommentsSection: React.FC<PostCommentsSectionProps> = ({ postId
                           <Flag size={12} /> Báo cáo
                         </button>
                       )}
-                      {user.roles?.includes('ADMIN') && user.username !== comment.userUsername && (
+                      {isAdmin(user) && user.username !== comment.userUsername && (
                         <>
                           <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
                           <button

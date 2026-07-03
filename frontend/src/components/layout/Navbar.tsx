@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, isAdmin } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { NotificationPopover } from '../ui/NotificationPopover';
 import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library } from 'lucide-react';
@@ -320,7 +320,7 @@ export const Navbar: React.FC = () => {
             {isAuthenticated ? (
               <div className="user-menu" ref={dropdownRef}>
                 {/* Nút Admin Workspace (chỉ hiện cho ADMIN) */}
-                {user?.roles?.includes('ADMIN') && (
+                {isAdmin(user) && (
                   <button 
                     onClick={() => navigate('/admin')}
                     className="navbar-admin-btn"

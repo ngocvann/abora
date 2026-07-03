@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, isAdmin } from '../../store/authStore';
 import { 
   Heart, MessageSquare, MoreVertical, Edit3, Trash2, Flag, ArrowLeft, Loader2
 } from 'lucide-react';
@@ -257,7 +257,7 @@ export const PostDetailPage: React.FC = () => {
                         <Flag size={16} /> Báo cáo
                       </button>
                     )}
-                    {user.roles?.includes('ADMIN') && user.username !== post.userUsername && (
+                    {isAdmin(user) && user.username !== post.userUsername && (
                       <>
                         <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
                         <button

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, MessageCircle, Pin, PinOff, MoreHorizontal } from 'lucide-react';
 import api from '../../services/api';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore, isAdmin } from '../../store/authStore';
 import { getImageUrl } from '../../utils/image';
 import { Button } from '../ui/Button';
 import { ReportModal } from '../ui/ReportModal';
@@ -307,7 +307,7 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
                       Báo cáo
                     </button>
                   )}
-                  {user?.roles?.includes('ADMIN') && user?.username !== comment.userName && (
+                  {isAdmin(user) && user?.username !== comment.userName && (
                     <>
                       <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '2px 0' }} />
                       <button

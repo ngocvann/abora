@@ -24,6 +24,21 @@ interface AuthState {
   logout: () => void;
 }
 
+/**
+ * Check if a user has admin role.
+ * Handles both new format (roles: string[]) and legacy format (role: string)
+ * stored in localStorage from before the roles array was introduced.
+ */
+export const isAdmin = (user: User | null | undefined): boolean => {
+  if (!user) return false;
+  // New format: roles array
+  if (Array.isArray(user.roles) && user.roles.includes('ADMIN')) return true;
+  // Legacy fallback: role string field stored in localStorage
+  const legacyRole = (user as any).role as string | undefined;
+  if (legacyRole === 'ADMIN') return true;
+  return false;
+};
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
