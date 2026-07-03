@@ -318,43 +318,23 @@ export const ForumPage: React.FC = () => {
                   <span style={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>
                     {user.displayName}
                   </span>
-                  {/* Scope Selector */}
-                  <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
+                  {/* Scope Switcher (Thanh gạt) */}
+                  <div className="post-type-toggle-switch">
                     <button
                       type="button"
+                      className={`toggle-option ${postType === 'FORUM' ? 'active' : ''}`}
                       onClick={() => setPostType('FORUM')}
-                      style={{
-                        background: postType === 'FORUM' ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255,255,255,0.05)',
-                        border: `1px solid ${postType === 'FORUM' ? '#a855f7' : 'rgba(255,255,255,0.1)'}`,
-                        color: postType === 'FORUM' ? '#d8b4fe' : 'rgba(255,255,255,0.6)',
-                        padding: '2px 8px',
-                        borderRadius: '12px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
                     >
-                      <Globe size={12} /> Diễn đàn (Công khai)
+                      <Globe size={13} />
+                      <span>Công khai</span>
                     </button>
                     <button
                       type="button"
+                      className={`toggle-option ${postType === 'PERSONAL' ? 'active' : ''}`}
                       onClick={() => setPostType('PERSONAL')}
-                      style={{
-                        background: postType === 'PERSONAL' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255,255,255,0.05)',
-                        border: `1px solid ${postType === 'PERSONAL' ? '#3b82f6' : 'rgba(255,255,255,0.1)'}`,
-                        color: postType === 'PERSONAL' ? '#93c5fd' : 'rgba(255,255,255,0.6)',
-                        padding: '2px 8px',
-                        borderRadius: '12px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
                     >
-                      <Lock size={12} /> Nhật ký cá nhân
+                      <Lock size={13} />
+                      <span>Cá nhân</span>
                     </button>
                   </div>
                 </div>
@@ -395,23 +375,24 @@ export const ForumPage: React.FC = () => {
                 <div className="creator-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
                   <button
                     type="button"
+                    title="Đính kèm Ảnh/Video"
                     onClick={() => mediaInputRef.current?.click()}
                     disabled={isUploadingMedia}
                     style={{
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      color: 'rgba(255,255,255,0.8)',
-                      padding: '4px 10px',
-                      borderRadius: '16px',
-                      fontSize: '0.8rem',
+                      background: mediaUrl ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.06)',
+                      border: `1px solid ${mediaUrl ? '#a855f7' : 'rgba(255, 255, 255, 0.12)'}`,
+                      color: mediaUrl ? '#d8b4fe' : 'rgba(255, 255, 255, 0.8)',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px'
+                      justifyContent: 'center',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    {isUploadingMedia ? <Loader2 className="animate-spin" size={14} /> : <ImageIcon size={14} />}
-                    Đính kèm Ảnh/Video
+                    {isUploadingMedia ? <Loader2 className="animate-spin" size={18} /> : <ImageIcon size={18} />}
                   </button>
                   <input
                     type="file"

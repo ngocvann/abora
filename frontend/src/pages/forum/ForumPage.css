@@ -381,11 +381,100 @@
   gap: 1rem;
 }
 
+.authors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
 .author-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+.item-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 1.5px solid var(--primary-color, #a855f7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.item-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-sub {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.follow-btn {
+  font-size: 0.78rem !important;
+  padding: 0.3rem 0.85rem !important;
+  border-radius: 20px !important;
+  white-space: nowrap;
+}
+
+/* Post Type Toggle Switch (Thanh gạt) */
+.post-type-toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.post-type-toggle-switch .toggle-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.post-type-toggle-switch .toggle-option.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.4);
+  font-weight: 600;
+}
+
+.post-type-toggle-switch .toggle-option:hover:not(.active) {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .author-info-wrapper {
@@ -399,13 +488,6 @@
   color: var(--primary-color, #a855f7);
 }
 
-.author-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #fff;
-  transition: color 0.2s ease;
-}
-
 .author-bio-snippet {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
@@ -413,40 +495,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 120px;
-}
-
-.follow-toggle-btn {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.follow-toggle-btn.follow {
-  background: #fff;
-  color: #000;
-  border: 1px solid #fff;
-}
-
-.follow-toggle-btn.follow:hover {
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.follow-toggle-btn.following {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.follow-toggle-btn.following:hover {
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
-.follow-toggle-btn.following:hover::after {
-  content: "";
 }
 
 .load-more-container {
