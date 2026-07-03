@@ -4,6 +4,7 @@ import com.abora.backend.chat.dto.ChatMessageDto;
 import com.abora.backend.chat.dto.ConversationDto;
 import com.abora.backend.chat.dto.SendMessageRequest;
 import com.abora.backend.common.exception.NotFoundException;
+import com.abora.backend.follow.UserFollowRepository;
 import com.abora.backend.user.User;
 import com.abora.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +24,7 @@ public class ChatService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
+    private final UserFollowRepository userFollowRepository;
 
     @Transactional
     public ChatMessageDto sendMessage(SendMessageRequest request, Long senderId) {
@@ -34,6 +38,8 @@ public class ChatService {
         message.setSender(sender);
         message.setRecipient(recipient);
         message.setContent(request.content());
+        message.setMediaUrl(request.mediaUrl());
+        message.setMediaType(request.mediaType());
         message.setRead(false);
 
         ChatMessage saved = chatMessageRepository.save(message);
@@ -66,12 +72,17 @@ public class ChatService {
             ChatMessage lastMsg = messages.get(messages.size() - 1);
             long unreadCount = chatMessageRepository.countUnreadFromPartner(partnerId, currentUserId);
 
+            String lastMsgText = lastMsg.getContent();
+            if ((lastMsgText == null || lastMsgText.isBlank()) && lastMsg.getMediaUrl() != null) {
+                lastMsgText = "VIDEO".equalsIgnoreCase(lastMsg.getMediaType()) ? "[Video]" : "[Hình ảnh]";
+            }
+
             conversations.add(new ConversationDto(
                     partner.getId(),
                     partner.getUsername(),
                     partner.getDisplayName(),
                     partner.getAvatarUrl(),
-                    lastMsg.getContent(),
+                    lastMsgText,
                     lastMsg.getCreatedAt(),
                     unreadCount
             ));
@@ -80,6 +91,19 @@ public class ChatService {
         // Sort by last message timestamp desc
         conversations.sort(Comparator.comparing(ConversationDto::lastMessageAt).reversed());
         return conversations;
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, Boolean> getRelationship(Long partnerId, Long currentUserId) {
+        boolean iFollowPartner = userFollowRepository.existsByFollowerIdAndFollowingId(currentUserId, partnerId);
+        boolean partnerFollowsMe = userFollowRepository.existsByFollowerIdAndFollowingId(partnerId, currentUserId);
+        boolean isFriend = iFollowPartner && partnerFollowsMe;
+
+        Map<String, Boolean> res = new HashMap<>();
+        res.put("isFriend", isFriend);
+        res.put("iFollow", iFollowPartner);
+        res.put("followsMe", partnerFollowsMe);
+        return res;
     }
 
     @Transactional
@@ -101,6 +125,8 @@ public class ChatService {
                 m.getSender().getAvatarUrl(),
                 m.getRecipient().getId(),
                 m.getContent(),
+                m.getMediaUrl(),
+                m.getMediaType(),
                 m.isRead(),
                 m.getCreatedAt()
         );

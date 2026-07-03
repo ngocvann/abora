@@ -64,4 +64,12 @@ public class ChatController {
         long count = chatService.getTotalUnreadCount(user.getId());
         return ResponseEntity.ok(Map.of("unreadCount", count));
     }
+
+    @GetMapping("/relationship/{partnerId}")
+    public ResponseEntity<Map<String, Boolean>> getRelationship(
+            @PathVariable("partnerId") Long partnerId,
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
+        return ResponseEntity.ok(chatService.getRelationship(partnerId, user.getId()));
+    }
 }

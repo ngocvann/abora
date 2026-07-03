@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Camera, Heart, MessageSquare, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
+import { Loader2, Camera, Heart, MessageSquare, MessageCircle, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
@@ -656,7 +656,7 @@ export const ProfilePage: React.FC = () => {
                           transition: 'transform 0.2s ease, boxShadow 0.2s ease'
                         }}
                       >
-                        <MessageSquare size={18} />
+                        <MessageCircle size={18} />
                       </button>
                     </>
                   )

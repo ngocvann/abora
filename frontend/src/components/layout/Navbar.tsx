@@ -358,6 +358,7 @@ export const Navbar: React.FC = () => {
                     className="messenger-bell-btn"
                     onClick={() => {
                       toggleMessengerDropdown();
+                      useChatStore.getState().setIsDockVisible(true);
                       setIsNotifOpen(false);
                       setIsDropdownOpen(false);
                     }}

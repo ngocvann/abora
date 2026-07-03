@@ -10,6 +10,8 @@ public record ChatMessageDto(
     String senderAvatarUrl,
     Long recipientId,
     String content,
+    String mediaUrl,
+    String mediaType,
     boolean isRead,
     Instant createdAt
 ) {}

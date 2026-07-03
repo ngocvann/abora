@@ -27,8 +27,14 @@ public class ChatMessage {
     @JoinColumn(name = "recipient_id", nullable = false)
     private User recipient;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String content;
+
+    @Column(name = "media_url", length = 512)
+    private String mediaUrl;
+
+    @Column(name = "media_type", length = 20)
+    private String mediaType;
 
     @Column(name = "is_read", nullable = false)
     private boolean isRead = false;
