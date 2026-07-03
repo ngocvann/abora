@@ -49,6 +49,8 @@ const formatRelativeTime = (dateStr: string) => {
 
 export const ForumPage: React.FC = () => {
   const { user } = useAuthStore();
+  console.log('[DEBUG] user object:', JSON.stringify(user));
+  console.log('[DEBUG] isAdmin result:', isAdmin(user));
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [newPostContent, setNewPostContent] = useState('');
