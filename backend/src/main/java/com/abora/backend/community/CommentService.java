@@ -171,8 +171,10 @@ public class CommentService {
         
         boolean isCommentAuthor = comment.getUser().getId().equals(userId);
         boolean isStoryAuthor = comment.getStory() != null && comment.getStory().getAuthor().getId().equals(userId);
+        boolean isAdmin = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         
-        if (!isCommentAuthor && !isStoryAuthor) {
+        if (!isCommentAuthor && !isStoryAuthor && !isAdmin) {
             throw new ForbiddenException("Not authorized to delete this comment");
         }
 

@@ -141,7 +141,10 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Bài viết không tồn tại"));
         
-        if (!post.getUser().getId().equals(userId)) {
+        User currentUser = userRepository.findById(userId).orElse(null);
+        boolean isAdmin = currentUser != null && currentUser.getRole() == com.abora.backend.user.UserRole.ADMIN;
+
+        if (!post.getUser().getId().equals(userId) && !isAdmin) {
             throw new IllegalArgumentException("Không có quyền xóa bài viết này");
         }
         
@@ -183,10 +186,12 @@ public class PostService {
         PostComment comment = postCommentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy bình luận"));
                 
+        User currentUser = userRepository.findById(userId).orElse(null);
+        boolean isAdmin = currentUser != null && currentUser.getRole() == com.abora.backend.user.UserRole.ADMIN;
         boolean isCommentAuthor = comment.getUser().getId().equals(userId);
         boolean isPostAuthor = comment.getPost().getUser().getId().equals(userId);
         
-        if (!isCommentAuthor && !isPostAuthor) {
+        if (!isCommentAuthor && !isPostAuthor && !isAdmin) {
             throw new IllegalArgumentException("Không có quyền xóa bình luận này");
         }
         
