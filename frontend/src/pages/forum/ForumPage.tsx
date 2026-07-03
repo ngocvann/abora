@@ -634,7 +634,7 @@ export const ForumPage: React.FC = () => {
                         toggleLikeMutation.mutate(post.id);
                       }}
                     >
-                      <Heart size={18} fill={post.isLikedByMe ? '#ef4444' : 'none'} color={post.isLikedByMe ? '#ef4444' : 'currentColor'} />
+                      <Heart size={18} fill={post.isLikedByMe ? '#a855f7' : 'none'} color={post.isLikedByMe ? '#a855f7' : 'currentColor'} />
                       <span>{post.likeCount}</span>
                     </button>
 

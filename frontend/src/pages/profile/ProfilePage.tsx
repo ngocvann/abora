@@ -894,7 +894,7 @@ export const ProfilePage: React.FC = () => {
                         onClick={() => toggleLikeMutation.mutate(post.id)}
                         disabled={!currentUser}
                       >
-                        <Heart size={16} fill={post.isLikedByMe ? 'currentColor' : 'none'} />
+                        <Heart size={16} fill={post.isLikedByMe ? '#a855f7' : 'none'} color={post.isLikedByMe ? '#a855f7' : 'currentColor'} />
                         <span>{post.likeCount}</span>
                       </button>
                       <button
