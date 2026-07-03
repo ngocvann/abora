@@ -257,6 +257,29 @@ export const PostDetailPage: React.FC = () => {
                         <Flag size={16} /> Báo cáo
                       </button>
                     )}
+                    {user.roles?.includes('ROLE_ADMIN') && user.username !== post.userUsername && (
+                      <>
+                        <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)', margin: '0.1rem 0' }} />
+                        <button
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setConfirmModal({
+                              isOpen: true,
+                              title: '[Admin] Xóa bài viết',
+                              message: 'Bạn có chắc muốn xóa bài viết này với quyền Admin?',
+                              onConfirm: () => deletePostMutation.mutate()
+                            });
+                            setOpenMenuPostId(null);
+                          }}
+                          style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', padding: '0.5rem', width: '100%', textAlign: 'left', borderRadius: '4px' }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                        >
+                          <Trash2 size={16} /> Xóa (Admin)
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
