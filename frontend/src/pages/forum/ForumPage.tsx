@@ -613,11 +613,11 @@ export const ForumPage: React.FC = () => {
 
                   {/* Post Media Attachment */}
                   {post.mediaUrl && (
-                    <div style={{ marginTop: '0.75rem', borderRadius: '12px', overflow: 'hidden', maxHeight: '450px', background: 'rgba(0,0,0,0.3)' }}>
+                    <div className="post-media-container">
                       {post.mediaType === 'VIDEO' ? (
-                        <video src={post.mediaUrl} controls style={{ width: '100%', maxHeight: '450px', borderRadius: '12px', display: 'block' }} />
+                        <video src={post.mediaUrl} controls />
                       ) : (
-                        <img src={post.mediaUrl} alt="Post media" style={{ width: '100%', maxHeight: '450px', objectFit: 'cover', borderRadius: '12px', display: 'block' }} />
+                        <img src={post.mediaUrl} alt="Post media" />
                       )}
                     </div>
                   )}
