@@ -673,38 +673,45 @@ export const ForumPage: React.FC = () => {
             </h3>
             {topAuthors.length > 0 ? (
               <div className="authors-list">
-                {topAuthors.map((author) => (
-                  <div 
-                    key={author.authorId} 
-                    className="author-item"
-                    onClick={() => handleAuthorClick(author.authorUsername)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <img 
-                      src={getImageUrl(author.authorAvatarUrl, 'avatar', author.authorDisplayName || author.authorUsername)} 
-                      alt={author.authorDisplayName} 
-                      className="item-avatar"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', author.authorDisplayName || author.authorUsername);
-                      }}
-                    />
-                    <div className="item-info">
-                      <span className="item-name hover-link">{author.authorDisplayName}</span>
-                      <span className="item-sub">{author.followerCount || 0} người theo dõi</span>
-                    </div>
-                    <Button 
-                      size="sm" 
-                      variant="secondary" 
-                      className="follow-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAuthorClick(author.authorUsername);
-                      }}
+                {topAuthors.map((author) => {
+                  const authorId = author.id || author.authorId;
+                  const username = author.username || author.authorUsername;
+                  const displayName = author.displayName || author.authorDisplayName || username;
+                  const avatarUrl = author.avatarUrl || author.authorAvatarUrl;
+
+                  return (
+                    <div 
+                      key={authorId} 
+                      className="author-item"
+                      onClick={() => handleAuthorClick(username)}
+                      style={{ cursor: 'pointer' }}
                     >
-                      Theo dõi
-                    </Button>
-                  </div>
-                ))}
+                      <img 
+                        src={getImageUrl(avatarUrl, 'avatar', displayName || username)} 
+                        alt={displayName} 
+                        className="item-avatar"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = getImageUrl('', 'avatar', displayName || username);
+                        }}
+                      />
+                      <div className="item-info">
+                        <span className="item-name hover-link">{displayName}</span>
+                        <span className="item-sub">{author.followerCount || 0} người theo dõi</span>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="secondary" 
+                        className="follow-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAuthorClick(username);
+                        }}
+                      >
+                        Theo dõi
+                      </Button>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-secondary">Chưa có thông tin tác giả.</p>
