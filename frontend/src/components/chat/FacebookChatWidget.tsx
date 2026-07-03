@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Minus, X, Send, Loader2, SquarePen, Image as ImageIcon, 
-  MoreVertical, BellOff, UserX, Edit2, EyeOff, ArrowUp, ArrowDown 
+  MoreVertical, BellOff, UserX, Edit2 
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
@@ -371,8 +371,71 @@ export const FacebookChatWidget: React.FC = () => {
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [userSearchQuery, setUserSearchQuery] = useState('');
 
-  // Vertical position adjustment for floating dock (toggle higher / lower)
-  const [dockBottomPos, setDockBottomPos] = useState<'low' | 'high'>('low');
+  // Vertical Drag & Drop state
+  const [dockBottomPx, setDockBottomPx] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showHideBtn, setShowHideBtn] = useState(false);
+  const dragStartYRef = useRef<number>(0);
+  const initialBottomRef = useRef<number>(20);
+  const longPressTimerRef = useRef<any>(null);
+
+  const handleDragStart = (clientY: number) => {
+    setIsDragging(true);
+    dragStartYRef.current = clientY;
+    initialBottomRef.current = dockBottomPx ?? (window.innerWidth <= 600 ? 85 : 20);
+  };
+
+  const handleDragMove = (clientY: number) => {
+    if (!isDragging) return;
+    const deltaY = dragStartYRef.current - clientY;
+    const newBottom = Math.max(10, Math.min(window.innerHeight - 100, initialBottomRef.current + deltaY));
+    setDockBottomPx(newBottom);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (isDragging) handleDragMove(e.clientY);
+    };
+    const onMouseUp = () => {
+      if (isDragging) handleDragEnd();
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (isDragging && e.touches.length > 0) handleDragMove(e.touches[0].clientY);
+    };
+    const onTouchEnd = () => {
+      if (isDragging) handleDragEnd();
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+      window.addEventListener('touchmove', onTouchMove);
+      window.addEventListener('touchend', onTouchEnd);
+    }
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [isDragging]);
+
+  const handleTouchStartLongPress = (clientY: number) => {
+    handleDragStart(clientY);
+    longPressTimerRef.current = setTimeout(() => {
+      setShowHideBtn(true);
+    }, 450);
+  };
+
+  const handleTouchEndLongPress = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+  };
 
   // Poll total unread count
   const { data: unreadData } = useQuery({
@@ -416,7 +479,7 @@ export const FacebookChatWidget: React.FC = () => {
   const minimizedChats = activeChats.filter((c) => c.isMinimized);
 
   return (
-    <div className={`fb-chat-widget-container ${dockBottomPos === 'high' ? 'dock-high' : ''}`}>
+    <div className="fb-chat-widget-container">
       {/* Active Expanded Chat Windows */}
       <div className="fb-chat-windows-row">
         {/* New Chat Window (Image 4) */}
@@ -487,31 +550,36 @@ export const FacebookChatWidget: React.FC = () => {
         ))}
       </div>
 
-      {/* Minimized Floating Chat Bubbles & Action Dock on bottom right (10px offset) */}
+      {/* Minimized Floating Chat Bubbles & Action Dock (Supports Vertical Drag & Drop) */}
       {isDockVisible && (
-        <div className="fb-chat-bubbles-col">
-          {/* Dock Controls Bar (Hide & Shift Position) */}
-          <div className="fb-dock-control-bar">
-            <button
-              className="fb-dock-mini-btn"
-              title={dockBottomPos === 'low' ? 'Di chuyển dock lên trên' : 'Di chuyển dock xuống dưới'}
-              onClick={() => setDockBottomPos(prev => prev === 'low' ? 'high' : 'low')}
-            >
-              {dockBottomPos === 'low' ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
-            </button>
-            <button
-              className="fb-dock-mini-btn close"
-              title="Ẩn nút tin nhắn (Bấm icon Tin nhắn trên thanh điều hướng để hiện lại)"
-              onClick={() => setIsDockVisible(false)}
-            >
-              <EyeOff size={11} />
-            </button>
-          </div>
+        <div
+          className={`fb-chat-bubbles-col ${isDragging ? 'dragging' : ''}`}
+          style={dockBottomPx !== null ? { bottom: `${dockBottomPx}px` } : undefined}
+          onMouseDown={(e) => handleDragStart(e.clientY)}
+          onTouchStart={(e) => {
+            if (e.touches.length > 0) handleTouchStartLongPress(e.touches[0].clientY);
+          }}
+          onTouchEnd={handleTouchEndLongPress}
+        >
+          {/* Hide Minus Button (Revealed on Desktop hover & Mobile long-press) */}
+          <button
+            className={`fb-dock-hide-minus-btn ${showHideBtn ? 'visible' : ''}`}
+            title="Ẩn bong bóng tin nhắn (Bấm icon Tin nhắn trên thanh điều hướng để hiện lại)"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsDockVisible(false);
+            }}
+          >
+            <Minus size={14} />
+          </button>
 
-          {/* Floating New Chat Circular Action Button (Image 3) */}
+          {/* Floating New Chat Circular Action Button */}
           <button
             className="fb-chat-new-btn"
-            onClick={() => setIsNewChatOpen((v) => !v)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsNewChatOpen((v) => !v);
+            }}
             title="Tin nhắn mới"
           >
             <SquarePen size={18} />
@@ -521,7 +589,10 @@ export const FacebookChatWidget: React.FC = () => {
             <div key={chat.user.id} className="fb-chat-bubble-wrapper">
               <div
                 className="fb-chat-bubble-avatar"
-                onClick={() => expandChat(chat.user.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  expandChat(chat.user.id);
+                }}
                 title={(useChatStore.getState().nicknames && useChatStore.getState().nicknames[chat.user.id]) || chat.user?.displayName || chat.user?.username}
               >
                 <img

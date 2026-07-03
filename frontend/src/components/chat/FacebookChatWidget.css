@@ -352,42 +352,42 @@
   gap: 8px;
   margin-bottom: 12px;
   pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
   transition: margin-bottom 0.25s ease;
 }
 
-.fb-dock-control-bar {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  padding: 2px 4px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.fb-chat-bubbles-col.dragging {
+  cursor: grabbing;
 }
 
-.fb-dock-mini-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  width: 18px;
-  height: 18px;
+.fb-dock-hide-minus-btn {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
 }
 
-.fb-dock-mini-btn:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.15);
+.fb-chat-bubbles-col:hover .fb-dock-hide-minus-btn,
+.fb-dock-hide-minus-btn.visible {
+  opacity: 1;
+  transform: scale(1);
 }
 
-.fb-dock-mini-btn.close:hover {
-  color: #f87171;
-  background: rgba(239, 68, 68, 0.2);
+.fb-dock-hide-minus-btn:hover {
+  background: #ef4444;
+  border-color: #ef4444;
 }
 
 .fb-chat-bubble-wrapper {
@@ -571,7 +571,7 @@
   .fb-chat-bubbles-col {
     position: fixed;
     right: 10px;
-    bottom: 20px;
+    bottom: 85px !important;
     margin-bottom: 0 !important;
     z-index: 9999;
   }
