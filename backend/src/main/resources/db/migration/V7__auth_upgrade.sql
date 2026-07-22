@@ -14,7 +14,9 @@ ALTER TABLE users
 -- 3. Thêm cột OAuth2 provider
 -- ============================================================
 ALTER TABLE users
-    ADD COLUMN oauth_provider    VARCHAR(30)  NULL AFTER email_verified,
+    ADD COLUMN oauth_provider    VARCHAR(30)  NULL AFTER email_verified;
+
+ALTER TABLE users
     ADD COLUMN oauth_provider_id VARCHAR(255) NULL AFTER oauth_provider;
 
 -- Index: đảm bảo mỗi social account chỉ liên kết 1 tài khoản Abora
