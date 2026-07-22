@@ -162,16 +162,24 @@
 
 @media (max-width: 768px) {
   .story-detail-container {
-    padding: 1rem 1.5rem;
+    padding: 1rem 0.75rem;
   }
   .story-header {
     flex-direction: column;
-    padding: 1.5rem;
+    padding: 1.5rem 0.75rem;
     gap: 1.5rem;
   }
   .story-header-cover {
     width: 180px;
     margin: 0 auto;
+  }
+  .story-header-info {
+    align-items: center;
+    text-align: center;
+    padding-top: 0.5rem;
+  }
+  .story-header-author-section {
+    justify-content: center !important;
   }
   .story-header-stats {
     gap: 1.5rem;
@@ -182,7 +190,7 @@
     justify-content: center;
   }
   .story-tabs-container {
-    padding: 17px 2.5rem !important;
+    padding: 17px 0.75rem !important;
   }
 }
 
@@ -474,12 +482,15 @@
 
 @media (max-width: 768px) {
   .related-stories-section {
-    padding: 0 1.5rem;
+    padding: 0 0.75rem;
     margin-top: 0;
     padding-top: 1.5rem;
   }
   .story-report-section {
     padding: 0;
+  }
+  .related-stories-scroll-container {
+    gap: 0.75rem;
   }
 }
 
@@ -502,13 +513,15 @@
 
 @media (max-width: 768px) {
   .related-story-card {
-    flex: 0 0 calc(33.333% - 1rem); /* 3 cards */
+    flex: 0 0 calc(33.333% - 0.5rem); /* 3 cards */
+    min-width: 0;
   }
 }
 
 @media (max-width: 480px) {
   .related-story-card {
-    flex: 0 0 calc(50% - 0.75rem); /* 2 cards */
+    flex: 0 0 calc(33.333% - 0.5rem); /* 3 cards on mobile screen */
+    min-width: 0;
   }
 }
 
