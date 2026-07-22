@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/sitemap.xml",
-      "destination": "https://abora-production.up.railway.app/sitemap.xml"
+      "destination": "https://abora.onrender.com/sitemap.xml"
     },
     {
       "source": "/(.*)",
