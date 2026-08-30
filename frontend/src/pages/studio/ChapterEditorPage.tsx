@@ -9,6 +9,14 @@ const icons = Quill.import('ui/icons') as any;
 icons['undo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ql-stroke" d="M9 14 4 9l5-5"/><path class="ql-stroke" d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>`;
 icons['redo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ql-stroke" d="m15 14 5-5-5-5"/><path class="ql-stroke" d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/></svg>`;
 
+// Register SmartBreak for Shift+Enter soft newlines
+const Embed = Quill.import('blots/embed') as any;
+class SmartBreak extends Embed {
+  static blotName = 'smartBreak';
+  static tagName = 'br';
+}
+Quill.register(SmartBreak);
+
 const modules = {
   toolbar: {
     container: [
@@ -29,7 +37,16 @@ const modules = {
   },
   keyboard: {
     bindings: {
-      disableListAutoformat: {
+      'shift enter': {
+        key: 13,
+        shiftKey: true,
+        handler: function(this: any, range: any, _context: any) {
+          this.quill.insertEmbed(range.index, 'smartBreak', true, 'user');
+          this.quill.setSelection(range.index + 1, 'user');
+          return false;
+        }
+      },
+      'list autofill': {
         key: ' ',
         collapsed: true,
         prefix: /^(1\.|-|\*)$/,
