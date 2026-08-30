@@ -10,7 +10,7 @@ import { useAuthStore } from "../../store/authStore";
 import { CommentSidebar } from "../../components/reader/CommentSidebar";
 import { QuoteGeneratorModal } from "../../components/reader/QuoteGeneratorModal";
 import { ReportModal } from "../../components/ui/ReportModal";
-import { ChevronDown, Plus, Heart, Type, MessageCircle, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check } from 'lucide-react';
+import { ChevronDown, Plus, Heart, MessageCircle, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check, MoreVertical, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getImageUrl } from "../../utils/image";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
@@ -686,33 +686,6 @@ export const ReaderPage: React.FC = () => {
               <span className="reader-chapter-title" style={{ fontSize: '14px', paddingTop: '5px' }}>{chapter.title || `${chapter.chapterNumber}`}</span>
             </div>
             <ChevronDown size={16} className="text-secondary flex-shrink-0" />
-
-            {/* TOC Popover */}
-            {showToc && (
-              <div className="reader-toc-popover" ref={tocRef} onClick={(e) => e.stopPropagation()}>
-                <div className="toc-popover-header justify-center">
-                  <span className="text-sm font-medium text-secondary opacity-70 uppercase tracking-wider">Bảng mục lục</span>
-                </div>
-                <div className="toc-popover-list">
-                  {story ? (
-                    story.chapters.map((c) => (
-                      <button
-                        key={c.id}
-                        className={`toc-popover-item ${c.slug === chapter.slug ? "active" : ""}`}
-                        onClick={() => {
-                          setShowToc(false);
-                          navigate(`/story/${slug}/chapter/${c.slug}`);
-                        }}
-                      >
-                        {c.title || `${c.chapterNumber}`}
-                      </button>
-                    ))
-                  ) : (
-                    <div className="p-4 text-center"><span className="spinner"></span></div>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
         
@@ -729,49 +702,102 @@ export const ReaderPage: React.FC = () => {
               setIsLibraryDropdownOpen(true);
             }}
           >
-            <Plus size={20} />
+            <Plus size={18} />
           </button>
-          <button className="reader-btn" title="Cài đặt đọc" onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); setShowToc(false); }}>
-            <Type size={20} />
-          </button>
+          
           <div className="reader-stat-item" title="Lượt xem">
-            <Eye size={20} />
+            <Eye size={18} />
             <span>{formatNumber(chapter.viewCount || 0)}</span>
           </div>
           <button className={`reader-btn has-text ${chapter.hasLiked ? 'active' : ''}`} title="Bình chọn" onClick={handleToggleLike}>
-            <Heart size={20} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} />
+            <Heart size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} />
             <span>{formatNumber(chapter.likeCount || 0)}</span>
           </button>
           <button className="reader-btn has-text" title="Bình luận" onClick={() => setShowComments(true)}>
-            <MessageCircle size={20} />
+            <MessageCircle size={18} />
             <span>{formatNumber(commentCount)}</span>
           </button>
+
+          {/* More Menu */}
+          <div style={{ position: 'relative' }}>
+            <button className="reader-btn" title="Thêm" onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); setShowToc(false); }}>
+              <MoreVertical size={18} />
+            </button>
+            {/* The old Settings Popover is now used as a general More dropdown */}
+            {showSettings && (
+              <div className="reader-settings-popover" ref={settingsRef} onClick={(e) => e.stopPropagation()}>
+                <div className="settings-row" style={{ cursor: 'pointer', padding: '0.5rem 0', borderBottom: '1px solid var(--reader-border)' }} onClick={() => { setShowSettings(false); handleCopyLink(); }}>
+                  <span className="settings-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Share2 size={16} /> Chia sẻ liên kết
+                  </span>
+                </div>
+                <div className="settings-row" style={{ marginTop: '0.5rem' }}>
+                  <span className="settings-label">Cỡ chữ</span>
+                  <div className="settings-controls">
+                    <button className="settings-btn" onClick={decreaseFontSize}>A-</button>
+                    <button className="settings-btn" onClick={increaseFontSize}>A+</button>
+                  </div>
+                </div>
+                <div className="settings-row">
+                  <span className="settings-label">Nền</span>
+                  <div className="settings-controls">
+                    <button className={`settings-btn ${theme === 'light' ? 'active' : ''}`} onClick={() => setTheme('light')}>Sáng</button>
+                    <button className={`settings-btn ${theme === 'sepia' ? 'active' : ''}`} onClick={() => setTheme('sepia')}>Vàng</button>
+                    <button className={`settings-btn ${theme === 'dark' ? 'active' : ''}`} onClick={() => setTheme('dark')}>Tối</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Progress Bar */}
         <div className="reader-progress-bar" style={{ width: `${scrollProgress}%` }} />
+      </div>
 
-        {/* Settings Popover */}
-        {showSettings && (
-          <div className="reader-settings-popover" ref={settingsRef}>
-            <div className="settings-row">
-              <span className="settings-label">Cỡ chữ</span>
-              <div className="settings-controls">
-                <button className="settings-btn" onClick={decreaseFontSize}>A-</button>
-                <button className="settings-btn" onClick={increaseFontSize}>A+</button>
+      {/* TOC Sidebar Overlay */}
+      {showToc && (
+        <div className="reader-toc-overlay" onClick={() => setShowToc(false)}>
+          <div className="reader-toc-sidebar" onClick={(e) => e.stopPropagation()}>
+            <div className="toc-sidebar-header">
+              {story?.coverImageUrl && (
+                <img 
+                  src={getImageUrl(story.coverImageUrl, 'cover', story.title)} 
+                  alt="Cover" 
+                  className="story-mini-cover" 
+                  style={{ width: '40px', height: '56px', display: 'block' }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = getImageUrl('', 'cover', story.title);
+                  }}
+                />
+              )}
+              <div className="toc-sidebar-info">
+                <span className="toc-sidebar-title">{story?.title || 'Đang tải...'}</span>
+                <span className="toc-sidebar-author">By {story?.authorName || 'Tác giả'}</span>
               </div>
             </div>
-            <div className="settings-row">
-              <span className="settings-label">Nền</span>
-              <div className="settings-controls">
-                <button className={`settings-btn ${theme === 'light' ? 'active' : ''}`} onClick={() => setTheme('light')}>Sáng</button>
-                <button className={`settings-btn ${theme === 'sepia' ? 'active' : ''}`} onClick={() => setTheme('sepia')}>Vàng</button>
-                <button className={`settings-btn ${theme === 'dark' ? 'active' : ''}`} onClick={() => setTheme('dark')}>Tối</button>
-              </div>
+            <div className="toc-sidebar-list">
+              {story ? (
+                story.chapters.map((c) => (
+                  <button
+                    key={c.id}
+                    className={`toc-sidebar-item ${c.slug === chapter.slug ? "active" : ""}`}
+                    onClick={() => {
+                      setShowToc(false);
+                      navigate(`/story/${slug}/chapter/${c.slug}`);
+                    }}
+                  >
+                    <span>{c.title || `${c.chapterNumber}`}</span>
+                    {/* Optionally add chapter publish date here if needed */}
+                  </button>
+                ))
+              ) : (
+                <div className="p-4 text-center"><span className="spinner"></span></div>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="reader-container fade-in" style={{ fontSize: `${fontSize}px` }}>

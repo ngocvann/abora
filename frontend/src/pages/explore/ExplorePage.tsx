@@ -20,6 +20,7 @@ export const ExplorePage: React.FC = () => {
   useDocumentTitle(pageTitle);
 
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [currentCarouselIndex, setCurrentCarouselIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const [displayedCount, setDisplayedCount] = useState<number>(PAGE_SIZE);
@@ -84,8 +85,13 @@ export const ExplorePage: React.FC = () => {
   // Filtering Logic
   const activeStoriesList: Story[] = searchQuery.trim() !== "" ? searchResults : publicStories;
   const filteredStories = activeStoriesList.filter((story: Story) => {
-    if (!selectedCategorySlug) return true;
-    return story.categories?.some((cat) => cat.slug === selectedCategorySlug);
+    if (selectedCategorySlug && !story.categories?.some((cat) => cat.slug === selectedCategorySlug)) {
+      return false;
+    }
+    if (selectedStatus && story.status !== selectedStatus) {
+      return false;
+    }
+    return true;
   });
 
   // Infinite scroll
@@ -217,11 +223,21 @@ export const ExplorePage: React.FC = () => {
               )}
             </div>
             <div className="view-toggle-group">
-              {(searchQuery.trim() !== "" || selectedCategorySlug !== "") && (
-                <button className="clear-search-btn" onClick={() => { clearSearch(); setSelectedCategorySlug(""); }}>
+              {(searchQuery.trim() !== "" || selectedCategorySlug !== "" || selectedStatus !== "") && (
+                <button className="clear-search-btn" onClick={() => { clearSearch(); setSelectedCategorySlug(""); setSelectedStatus(""); }}>
                   Xóa bộ lọc
                 </button>
               )}
+              <select 
+                className="form-select" 
+                style={{ width: 'auto', padding: '0.25rem 0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', fontSize: '0.85rem' }}
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="">Tất cả trạng thái</option>
+                <option value="ONGOING">Đang ra</option>
+                <option value="COMPLETED">Hoàn thành</option>
+              </select>
               <button
                 className={`view-toggle-btn ${viewMode === "card" ? "active" : ""}`}
                 onClick={() => setViewMode("card")}

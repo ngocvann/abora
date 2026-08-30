@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Flame, Loader2, Compass } from "lucide-react";
+import { Flame, Loader2, Compass, Filter } from "lucide-react";
 import api from "../../services/api";
 import { Button } from "../../components/ui/Button";
 import { useAuthStore } from "../../store/authStore";
@@ -69,6 +69,10 @@ export const HomePage: React.FC = () => {
   const [personalizedRows, setPersonalizedRows] = React.useState(2);
   const [trendingRows, setTrendingRows] = React.useState(2);
 
+  // Filters
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+
   React.useEffect(() => {
     const handleResize = () => {
       if (gridRef.current) {
@@ -98,8 +102,17 @@ export const HomePage: React.FC = () => {
     };
   }, []);
 
+  // Fetch Categories for Filter
+  const { data: categories = [] } = useQuery<any[]>({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await api.get("/categories");
+      return data;
+    },
+  });
+
   // 1. Fetch "Tiếp tục đọc dở"
-  const { data: storiesReading = [], isLoading: isReadingLoading } = useQuery<Story[]>({
+  const { data: storiesReadingRaw = [], isLoading: isReadingLoading } = useQuery<Story[]>({
     queryKey: ["stories", "recommend", "reading"],
     queryFn: async () => {
       const { data } = await api.get("/stories/recommend/reading");
@@ -109,7 +122,7 @@ export const HomePage: React.FC = () => {
   });
 
   // 2. Fetch "Đề xuất cho bạn"
-  const { data: storiesPersonalized = [], isLoading: isPersonalizedLoading } = useQuery<Story[]>({
+  const { data: storiesPersonalizedRaw = [], isLoading: isPersonalizedLoading } = useQuery<Story[]>({
     queryKey: ["stories", "recommend", "personalized"],
     queryFn: async () => {
       const { data } = await api.get("/stories/recommend/personalized");
@@ -118,13 +131,26 @@ export const HomePage: React.FC = () => {
   });
 
   // 3. Fetch "Thịnh hành tuần qua"
-  const { data: storiesTrending = [], isLoading: isTrendingLoading } = useQuery<Story[]>({
+  const { data: storiesTrendingRaw = [], isLoading: isTrendingLoading } = useQuery<Story[]>({
     queryKey: ["stories", "recommend", "trending"],
     queryFn: async () => {
       const { data } = await api.get("/stories/recommend/trending");
       return data;
     },
   });
+
+  // Client-side filtering logic
+  const filterStories = (stories: Story[]) => {
+    return stories.filter(story => {
+      if (selectedStatus && story.status !== selectedStatus) return false;
+      if (selectedCategory && (!story.categories || !story.categories.some(c => c.slug === selectedCategory))) return false;
+      return true;
+    });
+  };
+
+  const storiesReading = filterStories(storiesReadingRaw);
+  const storiesPersonalized = filterStories(storiesPersonalizedRaw);
+  const storiesTrending = filterStories(storiesTrendingRaw);
 
   return (
     <div ref={containerRef} className="home-container fade-in">
@@ -134,7 +160,7 @@ export const HomePage: React.FC = () => {
         {/* Background illustration */}
         <div className="hero-bg-image"></div>
         
-        {/* Background glow effects (optional, keeping minimal for illustration) */}
+        {/* Background glow effects */}
         <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
         
         <div className="hero-content text-left">
@@ -154,6 +180,35 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Global Filter Bar */}
+      <div className="home-filter-bar" style={{ display: 'flex', gap: '1rem', padding: '0 2rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
+          <Filter size={18} /> Lọc:
+        </div>
+        <select 
+          className="form-select" 
+          style={{ width: 'auto', padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px' }}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">Tất cả thể loại</option>
+          {categories.map((cat: any) => (
+            <option key={cat.id} value={cat.slug}>{cat.name}</option>
+          ))}
+        </select>
+        
+        <select 
+          className="form-select" 
+          style={{ width: 'auto', padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px' }}
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+        >
+          <option value="">Tất cả trạng thái</option>
+          <option value="ONGOING">Đang ra</option>
+          <option value="COMPLETED">Hoàn thành</option>
+        </select>
+      </div>
 
       {/* 1. Continue Reading Section */}
       {isAuthenticated && storiesReading && storiesReading.length > 0 && (

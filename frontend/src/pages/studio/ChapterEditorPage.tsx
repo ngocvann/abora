@@ -26,6 +26,20 @@ const modules = {
         this.quill.history.redo();
       }
     }
+  },
+  keyboard: {
+    bindings: {
+      disableListAutoformat: {
+        key: ' ',
+        collapsed: true,
+        prefix: /^(1\.|-|\*)$/,
+        handler: function(this: any, range: any, _context: any) {
+          this.quill.insertText(range.index, ' ', 'user');
+          this.quill.setSelection(range.index + 1, 'user');
+          return false;
+        }
+      }
+    }
   }
 };
 import api from '../../services/api';
