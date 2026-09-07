@@ -20,16 +20,24 @@
 .btn-md { padding: 0.75rem 1.5rem; font-size: 1rem; }
 .btn-lg { padding: 1rem 2rem; font-size: 1.125rem; }
 
-.btn-primary {
-  background: var(--primary-color);
+.btn-primary, .primary-btn {
+  background: linear-gradient(135deg, #FBBF24 0%, #9D4EDD 100%);
+  background-size: 200% 200%;
   color: #fff;
-  box-shadow: 0 4px 14px 0 var(--primary-glow);
+  box-shadow: 0 4px 15px 0 rgba(251, 191, 36, 0.4);
+  animation: bgBlink 4s ease infinite;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: var(--primary-hover);
+@keyframes bgBlink {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; box-shadow: 0 4px 25px 0 rgba(157, 78, 221, 0.6); }
+  100% { background-position: 0% 50%; }
+}
+
+.btn-primary:hover:not(:disabled), .primary-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+  filter: brightness(1.1);
 }
 
 .btn-secondary {
