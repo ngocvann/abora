@@ -34,10 +34,12 @@
 }
 
 .footer-logo-img {
-  height: 76px; /* even larger logo size since stats block is removed */
+  height: 130px; /* significantly larger logo to compensate for whitespace */
   width: auto;
   object-fit: contain;
   transition: transform 0.3s ease, filter 0.3s ease;
+  margin-top: -20px; /* pull up slightly if needed */
+  margin-bottom: -20px;
 }
 
 .footer-logo-img:hover {
@@ -196,7 +198,9 @@
   }
   
   .footer-logo-img {
-    height: 52px; /* scale down logo size on phone */
+    height: 90px;
+    margin-top: -10px;
+    margin-bottom: -10px;
   }
   
   .footer-slogan {
