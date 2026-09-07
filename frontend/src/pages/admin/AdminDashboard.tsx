@@ -3,6 +3,7 @@ import { Users, BookOpen, AlertTriangle, MessageSquare, Send, Image } from 'luci
 import api from '../../services/api';
 import styles from './AdminDashboard.module.css';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
+import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 
 interface DashboardStats {
   totalUsers: number;
@@ -34,6 +35,12 @@ export const AdminDashboard: React.FC = () => {
 
   const [isUploadingBanner, setIsUploadingBanner] = useState<'home' | 'explore' | false>(false);
   const [isSavingBanner, setIsSavingBanner] = useState(false);
+  
+  const [cropperState, setCropperState] = useState<{
+    isOpen: boolean;
+    file: File | null;
+    target: 'home' | 'explore' | null;
+  }>({ isOpen: false, file: null, target: null });
 
   useEffect(() => {
     // Fetch home banner
@@ -73,13 +80,21 @@ export const AdminDashboard: React.FC = () => {
     fetchStats();
   }, []);
 
-  const handleUploadBanner = async (e: React.ChangeEvent<HTMLInputElement>, target: 'home' | 'explore') => {
-    if (!e.target.files || e.target.files.length === 0) return;
+  const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>, target: 'home' | 'explore') => {
+    if (e.target.files && e.target.files.length > 0) {
+      setCropperState({ isOpen: true, file: e.target.files[0], target });
+      e.target.value = ''; // Reset input so same file can be selected again
+    }
+  };
+
+  const handleCropConfirm = async (croppedFile: File) => {
+    const target = cropperState.target;
+    if (!target) return;
+    
     setIsUploadingBanner(target);
     try {
-      const file = e.target.files[0];
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', croppedFile);
       const res = await api.post('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
@@ -322,7 +337,7 @@ export const AdminDashboard: React.FC = () => {
                     type="file" 
                     accept="image/*"
                     className="form-input"
-                    onChange={(e) => handleUploadBanner(e, 'home')}
+                    onChange={(e) => handleUploadChange(e, 'home')}
                     disabled={isUploadingBanner === 'home'}
                     style={{ flex: 1 }}
                   />
@@ -381,7 +396,7 @@ export const AdminDashboard: React.FC = () => {
                     type="file" 
                     accept="image/*"
                     className="form-input"
-                    onChange={(e) => handleUploadBanner(e, 'explore')}
+                    onChange={(e) => handleUploadChange(e, 'explore')}
                     disabled={isUploadingBanner === 'explore'}
                     style={{ flex: 1 }}
                   />
@@ -403,6 +418,14 @@ export const AdminDashboard: React.FC = () => {
 
         </div>
       </div>
+
+      <ImageCropperModal
+        isOpen={cropperState.isOpen}
+        imageFile={cropperState.file}
+        aspect={21 / 9}
+        onClose={() => setCropperState({ isOpen: false, file: null, target: null })}
+        onCropConfirm={handleCropConfirm}
+      />
 
     </div>
   );
