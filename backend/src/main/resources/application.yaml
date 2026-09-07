@@ -36,7 +36,7 @@ server:
 app:
   jwt:
     secret: ${JWT_SECRET:SuperSecretJwtKeyChange2023!ExtraCharsForLengthIsRequired256bits}
-    access-token-expiration-minutes: 1440
+    access-token-expiration-minutes: 525600
   frontend-url: ${FRONTEND_URL:http://localhost:5173}
   google:
     client-id: ${GOOGLE_CLIENT_ID:426028933949-d82gdpajo4cvd8c511t5kse0ujl0jj06.apps.googleusercontent.com}
