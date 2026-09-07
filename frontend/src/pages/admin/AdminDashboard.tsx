@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Users, BookOpen, AlertTriangle, MessageSquare, Send } from 'lucide-react';
+import { Users, BookOpen, AlertTriangle, MessageSquare, Send, Image } from 'lucide-react';
 import api from '../../services/api';
 import styles from './AdminDashboard.module.css';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
@@ -25,7 +25,19 @@ export const AdminDashboard: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const [sendSuccess, setSendSuccess] = useState<string | null>(null);
 
+  // Banner Settings State
+  const [bannerUrl, setBannerUrl] = useState('');
+  const [isUploadingBanner, setIsUploadingBanner] = useState(false);
+  const [isSavingBanner, setIsSavingBanner] = useState(false);
+
   useEffect(() => {
+    // Fetch banner url
+    api.get('/settings/home_banner').then(res => {
+      if (res.data && res.data.value) {
+        setBannerUrl(res.data.value);
+      }
+    }).catch(console.error);
+
     // Replace with real API call later
     const fetchStats = async () => {
       try {
@@ -40,6 +52,40 @@ export const AdminDashboard: React.FC = () => {
     
     fetchStats();
   }, []);
+
+  const handleUploadBanner = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    setIsUploadingBanner(true);
+    try {
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (res.data && res.data.url) {
+        setBannerUrl(res.data.url);
+      }
+    } catch (err) {
+      console.error('Upload failed', err);
+      alert('Upload ảnh thất bại.');
+    } finally {
+      setIsUploadingBanner(false);
+    }
+  };
+
+  const handleSaveBanner = async () => {
+    setIsSavingBanner(true);
+    try {
+      await api.post('/settings/home_banner', { value: bannerUrl });
+      alert('Đã lưu banner thành công!');
+    } catch (err) {
+      console.error('Save failed', err);
+      alert('Lưu banner thất bại.');
+    } finally {
+      setIsSavingBanner(false);
+    }
+  };
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '3rem' }}>Đang tải dữ liệu...</div>;
@@ -189,6 +235,53 @@ export const AdminDashboard: React.FC = () => {
         cancelText="Hủy"
         isDanger={true}
       />
+
+      <div className="glass-panel" style={{ padding: '1.5rem', marginTop: '2rem' }}>
+        <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Image size={20} />
+          Cài đặt giao diện (Banner)
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>URL Ảnh Banner Trang chủ & Khám phá</label>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input
+                className="form-input"
+                type="text"
+                placeholder="Nhập URL ảnh hoặc upload..."
+                value={bannerUrl}
+                onChange={(e) => setBannerUrl(e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <button 
+                className="primary-btn" 
+                onClick={handleSaveBanner}
+                disabled={isSavingBanner}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                {isSavingBanner ? 'Đang lưu...' : 'Lưu Banner'}
+              </button>
+            </div>
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Hoặc Upload ảnh từ máy tính</label>
+            <input 
+              type="file" 
+              accept="image/*"
+              className="form-input"
+              onChange={handleUploadBanner}
+              disabled={isUploadingBanner}
+            />
+            {isUploadingBanner && <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginLeft: '10px' }}>Đang upload...</span>}
+          </div>
+          {bannerUrl && (
+            <div style={{ marginTop: '1rem' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Xem trước:</p>
+              <img src={bannerUrl} alt="Banner Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--reader-border)' }} />
+            </div>
+          )}
+        </div>
+      </div>
 
     </div>
   );

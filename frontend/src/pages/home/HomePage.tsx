@@ -139,10 +139,28 @@ export const HomePage: React.FC = () => {
     },
   });
 
+  // Fetch Banner
+  const { data: bannerSetting } = useQuery<any>({
+    queryKey: ["settings", "home_banner"],
+    queryFn: async () => {
+      const { data } = await api.get("/settings/home_banner");
+      return data;
+    },
+  });
+  const customBannerUrl = bannerSetting?.value;
+
   // Client-side filtering logic
   const filterStories = (stories: Story[]) => {
     return stories.filter(story => {
-      if (selectedStatus && story.status !== selectedStatus) return false;
+      if (selectedStatus) {
+        if (selectedStatus === 'ONGOING') {
+          if (story.status === 'COMPLETED' || story.status === 'PAUSED' || story.status === 'HIDDEN' || story.status === 'DRAFT') {
+            return false;
+          }
+        } else if (story.status !== selectedStatus) {
+          return false;
+        }
+      }
       if (selectedCategory && (!story.categories || !story.categories.some(c => c.slug === selectedCategory))) return false;
       return true;
     });
@@ -158,7 +176,10 @@ export const HomePage: React.FC = () => {
       {/* Hero Section */}
       <section className="hero-section relative overflow-hidden">
         {/* Background illustration */}
-        <div className="hero-bg-image"></div>
+        <div 
+          className="hero-bg-image" 
+          style={customBannerUrl ? { backgroundImage: `url(${customBannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+        ></div>
         
         {/* Background glow effects */}
         <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>

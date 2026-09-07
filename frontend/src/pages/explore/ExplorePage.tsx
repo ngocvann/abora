@@ -21,6 +21,8 @@ export const ExplorePage: React.FC = () => {
 
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [excludedTags, setExcludedTags] = useState<string[]>([]);
   const [currentCarouselIndex, setCurrentCarouselIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const [displayedCount, setDisplayedCount] = useState<number>(PAGE_SIZE);
@@ -64,6 +66,16 @@ export const ExplorePage: React.FC = () => {
   });
   const publicStories: Story[] = publicStoriesPage?.content || [];
 
+  // Fetch Banner
+  const { data: bannerSetting } = useQuery<any>({
+    queryKey: ["settings", "home_banner"],
+    queryFn: async () => {
+      const { data } = await api.get("/settings/home_banner");
+      return data;
+    },
+  });
+  const customBannerUrl = bannerSetting?.value;
+
   // 4. Fetch search results
   const { data: searchResults = [], isLoading: isSearchResultsLoading } = useQuery<Story[]>({
     queryKey: ["stories", "search", searchQuery],
@@ -82,15 +94,52 @@ export const ExplorePage: React.FC = () => {
     setSearchParams({});
   };
 
-  // Filtering Logic
+  // Extract all unique tags for filter options
   const activeStoriesList: Story[] = searchQuery.trim() !== "" ? searchResults : publicStories;
+  
+  const allTags = React.useMemo(() => {
+    const tagMap = new Map<string, any>();
+    activeStoriesList.forEach(story => {
+      if (story.tags) {
+        story.tags.forEach(t => tagMap.set(t.slug, t));
+      }
+    });
+    return Array.from(tagMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }, [activeStoriesList]);
+
+  // Filtering Logic
   const filteredStories = activeStoriesList.filter((story: Story) => {
     if (selectedCategorySlug && !story.categories?.some((cat) => cat.slug === selectedCategorySlug)) {
       return false;
     }
-    if (selectedStatus && story.status !== selectedStatus) {
-      return false;
+    if (selectedStatus) {
+      if (selectedStatus === 'ONGOING') {
+        if (story.status === 'COMPLETED' || story.status === 'PAUSED' || story.status === 'HIDDEN' || story.status === 'DRAFT') {
+           return false;
+        }
+      } else if (story.status !== selectedStatus) {
+        return false;
+      }
     }
+    
+    // Tag Include
+    if (selectedTags.length > 0) {
+      const storyTagSlugs = story.tags?.map(t => t.slug) || [];
+      // Must have ALL selected tags
+      if (!selectedTags.every(tag => storyTagSlugs.includes(tag))) {
+        return false;
+      }
+    }
+    
+    // Tag Exclude
+    if (excludedTags.length > 0) {
+      const storyTagSlugs = story.tags?.map(t => t.slug) || [];
+      // Must NOT have ANY excluded tags
+      if (excludedTags.some(tag => storyTagSlugs.includes(tag))) {
+        return false;
+      }
+    }
+    
     return true;
   });
 
@@ -104,7 +153,7 @@ export const ExplorePage: React.FC = () => {
 
   useEffect(() => {
     setDisplayedCount(PAGE_SIZE);
-  }, [selectedCategorySlug, searchQuery]);
+  }, [selectedCategorySlug, searchQuery, selectedStatus, selectedTags, excludedTags]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -124,13 +173,36 @@ export const ExplorePage: React.FC = () => {
 
   const formatCount = (n: number) =>
     n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+    
+  const toggleTagFilter = (slug: string, type: 'include' | 'exclude') => {
+    if (type === 'include') {
+      if (selectedTags.includes(slug)) {
+        setSelectedTags(prev => prev.filter(t => t !== slug));
+      } else {
+        setSelectedTags(prev => [...prev, slug]);
+        // Remove from excluded if present
+        setExcludedTags(prev => prev.filter(t => t !== slug));
+      }
+    } else {
+      if (excludedTags.includes(slug)) {
+        setExcludedTags(prev => prev.filter(t => t !== slug));
+      } else {
+        setExcludedTags(prev => [...prev, slug]);
+        // Remove from included if present
+        setSelectedTags(prev => prev.filter(t => t !== slug));
+      }
+    }
+  };
 
   return (
     <div className="explore-container fade-in">
       {/* 1. Header Banner Carousel */}
       {!isRecommendationsLoading && recommendations.length > 0 && searchQuery.trim() === "" && (
         <div className="explore-banner">
-          <div className="explore-banner-bg" />
+          <div 
+            className="explore-banner-bg" 
+            style={customBannerUrl ? { backgroundImage: `url(${customBannerUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+          />
           <div className="banner-glow" />
           <div className="carousel-track">
             <img
@@ -204,6 +276,63 @@ export const ExplorePage: React.FC = () => {
               ))}
             </div>
           )}
+          
+          {/* Tags Filter Section */}
+          {allTags.length > 0 && (
+            <div style={{ marginTop: '1.5rem' }}>
+              <h2 className="category-sidebar-title" style={{ fontSize: '1rem' }}>Lọc theo Tag</h2>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', padding: '0 0.5rem' }}>
+                Bấm 1 lần: <strong>Bao gồm</strong><br/>
+                Bấm 2 lần: <strong>Ngoại trừ</strong><br/>
+                Bấm 3 lần: Bỏ chọn
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem' }}>
+                {allTags.map(tag => {
+                  const isIncluded = selectedTags.includes(tag.slug);
+                  const isExcluded = excludedTags.includes(tag.slug);
+                  
+                  let btnStyle: React.CSSProperties = {
+                    padding: '0.25rem 0.5rem',
+                    fontSize: '0.8rem',
+                    borderRadius: '12px',
+                    border: '1px solid var(--reader-border)',
+                    background: 'transparent',
+                    color: 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    textDecoration: 'none'
+                  };
+                  
+                  if (isIncluded) {
+                    btnStyle.background = 'rgba(139, 92, 246, 0.15)';
+                    btnStyle.color = 'var(--primary-color)';
+                    btnStyle.border = '1px solid var(--primary-color)';
+                  } else if (isExcluded) {
+                    btnStyle.background = 'rgba(239, 68, 68, 0.15)';
+                    btnStyle.color = '#ef4444';
+                    btnStyle.border = '1px solid #ef4444';
+                    btnStyle.textDecoration = 'line-through';
+                  }
+                  
+                  return (
+                    <button 
+                      key={tag.id}
+                      style={btnStyle}
+                      onClick={() => {
+                        if (!isIncluded && !isExcluded) toggleTagFilter(tag.slug, 'include');
+                        else if (isIncluded) toggleTagFilter(tag.slug, 'exclude');
+                        else if (isExcluded) {
+                          setExcludedTags(prev => prev.filter(t => t !== tag.slug));
+                        }
+                      }}
+                    >
+                      {tag.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Central Content Area */}
@@ -223,8 +352,8 @@ export const ExplorePage: React.FC = () => {
               )}
             </div>
             <div className="view-toggle-group">
-              {(searchQuery.trim() !== "" || selectedCategorySlug !== "" || selectedStatus !== "") && (
-                <button className="clear-search-btn" onClick={() => { clearSearch(); setSelectedCategorySlug(""); setSelectedStatus(""); }}>
+              {(searchQuery.trim() !== "" || selectedCategorySlug !== "" || selectedStatus !== "" || selectedTags.length > 0 || excludedTags.length > 0) && (
+                <button className="clear-search-btn" onClick={() => { clearSearch(); setSelectedCategorySlug(""); setSelectedStatus(""); setSelectedTags([]); setExcludedTags([]); }}>
                   Xóa bộ lọc
                 </button>
               )}
