@@ -252,87 +252,91 @@ export const ExplorePage: React.FC = () => {
         {/* Left Sidebar: Categories — sticky */}
         <aside className="category-sidebar">
           <h2 className="category-sidebar-title">Thể loại</h2>
-          {isCategoriesLoading ? (
-            <div className="flex justify-center p-4">
-              <Loader2 className="animate-spin text-secondary" size={18} />
-            </div>
-          ) : (
-            <div className="category-scroll-inner">
-              <button
-                className={`category-item ${selectedCategorySlug === "" ? "active" : ""}`}
-                onClick={() => setSelectedCategorySlug("")}
-              >
-                Tất cả thể loại
-              </button>
-              {categories.map((cat: any) => (
-                <button
-                  key={cat.id}
-                  className={`category-item ${selectedCategorySlug === cat.slug ? "active" : ""}`}
-                  onClick={() => setSelectedCategorySlug(cat.slug)}
-                  title={cat.description}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-          )}
           
-          {/* Tags Filter Section */}
-          {allTags.length > 0 && (
-            <div style={{ marginTop: '1.5rem' }}>
-              <h2 className="category-sidebar-title" style={{ fontSize: '1rem' }}>Lọc theo Tag</h2>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', padding: '0 0.5rem' }}>
-                Bấm 1 lần: <strong>Bao gồm</strong><br/>
-                Bấm 2 lần: <strong>Ngoại trừ</strong><br/>
-                Bấm 3 lần: Bỏ chọn
+          <div className="category-scroll-inner">
+            {isCategoriesLoading ? (
+              <div className="flex justify-center p-4">
+                <Loader2 className="animate-spin text-secondary" size={18} />
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem' }}>
-                {allTags.map(tag => {
-                  const isIncluded = selectedTags.includes(tag.slug);
-                  const isExcluded = excludedTags.includes(tag.slug);
-                  
-                  let btnStyle: React.CSSProperties = {
-                    padding: '0.25rem 0.5rem',
-                    fontSize: '0.8rem',
-                    borderRadius: '12px',
-                    border: '1px solid var(--reader-border)',
-                    background: 'transparent',
-                    color: 'var(--text-secondary)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    textDecoration: 'none'
-                  };
-                  
-                  if (isIncluded) {
-                    btnStyle.background = 'rgba(139, 92, 246, 0.15)';
-                    btnStyle.color = 'var(--primary-color)';
-                    btnStyle.border = '1px solid var(--primary-color)';
-                  } else if (isExcluded) {
-                    btnStyle.background = 'rgba(239, 68, 68, 0.15)';
-                    btnStyle.color = '#ef4444';
-                    btnStyle.border = '1px solid #ef4444';
-                    btnStyle.textDecoration = 'line-through';
-                  }
-                  
-                  return (
-                    <button 
-                      key={tag.id}
-                      style={btnStyle}
-                      onClick={() => {
-                        if (!isIncluded && !isExcluded) toggleTagFilter(tag.slug, 'include');
-                        else if (isIncluded) toggleTagFilter(tag.slug, 'exclude');
-                        else if (isExcluded) {
-                          setExcludedTags(prev => prev.filter(t => t !== tag.slug));
-                        }
-                      }}
-                    >
-                      {tag.name}
-                    </button>
-                  );
-                })}
+            ) : (
+              <>
+                <button
+                  className={`category-item ${selectedCategorySlug === "" ? "active" : ""}`}
+                  onClick={() => setSelectedCategorySlug("")}
+                >
+                  Tất cả thể loại
+                </button>
+                {categories.map((cat: any) => (
+                  <button
+                    key={cat.id}
+                    className={`category-item ${selectedCategorySlug === cat.slug ? "active" : ""}`}
+                    onClick={() => setSelectedCategorySlug(cat.slug)}
+                    title={cat.description}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </>
+            )}
+            
+            {/* Tags Filter Section */}
+            {allTags.length > 0 && (
+              <div style={{ marginTop: '1.5rem' }}>
+                <h2 className="category-sidebar-title" style={{ fontSize: '1rem', paddingLeft: '0.5rem' }}>Lọc theo Tag</h2>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', padding: '0 0.5rem' }}>
+                  Bấm 1 lần: <strong>Bao gồm</strong><br/>
+                  Bấm 2 lần: <strong>Ngoại trừ</strong><br/>
+                  Bấm 3 lần: Bỏ chọn
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem' }}>
+                  {allTags.map(tag => {
+                    const isIncluded = selectedTags.includes(tag.slug);
+                    const isExcluded = excludedTags.includes(tag.slug);
+                    
+                    let btnStyle: React.CSSProperties = {
+                      padding: '0.35rem 0.6rem',
+                      fontSize: '0.8rem',
+                      borderRadius: '12px',
+                      border: '1px solid var(--border-light)',
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      color: 'var(--text-secondary)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      textDecoration: 'none',
+                      lineHeight: '1'
+                    };
+                    
+                    if (isIncluded) {
+                      btnStyle.background = 'rgba(139, 92, 246, 0.15)';
+                      btnStyle.color = 'white';
+                      btnStyle.border = '1px solid var(--primary-color)';
+                    } else if (isExcluded) {
+                      btnStyle.background = 'rgba(239, 68, 68, 0.15)';
+                      btnStyle.color = '#ef4444';
+                      btnStyle.border = '1px solid #ef4444';
+                      btnStyle.textDecoration = 'line-through';
+                    }
+                    
+                    return (
+                      <button 
+                        key={tag.id}
+                        style={btnStyle}
+                        onClick={() => {
+                          if (!isIncluded && !isExcluded) toggleTagFilter(tag.slug, 'include');
+                          else if (isIncluded) toggleTagFilter(tag.slug, 'exclude');
+                          else if (isExcluded) {
+                            setExcludedTags(prev => prev.filter(t => t !== tag.slug));
+                          }
+                        }}
+                      >
+                        {tag.name}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </aside>
 
         {/* Central Content Area */}
