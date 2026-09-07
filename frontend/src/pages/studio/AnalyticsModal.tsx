@@ -1,6 +1,7 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React from "react";
 import { createPortal } from "react-dom";
-import { X, Eye, Heart, MessageCircle, TrendingUp, Users } from "lucide-react";
+import { X, Eye, MessageCircle, TrendingUp, Users } from 'lucide-react';
 import type { Story } from "../../types/story";
 import "./AnalyticsModal.css";
 
@@ -43,10 +44,10 @@ export const AnalyticsModal: React.FC<AnalyticsModalProps> = ({ story, onClose }
 
             <div className="analytics-stat-card">
               <div className="stat-card-icon fav-icon">
-                <Heart size={24} />
+                <SweetPotatoIcon size={24} />
               </div>
               <div className="stat-card-info">
-                <span className="stat-card-label">Lượt thích</span>
+                <span className="stat-card-label">Lượt khoai</span>
                 <span className="stat-card-value">{story.favoriteCount}</span>
               </div>
             </div>
@@ -78,7 +79,7 @@ export const AnalyticsModal: React.FC<AnalyticsModalProps> = ({ story, onClose }
               <div className="metric-item">
                 <TrendingUp size={20} className="metric-icon" />
                 <div className="metric-details">
-                  <span className="metric-name">Tỷ lệ chuyển đổi (Thích / Xem)</span>
+                  <span className="metric-name">Tỷ lệ chuyển đổi (Khoai / Xem)</span>
                   <div className="metric-bar-container">
                     <div className="metric-bar" style={{ width: `${Math.min(100, Number(conversionRate))}%` }}></div>
                   </div>

@@ -1,3 +1,4 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -5,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import type { Story } from "../../types/story";
 import { Button } from "../../components/ui/Button";
-import { PlusCircle, BookOpen, Menu, Eye, Heart, MessageCircle, BarChart2, Share2, MoreHorizontal, ChevronRight, Copy, Check, Trash2, PowerOff, X } from "lucide-react";
+import { PlusCircle, BookOpen, Menu, Eye, MessageCircle, BarChart2, Share2, MoreHorizontal, ChevronRight, Copy, Check, Trash2, PowerOff, X } from 'lucide-react';
 import toast from "react-hot-toast";
 import { AnalyticsModal } from "./AnalyticsModal";
 import { getImageUrl } from "../../utils/image";
@@ -226,8 +227,8 @@ export const StudioDashboard: React.FC = () => {
                   <div className="story-row-stat-item" title="Lượt xem">
                     <Eye size={14} /> {story.viewCount || 0}
                   </div>
-                  <div className="story-row-stat-item" title="Lượt thích">
-                    <Heart size={14} /> {story.favoriteCount || 0}
+                  <div className="story-row-stat-item" title="Lượt khoai">
+                    <SweetPotatoIcon size={14} /> {story.favoriteCount || 0}
                   </div>
                   <div className="story-row-stat-item" title="Bình luận">
                     <MessageCircle size={14} /> {story.commentCount || 0}

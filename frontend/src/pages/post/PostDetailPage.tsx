@@ -1,11 +1,10 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
-import { 
-  Heart, MessageSquare, MoreVertical, Edit3, Trash2, Flag, ArrowLeft, Loader2
-} from 'lucide-react';
+import { MessageSquare, MoreVertical, Edit3, Trash2, Flag, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { PostCommentsSection } from '../profile/ProfilePage';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
@@ -317,7 +316,7 @@ export const PostDetailPage: React.FC = () => {
             disabled={!user}
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', border: 'none', color: post.isLikedByMe ? 'var(--primary-color)' : 'var(--text-secondary)', cursor: 'pointer', fontSize: '1rem' }}
           >
-            <Heart size={20} fill={post.isLikedByMe ? 'currentColor' : 'none'} />
+            <SweetPotatoIcon size={20} fill={post.isLikedByMe ? 'currentColor' : 'none'} />
             <span>{post.likeCount}</span>
           </button>
           <button 

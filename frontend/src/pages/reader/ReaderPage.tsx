@@ -1,3 +1,4 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useParams, useNavigate } from "react-router-dom";
@@ -10,7 +11,7 @@ import { useAuthStore } from "../../store/authStore";
 import { CommentSidebar } from "../../components/reader/CommentSidebar";
 import { QuoteGeneratorModal } from "../../components/reader/QuoteGeneratorModal";
 import { ReportModal } from "../../components/ui/ReportModal";
-import { ChevronDown, Plus, Heart, MessageCircle, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check, MoreVertical, Share2 } from 'lucide-react';
+import { ChevronDown, Plus, MessageCircle, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check, MoreVertical, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getImageUrl } from "../../utils/image";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
@@ -710,7 +711,7 @@ export const ReaderPage: React.FC = () => {
             <span>{formatNumber(chapter.viewCount || 0)}</span>
           </div>
           <button className={`reader-btn has-text ${chapter.hasLiked ? 'active' : ''}`} title="Bình chọn" onClick={handleToggleLike}>
-            <Heart size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} />
+            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} />
             <span>{formatNumber(chapter.likeCount || 0)}</span>
           </button>
           <button className="reader-btn has-text" title="Bình luận" onClick={() => setShowComments(true)}>
@@ -854,7 +855,7 @@ export const ReaderPage: React.FC = () => {
             <Plus size={18} /> Thêm
           </button>
           <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={handleToggleLike}>
-            <Heart size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} /> Yêu thích
+            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} /> Khoai
           </button>
           
           <button className="action-btn icon-only" onClick={handleCopyLink} title="Sao chép liên kết">

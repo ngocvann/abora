@@ -1,7 +1,8 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
-import { Eye, Loader2, BookOpen, Tag, List, LayoutGrid, Heart } from "lucide-react";
+import { Eye, Loader2, BookOpen, Tag, List, LayoutGrid } from 'lucide-react';
 import api from "../../services/api";
 import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
@@ -222,8 +223,8 @@ export const ExplorePage: React.FC = () => {
                   <span>{currentRecommendation.viewCount.toLocaleString()}<span className="meta-text"> lượt xem</span></span>
                 </div>
                 <div className="carousel-meta-item">
-                  <Heart size={16} />
-                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> lượt yêu thích</span></span>
+                  <SweetPotatoIcon size={16} />
+                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> lượt khoai</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <BookOpen size={16} />
@@ -423,7 +424,7 @@ export const ExplorePage: React.FC = () => {
                         <span>{formatCount(story.viewCount)}</span>
                       </div>
                       <div className="story-card-stat">
-                        <Heart size={11} />
+                        <SweetPotatoIcon size={11} />
                         <span>{formatCount(story.favoriteCount)}</span>
                       </div>
                     </div>
@@ -455,7 +456,7 @@ export const ExplorePage: React.FC = () => {
                     )}
                     <div className="list-item-meta">
                       <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt xem</span>
-                      <span className="list-meta-item"><Heart size={13} /> {formatCount(story.favoriteCount)} yêu thích</span>
+                      <span className="list-meta-item"><SweetPotatoIcon size={13} /> {formatCount(story.favoriteCount)} khoai</span>
                       <span className="list-meta-item"><BookOpen size={13} /> {story.chapterCount} chương</span>
                     </div>
                   </div>

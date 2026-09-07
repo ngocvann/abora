@@ -1,7 +1,8 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Bell, MessageSquareReply, BookOpen, BookPlus, CheckCheck, Loader2, Info, UserPlus, Heart, Trash2, Ban, MessageSquare, ListPlus } from 'lucide-react';
+import { Bell, MessageSquareReply, BookOpen, BookPlus, CheckCheck, Loader2, Info, UserPlus, Trash2, Ban, MessageSquare, ListPlus } from 'lucide-react';
 import api from '../../services/api';
 import './NotificationPopover.css';
 
@@ -37,7 +38,7 @@ const typeIcon = (type: Notification['type']) => {
     case 'NEW_FOLLOWER':  return <UserPlus size={18} className="notif-icon" />;
     case 'LIKE_COMMENT':
     case 'LIKE_POST':     
-    case 'LIKE_STORY':    return <Heart size={18} className="notif-icon" />;
+    case 'LIKE_STORY':    return <SweetPotatoIcon size={18} className="notif-icon" />;
     case 'CONTENT_DELETED': return <Trash2 size={18} className="notif-icon" />;
     case 'ACCOUNT_BANNED': return <Ban size={18} className="notif-icon" />;
     case 'COMMENT_REPLY': return <MessageSquareReply size={18} className="notif-icon" />;

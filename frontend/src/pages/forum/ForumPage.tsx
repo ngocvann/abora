@@ -1,6 +1,7 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Heart, MessageSquare, MessagesSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X, Image as ImageIcon, Globe, Lock } from 'lucide-react';
+import { Loader2, MessageSquare, MessagesSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X, Image as ImageIcon, Globe, Lock } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
@@ -628,13 +629,13 @@ export const ForumPage: React.FC = () => {
                       className={`action-btn like-btn ${post.isLikedByMe ? 'liked' : ''}`}
                       onClick={() => {
                         if (!user) {
-                          alert('Vui lòng đăng nhập để thích bài viết.');
+                          alert('Vui lòng đăng nhập để khoai bài viết.');
                           return;
                         }
                         toggleLikeMutation.mutate(post.id);
                       }}
                     >
-                      <Heart size={18} fill={post.isLikedByMe ? '#a855f7' : 'none'} color={post.isLikedByMe ? '#a855f7' : 'currentColor'} />
+                      <SweetPotatoIcon size={18} fill={post.isLikedByMe ? '#a855f7' : 'none'} color={post.isLikedByMe ? '#a855f7' : 'currentColor'} />
                       <span>{post.likeCount}</span>
                     </button>
 

@@ -1,3 +1,4 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -8,7 +9,7 @@ import toast from 'react-hot-toast';
 import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useCallback } from 'react';
-import { ArrowLeft, Menu, Eye, Heart, MessageCircle, MoreHorizontal, Edit2, X, Info } from 'lucide-react';
+import { ArrowLeft, Menu, Eye, MessageCircle, MoreHorizontal, Edit2, X, Info } from 'lucide-react';
 import { getImageUrl } from '../../utils/image';
 import './Studio.css';
 
@@ -714,8 +715,8 @@ export const ChapterManagementPage: React.FC = () => {
                                       <span className="chapter-meta-stat" title="Lượt xem">
                                         <Eye size={15} /> {chapter.viewCount || 0}
                                       </span>
-                                      <span className="chapter-meta-stat" title="Lượt thích">
-                                        <Heart size={15} /> {chapter.likeCount || 0}
+                                      <span className="chapter-meta-stat" title="Lượt khoai">
+                                        <SweetPotatoIcon size={15} /> {chapter.likeCount || 0}
                                       </span>
                                       <span className="chapter-meta-stat" title="Bình luận">
                                         <MessageCircle size={15} /> {chapter.commentCount || 0}

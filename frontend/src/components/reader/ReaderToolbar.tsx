@@ -1,10 +1,11 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useReaderStore } from '../../store/readerStore';
 import { Button } from '../ui/Button';
 import './ReaderToolbar.css';
 
-import { MessageCircle, Heart } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 interface ReaderToolbarProps {
   storySlug: string;
@@ -55,8 +56,8 @@ export const ReaderToolbar: React.FC<ReaderToolbarProps> = ({
           onClick={onToggleLike} 
           className="relative mr-2"
         >
-          <Heart size={18} className="mr-2" fill={hasLiked ? "currentColor" : "none"} />
-          Thích
+          <SweetPotatoIcon size={18} className="mr-2" fill={hasLiked ? "currentColor" : "none"} />
+          Khoai
           {likeCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
               {likeCount}

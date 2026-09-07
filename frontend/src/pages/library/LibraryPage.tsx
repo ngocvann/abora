@@ -1,8 +1,9 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import { LayoutGrid, List as ListIcon, Trash2, Eye, BookOpen, Loader2, Heart, Globe, Lock, MoreVertical, ArrowLeft } from 'lucide-react';
+import { LayoutGrid, List as ListIcon, Trash2, Eye, BookOpen, Loader2, Globe, Lock, MoreVertical, ArrowLeft } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { toast } from 'react-hot-toast';
@@ -397,7 +398,7 @@ export const LibraryPage: React.FC = () => {
             <Eye size={13} /> {formatCount(item.viewCount || 0)}
           </span>
           <span className="library-stat-item-heart">
-            <Heart size={13} /> {formatCount(item.starCount || 0)}
+            <SweetPotatoIcon size={13} /> {formatCount(item.starCount || 0)}
           </span>
         </div>
       </div>
@@ -442,7 +443,7 @@ export const LibraryPage: React.FC = () => {
 
           <div className="list-stats">
             <span className="library-stat-item library-stat-item-view"><Eye size={13} /> {formatCount(item.viewCount || 0)}</span>
-            <span className="library-stat-item library-stat-item-heart"><Heart size={13} /> {formatCount(item.starCount || 0)}</span>
+            <span className="library-stat-item library-stat-item-heart"><SweetPotatoIcon size={13} /> {formatCount(item.starCount || 0)}</span>
             <span className="library-stat-item library-stat-item-chapters"><BookOpen size={13} /> {item.chapterCount} chương</span>
           </div>
 
@@ -488,7 +489,7 @@ export const LibraryPage: React.FC = () => {
             <h1 className="library-title">
               Thư viện<span className="desktop-suffix"> của tôi</span>
             </h1>
-            <p className="library-subtitle">Quản lý và tiếp tục đọc các tác phẩm yêu thích của bạn</p>
+            <p className="library-subtitle">Quản lý và tiếp tục đọc các tác phẩm khoai của bạn</p>
           </div>
           
           <div className="library-view-toggle">
@@ -603,7 +604,7 @@ export const LibraryPage: React.FC = () => {
             <div className="library-empty">
               <ListIcon size={48} className="text-muted" />
               <h3>Chưa có danh sách truyện</h3>
-              <p>Tạo danh sách truyện để gom nhóm các tác phẩm yêu thích của bạn.</p>
+              <p>Tạo danh sách truyện để gom nhóm các tác phẩm khoai của bạn.</p>
               
               <Button 
                 onClick={() => {

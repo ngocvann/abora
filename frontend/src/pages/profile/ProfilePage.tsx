@@ -1,8 +1,9 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useRef, useState, useEffect } from 'react';
 import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Camera, Heart, MessageSquare, MessageCircle, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
+import { Loader2, Camera, MessageSquare, MessageCircle, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
@@ -894,7 +895,7 @@ export const ProfilePage: React.FC = () => {
                         onClick={() => toggleLikeMutation.mutate(post.id)}
                         disabled={!currentUser}
                       >
-                        <Heart size={16} fill={post.isLikedByMe ? '#a855f7' : 'none'} color={post.isLikedByMe ? '#a855f7' : 'currentColor'} />
+                        <SweetPotatoIcon size={16} fill={post.isLikedByMe ? '#a855f7' : 'none'} color={post.isLikedByMe ? '#a855f7' : 'currentColor'} />
                         <span>{post.likeCount}</span>
                       </button>
                       <button
@@ -984,8 +985,8 @@ export const ProfilePage: React.FC = () => {
                             <Eye size={13} />
                             {story.viewCount}
                           </span>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="Yêu thích">
-                            <Heart size={13} />
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="Khoai">
+                            <SweetPotatoIcon size={13} />
                             {story.favoriteCount || 0}
                           </span>
                         </div>
@@ -1275,7 +1276,7 @@ export const ProfilePage: React.FC = () => {
                   type="text"
                   value={newListName}
                   onChange={(e) => setNewListName(e.target.value)}
-                  placeholder="Ví dụ: Truyện yêu thích, Đọc sau..."
+                  placeholder="Ví dụ: Truyện khoai, Đọc sau..."
                   required
                 />
               </div>
