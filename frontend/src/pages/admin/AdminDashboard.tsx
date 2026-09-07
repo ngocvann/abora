@@ -26,15 +26,35 @@ export const AdminDashboard: React.FC = () => {
   const [sendSuccess, setSendSuccess] = useState<string | null>(null);
 
   // Banner Settings State
-  const [bannerUrl, setBannerUrl] = useState('');
-  const [isUploadingBanner, setIsUploadingBanner] = useState(false);
+  const [homeBannerMode, setHomeBannerMode] = useState<'default' | 'custom'>('default');
+  const [homeBannerUrl, setHomeBannerUrl] = useState('');
+  
+  const [exploreBannerMode, setExploreBannerMode] = useState<'default' | 'custom'>('default');
+  const [exploreBannerUrl, setExploreBannerUrl] = useState('');
+
+  const [isUploadingBanner, setIsUploadingBanner] = useState<'home' | 'explore' | false>(false);
   const [isSavingBanner, setIsSavingBanner] = useState(false);
 
   useEffect(() => {
-    // Fetch banner url
+    // Fetch home banner
     api.get('/settings/home_banner').then(res => {
       if (res.data && res.data.value) {
-        setBannerUrl(res.data.value);
+        setHomeBannerMode('custom');
+        setHomeBannerUrl(res.data.value);
+      } else {
+        setHomeBannerMode('default');
+        setHomeBannerUrl('');
+      }
+    }).catch(console.error);
+
+    // Fetch explore banner
+    api.get('/settings/explore_banner').then(res => {
+      if (res.data && res.data.value) {
+        setExploreBannerMode('custom');
+        setExploreBannerUrl(res.data.value);
+      } else {
+        setExploreBannerMode('default');
+        setExploreBannerUrl('');
       }
     }).catch(console.error);
 
@@ -53,9 +73,9 @@ export const AdminDashboard: React.FC = () => {
     fetchStats();
   }, []);
 
-  const handleUploadBanner = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadBanner = async (e: React.ChangeEvent<HTMLInputElement>, target: 'home' | 'explore') => {
     if (!e.target.files || e.target.files.length === 0) return;
-    setIsUploadingBanner(true);
+    setIsUploadingBanner(target);
     try {
       const file = e.target.files[0];
       const formData = new FormData();
@@ -64,7 +84,13 @@ export const AdminDashboard: React.FC = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       if (res.data && res.data.url) {
-        setBannerUrl(res.data.url);
+        if (target === 'home') {
+          setHomeBannerUrl(res.data.url);
+          setHomeBannerMode('custom');
+        } else {
+          setExploreBannerUrl(res.data.url);
+          setExploreBannerMode('custom');
+        }
       }
     } catch (err) {
       console.error('Upload failed', err);
@@ -77,11 +103,14 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveBanner = async () => {
     setIsSavingBanner(true);
     try {
-      await api.post('/settings/home_banner', { value: bannerUrl });
-      alert('Đã lưu banner thành công!');
+      await Promise.all([
+        api.post('/settings/home_banner', { value: homeBannerMode === 'custom' ? homeBannerUrl : '' }),
+        api.post('/settings/explore_banner', { value: exploreBannerMode === 'custom' ? exploreBannerUrl : '' })
+      ]);
+      alert('Đã lưu cài đặt giao diện thành công!');
     } catch (err) {
       console.error('Save failed', err);
-      alert('Lưu banner thất bại.');
+      alert('Lưu cài đặt thất bại.');
     } finally {
       setIsSavingBanner(false);
     }
@@ -237,49 +266,141 @@ export const AdminDashboard: React.FC = () => {
       />
 
       <div className="glass-panel" style={{ padding: '1.5rem', marginTop: '2rem' }}>
-        <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Image size={20} />
-          Cài đặt giao diện (Banner)
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>URL Ảnh Banner Trang chủ & Khám phá</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <input
-                className="form-input"
-                type="text"
-                placeholder="Nhập URL ảnh hoặc upload..."
-                value={bannerUrl}
-                onChange={(e) => setBannerUrl(e.target.value)}
-                style={{ flex: 1 }}
-              />
-              <button 
-                className="primary-btn" 
-                onClick={handleSaveBanner}
-                disabled={isSavingBanner}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {isSavingBanner ? 'Đang lưu...' : 'Lưu Banner'}
-              </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+            <Image size={20} />
+            Cài đặt Banner Trang
+          </h3>
+          <button 
+            className="primary-btn" 
+            onClick={handleSaveBanner}
+            disabled={isSavingBanner}
+            style={{ padding: '0.5rem 1.5rem' }}
+          >
+            {isSavingBanner ? 'Đang lưu...' : 'Lưu Thay Đổi'}
+          </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          
+          {/* TRANG CHỦ */}
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--reader-border)' }}>
+            <h4 style={{ marginBottom: '1rem', color: 'var(--primary-color)' }}>Banner Trang chủ</h4>
+            
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <input 
+                  type="radio" 
+                  name="homeBannerMode" 
+                  checked={homeBannerMode === 'default'} 
+                  onChange={() => setHomeBannerMode('default')} 
+                />
+                Mặc định
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <input 
+                  type="radio" 
+                  name="homeBannerMode" 
+                  checked={homeBannerMode === 'custom'} 
+                  onChange={() => setHomeBannerMode('custom')} 
+                />
+                Tùy chỉnh
+              </label>
             </div>
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Hoặc Upload ảnh từ máy tính</label>
-            <input 
-              type="file" 
-              accept="image/*"
-              className="form-input"
-              onChange={handleUploadBanner}
-              disabled={isUploadingBanner}
-            />
-            {isUploadingBanner && <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginLeft: '10px' }}>Đang upload...</span>}
-          </div>
-          {bannerUrl && (
+
+            {homeBannerMode === 'custom' && (
+              <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Nhập URL ảnh..."
+                  value={homeBannerUrl}
+                  onChange={(e) => setHomeBannerUrl(e.target.value)}
+                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    className="form-input"
+                    onChange={(e) => handleUploadBanner(e, 'home')}
+                    disabled={isUploadingBanner === 'home'}
+                    style={{ flex: 1 }}
+                  />
+                  {isUploadingBanner === 'home' && <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Đang tải lên...</span>}
+                </div>
+              </div>
+            )}
+
             <div style={{ marginTop: '1rem' }}>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Xem trước:</p>
-              <img src={bannerUrl} alt="Banner Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--reader-border)' }} />
+              <img 
+                src={homeBannerMode === 'default' ? '/hero-lovers.png' : (homeBannerUrl || '/hero-lovers.png')} 
+                alt="Home Banner Preview" 
+                style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--reader-border)' }} 
+                onError={(e) => (e.currentTarget.src = '/hero-lovers.png')}
+              />
             </div>
-          )}
+          </div>
+
+          {/* TRANG KHÁM PHÁ */}
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--reader-border)' }}>
+            <h4 style={{ marginBottom: '1rem', color: 'var(--primary-color)' }}>Banner Trang Khám phá</h4>
+            
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <input 
+                  type="radio" 
+                  name="exploreBannerMode" 
+                  checked={exploreBannerMode === 'default'} 
+                  onChange={() => setExploreBannerMode('default')} 
+                />
+                Mặc định
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                <input 
+                  type="radio" 
+                  name="exploreBannerMode" 
+                  checked={exploreBannerMode === 'custom'} 
+                  onChange={() => setExploreBannerMode('custom')} 
+                />
+                Tùy chỉnh
+              </label>
+            </div>
+
+            {exploreBannerMode === 'custom' && (
+              <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Nhập URL ảnh..."
+                  value={exploreBannerUrl}
+                  onChange={(e) => setExploreBannerUrl(e.target.value)}
+                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    className="form-input"
+                    onChange={(e) => handleUploadBanner(e, 'explore')}
+                    disabled={isUploadingBanner === 'explore'}
+                    style={{ flex: 1 }}
+                  />
+                  {isUploadingBanner === 'explore' && <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Đang tải lên...</span>}
+                </div>
+              </div>
+            )}
+
+            <div style={{ marginTop: '1rem' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Xem trước:</p>
+              <img 
+                src={exploreBannerMode === 'default' ? '/explore-banner.png' : (exploreBannerUrl || '/explore-banner.png')} 
+                alt="Explore Banner Preview" 
+                style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--reader-border)' }} 
+                onError={(e) => (e.currentTarget.src = '/explore-banner.png')}
+              />
+            </div>
+          </div>
+
         </div>
       </div>
 
