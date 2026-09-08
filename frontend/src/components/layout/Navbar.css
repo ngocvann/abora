@@ -734,28 +734,32 @@
 /* ========================================= */
 
 .navbar-search {
-  background: #FFFBEB !important; /* Vàng cam nhạt */
+  background: #FEF3C7 !important; /* Vàng kem nhạt tone logo */
   border-radius: 9999px !important;
-  height: 34px !important;
+  height: 36px !important;
   display: flex !important;
   align-items: center !important;
   border: none !important;
+  position: relative !important;
+  overflow: visible !important;
 }
 
 .search-input {
   background: transparent !important;
   border: none !important;
-  color: #581C87 !important; /* Purple đậm hơn tí (Purple 900) */
-  font-weight: 500 !important; /* Mỏng hơn tí */
-  font-size: 0.85rem !important; /* Nhỏ lại 1 tí */
-  padding: 0 45px 0 1rem !important; /* Make room for the button */
+  color: #581C87 !important; /* Tím đậm chuẩn logo */
+  font-weight: 500 !important;
+  font-size: 0.8rem !important;
+  padding: 0 52px 0 1rem !important; /* Chừa chỗ cho nút tròn bên phải */
   height: 100% !important;
   width: 100% !important;
   border-radius: 9999px !important;
+  letter-spacing: 0.01em;
 }
 
 .search-input::placeholder {
-  color: rgba(88, 28, 135, 0.5) !important;
+  color: rgba(88, 28, 135, 0.45) !important;
+  font-weight: 400 !important;
 }
 
 .search-input:focus {
@@ -765,47 +769,52 @@
 }
 
 .search-clear-btn {
-  right: 56px !important; /* Move clear button to the left of the new search button */
+  right: 48px !important; /* Dời sang trái để tránh nút search tròn */
   color: rgba(88, 28, 135, 0.5) !important;
 }
 
-/* The right side colored button with left arrow shape */
+/* Nút tròn bên phải (giống ảnh mẫu) */
 .search-btn-decor {
   position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  width: 46px;
-  background: #6B21A8; /* Tím logo */
-  color: #FFFBEB; /* Icon vàng cam */
-  border-radius: 0 9999px 9999px 0;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 36px;
+  width: 36px;
+  background: #7C3AED; /* Tím sáng chuẩn logo */
+  color: #FEF3C7; /* Vàng kem */
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 2;
+  box-shadow: -2px 0 6px rgba(124, 58, 237, 0.3);
 }
 
-/* Arrow shape on the left edge */
+/* Mũi nhọn chỉ sang trái (arrow tail) */
 .search-btn-decor::before {
   content: '';
   position: absolute;
-  left: -12px;
-  top: 0;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-right: 12px solid #6B21A8; /* Same as background */
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid #7C3AED;
   transition: all 0.2s ease;
 }
 
-/* Hover state */
+/* Hover: đảo màu */
 .search-btn-decor:hover {
-  background: #FFFBEB;
-  color: #6B21A8;
+  background: #FEF3C7;
+  color: #7C3AED;
+  box-shadow: -2px 0 8px rgba(124, 58, 237, 0.5);
 }
 
 .search-btn-decor:hover::before {
-  border-right-color: #FFFBEB;
+  border-right-color: #FEF3C7;
 }
+
 
