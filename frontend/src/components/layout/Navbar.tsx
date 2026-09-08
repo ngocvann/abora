@@ -493,7 +493,6 @@ export const Navbar: React.FC = () => {
               <X size={20} />
             </button>
             <div className="mobile-search-input-container">
-              <Search className="mobile-search-input-icon" size={16} />
               <input
                 type="text"
                 placeholder="Tìm kiếm truyện, tác giả..."
@@ -512,6 +511,9 @@ export const Navbar: React.FC = () => {
                   <X size={14} />
                 </button>
               )}
+              <div className="search-btn-decor mobile-version" onClick={() => { if(searchQuery.trim()) { saveSearchQuery(searchQuery.trim()); navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`); setIsMobileSearchOpen(false); } }}>
+                  <Search size={15} />
+                </div>
             </div>
             <div className="mobile-search-spacer"></div>
           </div>
