@@ -1,3 +1,81 @@
+
+.navbar-search, .mobile-search-input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background: #FFFBEB; /* Vàng cam nhạt */
+  border-radius: 9999px;
+  height: 36px;
+  max-width: 300px;
+  width: 100%;
+}
+
+.mobile-search-input-container {
+  max-width: 100%;
+}
+
+.search-input, .mobile-search-input {
+  flex: 1;
+  height: 100%;
+  background: transparent !important;
+  border: none !important;
+  color: #6B21A8 !important; /* Chữ tím */
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0 1rem;
+  border-radius: 9999px 0 0 9999px;
+  min-width: 0;
+}
+
+.search-input::placeholder, .mobile-search-input::placeholder {
+  color: rgba(107, 33, 168, 0.5) !important;
+}
+
+.search-input:focus, .mobile-search-input:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+/* The right side colored button with left arrow shape */
+.search-btn-decor {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 48px;
+  background: #6B21A8; /* Nền tím */
+  color: #FFFBEB; /* Icon vàng cam nhạt */
+  border-radius: 0 9999px 9999px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+/* Create the left-pointing arrow shape using a triangle on the left edge */
+.search-btn-decor::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 0;
+  border-top: 18px solid transparent;
+  border-bottom: 18px solid transparent;
+  border-right: 12px solid #6B21A8; /* Same as background */
+  transition: all 0.2s ease;
+}
+
+/* Hover state: Chuyển màu ngược lại */
+.search-btn-decor:hover {
+  background: #FFFBEB;
+  color: #6B21A8;
+}
+
+.search-btn-decor:hover::before {
+  border-right-color: #FFFBEB;
+}
+
 .navbar {
   position: fixed;
   top: 0;
@@ -74,89 +152,210 @@
   text-shadow: 0 0 10px var(--primary-glow);
 }
 
-.navbar-search {
-  position: relative;
-  max-width: 300px;
-  width: 100%;
-}
 
 
-.navbar-search, .mobile-search-input-container {
+
+
+
+
+
+
+/* Right */
+.navbar-actions {
   display: flex;
   align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
   position: relative;
-  background: #FFFBEB; /* Vàng cam nhạt */
-  border-radius: 9999px;
-  height: 36px;
 }
 
-.search-input, .mobile-search-input {
-  flex: 1;
-  height: 100%;
-  background: transparent !important;
-  border: none !important;
-  color: #6B21A8 !important; /* Chữ tím */
+.navbar-admin-btn {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #c4b5fd;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-right: 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
   font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0 1rem;
-  border-radius: 9999px 0 0 9999px;
+  transition: all 0.2s;
 }
 
-.search-input::placeholder, .mobile-search-input::placeholder {
-  color: rgba(107, 33, 168, 0.5) !important;
+.navbar-admin-btn:hover {
+  background: rgba(139, 92, 246, 0.25);
 }
 
-.search-input:focus, .mobile-search-input:focus {
-  outline: none;
-  box-shadow: none !important;
-}
-
-/* The right side colored button with left arrow shape */
-.search-btn-decor {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  width: 48px;
-  background: #6B21A8; /* Nền tím */
-  color: #FFFBEB; /* Icon vàng cam nhạt */
-  border-radius: 0 9999px 9999px 0;
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.icon-btn:hover {
+  color: var(--primary);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 5px #ef4444;
+}
+
+.avatar-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 2;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+  margin-right: 5px;
 }
 
-/* Create the left-pointing arrow shape using a triangle on the left edge */
-.search-btn-decor::before {
-  content: '';
+.avatar-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.avatar-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 0 10px var(--primary-glow);
+  overflow: hidden;
+}
+
+.chevron-icon {
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.navbar-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown */
+.dropdown-menu {
   position: absolute;
-  left: -12px;
-  top: 0;
-  border-top: 18px solid transparent;
-  border-bottom: 18px solid transparent;
-  border-right: 12px solid #6B21A8; /* Same as background */
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 240px;
+  background: rgba(18, 24, 38, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.dropdown-header {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dropdown-name {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.dropdown-email {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--border-light);
+  margin: 0.25rem 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: left;
   transition: all 0.2s ease;
 }
 
-/* Hover state: Chuyển màu ngược lại */
-.search-btn-decor:hover {
-  background: #FFFBEB;
-  color: #6B21A8;
+.dropdown-item:hover {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: var(--text-main);
 }
 
-.search-btn-decor:hover::before {
-  border-right-color: #FFFBEB;
+.dropdown-item.text-danger {
+  color: #ef4444;
 }
 
+.dropdown-item.text-danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+@media (max-width: 900px) {
+  .navbar-center {
+    justify-content: flex-end;
+  }
+  .navbar-links {
+    display: none;
+  }
+}
+
+/* Optimized Search Autocomplete styles */
 .search-clear-btn {
-
   position: absolute;
-  right: 56px; /* move left to avoid the decor button */
+  right: 56px;
   top: 50%;
-  color: rgba(107, 33, 168, 0.5);
   transform: translateY(-50%);
   background: none;
   border: none;
