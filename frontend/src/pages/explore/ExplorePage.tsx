@@ -281,7 +281,7 @@ export const ExplorePage: React.FC = () => {
             )}
             
             {/* Tags Filter Section */}
-            {allTags.length > 0 && (
+            {false && allTags.length > 0 && (
               <div style={{ marginTop: '1.5rem' }}>
                 <h2 className="category-sidebar-title" style={{ fontSize: '1rem', paddingLeft: '0.5rem' }}>Lọc theo Tag</h2>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem', padding: '0 0.5rem' }}>
