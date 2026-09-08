@@ -21,15 +21,16 @@
 .btn-lg { padding: 1rem 2rem; font-size: 1.125rem; }
 
 .btn-primary, .primary-btn {
-  background: linear-gradient(135deg, #FFB703 0%, #C026D3 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #2E1065 0%, #6B21A8 100%); /* Deep galaxy purple */
+  color: #FDE047; /* Bright gold/yellow text */
+  border: 2px solid #FBBF24; /* Gold border to match logo */
   border-radius: 9999px;
   font-weight: 800;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
   box-shadow: 
-    inset 0 4px 0 rgba(255, 255, 255, 0.4),
-    0 6px 0 #7e22ce,
-    0 10px 15px rgba(192, 38, 211, 0.5);
+    inset 0 4px 0 rgba(255, 255, 255, 0.15),
+    0 6px 0 #D97706, /* Dark gold 3D bottom */
+    0 10px 20px rgba(251, 191, 36, 0.25); /* Gold outer glow */
   transition: all 0.1s ease;
   transform: translateY(0);
   margin-bottom: 6px;
@@ -37,14 +38,18 @@
 
 .btn-primary:hover:not(:disabled), .primary-btn:hover:not(:disabled) {
   filter: brightness(1.2);
+  box-shadow: 
+    inset 0 4px 0 rgba(255, 255, 255, 0.25),
+    0 6px 0 #F59E0B,
+    0 12px 25px rgba(251, 191, 36, 0.4);
 }
 
 .btn-primary:active:not(:disabled), .primary-btn:active:not(:disabled) {
   transform: translateY(6px);
   box-shadow: 
-    inset 0 2px 0 rgba(255, 255, 255, 0.2),
-    0 0 0 #7e22ce,
-    0 2px 5px rgba(192, 38, 211, 0.5);
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 #D97706,
+    0 2px 5px rgba(251, 191, 36, 0.3);
   margin-bottom: 0;
 }
 
