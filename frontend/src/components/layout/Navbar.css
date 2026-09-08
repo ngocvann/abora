@@ -1,165 +1,4 @@
 
-.navbar-search, .mobile-search-input-container {
-  display: flex;
-  align-items: center;
-  position: relative;
-  background: #FFFBEB; /* Vàng cam nhạt */
-  border-radius: 9999px;
-  height: 36px;
-  max-width: 300px;
-  width: 100%;
-}
-
-.mobile-search-input-container {
-  max-width: 100%;
-}
-
-.search-input, .mobile-search-input {
-  flex: 1;
-  height: 100%;
-  background: transparent !important;
-  border: none !important;
-  color: #6B21A8 !important; /* Chữ tím */
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0 1rem;
-  border-radius: 9999px 0 0 9999px;
-  min-width: 0;
-}
-
-.search-input::placeholder, .mobile-search-input::placeholder {
-  color: rgba(107, 33, 168, 0.5) !important;
-}
-
-.search-input:focus, .mobile-search-input:focus {
-  outline: none;
-  box-shadow: none !important;
-}
-
-/* The right side colored button with left arrow shape */
-.search-btn-decor {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  width: 48px;
-  background: #6B21A8; /* Nền tím */
-  color: #FFFBEB; /* Icon vàng cam nhạt */
-  border-radius: 0 9999px 9999px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 2;
-}
-
-/* Create the left-pointing arrow shape using a triangle on the left edge */
-.search-btn-decor::before {
-  content: '';
-  position: absolute;
-  left: -12px;
-  top: 0;
-  border-top: 18px solid transparent;
-  border-bottom: 18px solid transparent;
-  border-right: 12px solid #6B21A8; /* Same as background */
-  transition: all 0.2s ease;
-}
-
-/* Hover state: Chuyển màu ngược lại */
-.search-btn-decor:hover {
-  background: #FFFBEB;
-  color: #6B21A8;
-}
-
-.search-btn-decor:hover::before {
-  border-right-color: #FFFBEB;
-}
-
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  background: rgba(14, 18, 33, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-light);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
-}
-
-.navbar-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  gap: 1.5rem;
-}
-
-/* Left */
-.navbar-left {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.navbar-logo-link {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-logo-img {
-  height: 95px;
-  width: auto;
-  object-fit: contain;
-  display: block;
-  margin-top: -20px;
-  margin-bottom: -20px;
-  margin-right: -10px;
-  transition: transform 0.2s ease;
-}
-
-.navbar-logo-img:hover {
-  transform: scale(1.05);
-}
-
-/* Center */
-.navbar-center {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-}
-
-.navbar-links {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-link {
-  color: var(--text-muted);
-  font-weight: 500;
-  transition: all 0.2s ease;
-  font-size: 0.85rem;
-}
-
-.nav-link:hover {
-  color: var(--text-main);
-  text-shadow: 0 0 10px var(--primary-glow);
-}
-
-
-
-
-
-
-
-
-
 /* Right */
 .navbar-actions {
   display: flex;
@@ -760,33 +599,9 @@
   color: var(--text-main);
 }
 
-.mobile-search-input-container {
-  flex: 1;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
 
-.mobile-search-input-icon {
-  position: absolute;
-  left: 0.75rem;
-  color: var(--text-muted);
-}
 
-.mobile-search-input {
-  width: 100%;
-  padding: 0.5rem 2.2rem 0.5rem 2.2rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-light);
-  color: var(--text-main);
-  font-size: 0.9rem;
-  outline: none;
-}
 
-.mobile-search-input:focus {
-  border-color: var(--primary);
-}
 
 .mobile-search-clear {
   position: absolute;
@@ -809,9 +624,7 @@
     display: none !important;
   }
   
-  .navbar-search {
-    display: none !important;
-  }
+  
   
   .mobile-menu-toggle {
     display: flex;
