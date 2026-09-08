@@ -24,9 +24,28 @@
 
 
 
+
 .btn-primary, .primary-btn {
-  /* Softer, cloudy Ombre matching ABO letters exactly */
-  background: linear-gradient(160deg, #FAD67B 0%, #E79963 35%, #AD5699 70%, #55257B 100%);
+  /* Base color */
+  background-color: #311648;
+  
+  /* Layers: Stars (top) -> Patchy Nebula Clouds (bottom) */
+  background-image: 
+    /* Stars: Big and small glowing dots */
+    radial-gradient(circle at 18% 25%, #FFF 1.5px, rgba(255,255,255,0.5) 3px, transparent 4px),
+    radial-gradient(circle at 82% 35%, #FFF 1px, transparent 2px),
+    radial-gradient(circle at 45% 75%, rgba(255,255,255,0.9) 2px, rgba(255,255,255,0.3) 4px, transparent 5px),
+    radial-gradient(circle at 68% 60%, rgba(255,255,255,0.7) 0.5px, transparent 1px),
+    radial-gradient(circle at 35% 45%, #FFF 1px, transparent 2px),
+    radial-gradient(circle at 85% 70%, rgba(255,255,255,0.8) 1px, transparent 2px),
+    
+    /* Nebula Clouds for patchy blended look (loang màu) */
+    radial-gradient(ellipse at 15% -10%, #FAD67B 0%, rgba(250, 214, 123, 0) 65%),  /* Yellow top-left */
+    radial-gradient(ellipse at 85% 5%, #E79963 0%, rgba(231, 153, 99, 0) 70%),    /* Peach top-right */
+    radial-gradient(ellipse at 10% 60%, #AD5699 0%, rgba(173, 86, 153, 0) 70%),   /* Magenta mid-left */
+    radial-gradient(ellipse at 90% 90%, #55257B 0%, rgba(85, 37, 123, 0) 80%),    /* Dark purple bot-right */
+    radial-gradient(circle at 50% 50%, #86368C 0%, rgba(134, 54, 140, 0) 80%);    /* Soft center blend */
+
   color: #ffffff;
   font-weight: 800;
   border-radius: 9999px;
@@ -34,7 +53,7 @@
   /* Thick Dark Purple inner outline */
   border: 4px solid #311648;
   
-  /* Text shadow for pop, soft purple instead of harsh black */
+  /* Text shadow for pop */
   text-shadow: 0 2px 4px rgba(49, 22, 72, 0.6);
 
   /* Outer pale yellow stroke + 3D drop */
@@ -74,26 +93,8 @@
   box-shadow: 28px -2px 0 -4px rgba(255, 255, 255, 0.85);
 }
 
-/* Subtle galaxy clouds + stars */
-.btn-primary::after, .primary-btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  background-image: 
-    radial-gradient(circle at 75% 80%, rgba(250, 214, 123, 0.3) 0%, transparent 50%), /* cloudy glow */
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.9) 1px, transparent 1.5px),
-    radial-gradient(circle at 80% 40%, rgba(255,255,255,0.9) 1.5px, transparent 2px),
-    radial-gradient(circle at 45% 70%, rgba(255,255,255,0.7) 1px, transparent 1.5px),
-    radial-gradient(circle at 65% 25%, rgba(255,255,255,0.8) 1.5px, transparent 2px);
-}
-
 .btn-primary:hover:not(:disabled), .primary-btn:hover:not(:disabled) {
-  filter: brightness(1.1);
+  filter: brightness(1.15);
   box-shadow: 
     inset 0 0 10px rgba(0,0,0,0.1),
     0 0 0 2px #FFF, /* White stroke on hover */
