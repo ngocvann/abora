@@ -705,3 +705,13 @@
 
 
 
+
+
+/* Chevron Icon in User Menu */
+.chevron-icon {
+  color: #FBBF24;
+  transition: transform 0.2s ease;
+}
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
