@@ -855,7 +855,7 @@
 /* ========================================= */
 
 .navbar-search {
-  background: #FEF3C7 !important;
+  background: #FFFDF7 !important; /* Vàng kem rất nhạt */
   border-radius: 9999px !important;
   height: 36px !important;
   display: flex !important;
@@ -863,6 +863,10 @@
   border: none !important;
   position: relative !important;
   overflow: visible !important;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 3px rgba(217, 119, 6, 0.1),
+    0 2px 6px rgba(124, 58, 237, 0.15) !important;
 }
 
 .search-icon {
@@ -872,7 +876,7 @@
 .search-input {
   background: transparent !important;
   border: none !important;
-  color: #581C87 !important;
+  color: #3B0764 !important; /* Tím đậm hơn - Purple 950 */
   font-weight: 500 !important;
   font-size: 0.8rem !important;
   padding: 0 52px 0 1rem !important;
@@ -883,7 +887,7 @@
 }
 
 .search-input::placeholder {
-  color: rgba(88, 28, 135, 0.45) !important;
+  color: rgba(59, 7, 100, 0.4) !important;
   font-weight: 400 !important;
 }
 
@@ -896,7 +900,7 @@
 
 .search-clear-btn {
   right: 48px !important;
-  color: rgba(88, 28, 135, 0.5) !important;
+  color: rgba(59, 7, 100, 0.5) !important;
 }
 
 /* Circular purple button on the right */
@@ -908,7 +912,7 @@
   height: 36px;
   width: 36px;
   background: #7C3AED;
-  color: #FEF3C7;
+  color: #FFFDF7;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -916,31 +920,31 @@
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 2;
-  box-shadow: -2px 0 6px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
 }
 
-/* Arrow tail pointing left */
+/* Arrow tail pointing right (vào nút tròn) */
 .search-btn-decor::before {
   content: '';
   position: absolute;
-  left: -8px;
+  right: -8px;
   top: 50%;
   transform: translateY(-50%);
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
-  border-right: 10px solid #7C3AED;
+  border-left: 10px solid #7C3AED;
   transition: all 0.2s ease;
 }
 
 /* Hover: invert colors */
 .search-btn-decor:hover {
-  background: #FEF3C7;
+  background: #FFFDF7;
   color: #7C3AED;
-  box-shadow: -2px 0 8px rgba(124, 58, 237, 0.5);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.5);
 }
 
 .search-btn-decor:hover::before {
-  border-right-color: #FEF3C7;
+  border-left-color: #FFFDF7;
 }
 
 /* ========================================= */
