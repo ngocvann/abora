@@ -27,13 +27,14 @@
 
 
 
+
 .btn-primary, .primary-btn {
   position: relative;
   border: none;
   border-radius: 9999px;
-  color: #ffffff;
+  color: #D97706; /* Match icon color (Dark Honey Orange) */
   font-weight: 800;
-  text-shadow: 0 1px 2px rgba(180, 83, 9, 0.8), 0 2px 4px rgba(180, 83, 9, 0.4);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); /* White soft glow for text */
   background: transparent;
   margin-bottom: 6px;
   transform: translateY(0);
@@ -45,12 +46,13 @@
   z-index: 2;
 }
 
-/* ::before = Ombre 3D Drop Shadow layer (Purple to Yellow) */
+/* ::before = Ombre 3D Drop Shadow layer (Vertical: Purple bottom to Orange top) */
 .btn-primary::before, .primary-btn::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: -6px; /* extend 6px down */
-  background: linear-gradient(to right, #6B21A8 0%, #FBBF24 100%);
+  /* Gradient starts at Purple at the very bottom, fades to Orange within 12px so it's visible in the 6px drop */
+  background: linear-gradient(to top, #6B21A8 0%, #D97706 12px, #FBBF24 100%);
   border-radius: 9999px;
   z-index: 0;
   box-shadow: 0 10px 15px rgba(251, 191, 36, 0.3); /* Glow */
@@ -69,7 +71,7 @@
   z-index: 1;
   box-shadow: 
     inset 0 3px 6px rgba(255, 255, 255, 0.6),
-    inset 0 -3px 6px rgba(217, 119, 6, 0.4);
+    inset 0 -3px 6px rgba(217, 119, 6, 0.3);
   transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
