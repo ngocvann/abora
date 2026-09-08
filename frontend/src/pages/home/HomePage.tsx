@@ -192,7 +192,13 @@ export const HomePage: React.FC = () => {
           <p className="hero-subtitle">
             Nơi những câu chuyện tuyệt vời nhất được sinh ra, nuôi dưỡng và lan tỏa giá trị đích thực.
           </p>
-          <div style={{ marginTop: "2rem" }}>
+          <div style={{ marginTop: "2rem", position: "relative", display: "inline-block" }}>
+              <span className="sparkle-star" style={{ top: '-10px', left: '10%', animationDelay: '0s', width: '10px', height: '10px' }}></span>
+              <span className="sparkle-star" style={{ top: '50%', left: '-15px', animationDelay: '1.2s', width: '14px', height: '14px' }}></span>
+              <span className="sparkle-star" style={{ top: '90%', left: '30%', animationDelay: '2.5s', width: '8px', height: '8px' }}></span>
+              <span className="sparkle-star" style={{ top: '-5px', right: '15%', animationDelay: '0.8s', width: '12px', height: '12px' }}></span>
+              <span className="sparkle-star" style={{ top: '70%', right: '-20px', animationDelay: '1.7s', width: '16px', height: '16px' }}></span>
+              <span className="sparkle-star" style={{ top: '110%', right: '25%', animationDelay: '0.3s', width: '10px', height: '10px' }}></span>
               <Link to="/explore">
                 <Button size="lg" className="btn-primary px-8 py-3 text-[1.1rem]">
                   <IoMoonSharp size={20} style={{ verticalAlign: "middle", marginBottom: "2px", marginRight: "7px", color: "#92400E", filter: "drop-shadow(0px 1px 1px rgba(255,255,255,0.8))" }} />
