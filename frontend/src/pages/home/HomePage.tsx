@@ -195,7 +195,7 @@ export const HomePage: React.FC = () => {
           <div style={{ marginTop: "2rem" }}>
               <Link to="/explore">
                 <Button size="lg" className="btn-primary px-8 py-3 text-[1.1rem]">
-                  <IoMoonSharp size={20} style={{ verticalAlign: "middle", marginBottom: "2px", marginRight: "7px", color: "#6B21A8", filter: "drop-shadow(0px 1px 1px rgba(255,255,255,0.8))" }} />
+                  <IoMoonSharp size={20} style={{ verticalAlign: "middle", marginBottom: "2px", marginRight: "7px", color: "#D97706", filter: "drop-shadow(0px 1px 1px rgba(255,255,255,0.8))" }} />
                   <span>Khám Phá Ngay</span>
                 </Button>
               </Link>
