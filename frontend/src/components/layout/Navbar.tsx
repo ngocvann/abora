@@ -192,9 +192,6 @@ export const Navbar: React.FC = () => {
             </div>
 
             <div className="navbar-search" ref={searchRef}>
-              <div className="search-btn-decor" onClick={() => { if(searchQuery.trim()) { saveSearchQuery(searchQuery.trim()); navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`); setIsSearchFocused(false); } }}>
-                <Search size={15} />
-              </div>
               <input
                 type="text"
                 placeholder="Tìm kiếm truyện, tác giả..."
@@ -213,6 +210,9 @@ export const Navbar: React.FC = () => {
                   <X size={14} />
                 </button>
               )}
+              <div className="search-btn-decor" onClick={() => { if(searchQuery.trim()) { saveSearchQuery(searchQuery.trim()); navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`); setIsSearchFocused(false); } }}>
+                <Search size={15} />
+              </div>
 
               {isSearchFocused && (
                 <div className="search-dropdown-popup">

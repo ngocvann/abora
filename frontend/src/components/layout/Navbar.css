@@ -727,3 +727,85 @@
 .chevron-icon.open {
   transform: rotate(180deg);
 }
+
+
+/* ========================================= */
+/* REDESIGNED SEARCH BAR (Light Yellow / Purple) */
+/* ========================================= */
+
+.navbar-search {
+  background: #FFFBEB !important; /* Vàng cam nhạt */
+  border-radius: 9999px !important;
+  height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  border: none !important;
+}
+
+.search-input {
+  background: transparent !important;
+  border: none !important;
+  color: #581C87 !important; /* Purple đậm hơn tí (Purple 900) */
+  font-weight: 500 !important; /* Mỏng hơn tí */
+  font-size: 0.85rem !important; /* Nhỏ lại 1 tí */
+  padding: 0 45px 0 1rem !important; /* Make room for the button */
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 9999px !important;
+}
+
+.search-input::placeholder {
+  color: rgba(88, 28, 135, 0.5) !important;
+}
+
+.search-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.search-clear-btn {
+  right: 56px !important; /* Move clear button to the left of the new search button */
+  color: rgba(88, 28, 135, 0.5) !important;
+}
+
+/* The right side colored button with left arrow shape */
+.search-btn-decor {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 46px;
+  background: #6B21A8; /* Tím logo */
+  color: #FFFBEB; /* Icon vàng cam */
+  border-radius: 0 9999px 9999px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+/* Arrow shape on the left edge */
+.search-btn-decor::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 0;
+  border-top: 17px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-right: 12px solid #6B21A8; /* Same as background */
+  transition: all 0.2s ease;
+}
+
+/* Hover state */
+.search-btn-decor:hover {
+  background: #FFFBEB;
+  color: #6B21A8;
+}
+
+.search-btn-decor:hover::before {
+  border-right-color: #FFFBEB;
+}
+
