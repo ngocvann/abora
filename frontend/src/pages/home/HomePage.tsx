@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Flame, Loader2, Compass, Filter } from "lucide-react";
+import { IoMoonSharp } from "react-icons/io5";
+import { Flame, Loader2, Filter } from "lucide-react";
 import api from "../../services/api";
 import { Button } from "../../components/ui/Button";
 import { useAuthStore } from "../../store/authStore";
@@ -194,7 +195,7 @@ export const HomePage: React.FC = () => {
           <div style={{ marginTop: "2rem" }}>
               <Link to="/explore">
                 <Button size="lg" className="btn-primary px-8 py-3 text-[1.1rem]">
-                  <Compass size={18} style={{ verticalAlign: "middle", marginBottom: "2px", marginRight: "7px" }} />
+                  <IoMoonSharp size={20} style={{ verticalAlign: "middle", marginBottom: "2px", marginRight: "7px", color: "#6B21A8", filter: "drop-shadow(0px 1px 1px rgba(255,255,255,0.8))" }} />
                   <span>Khám Phá Ngay</span>
                 </Button>
               </Link>
