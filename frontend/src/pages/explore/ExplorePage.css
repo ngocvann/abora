@@ -583,11 +583,17 @@
   min-height: 48px;
 }
 
-/* ── CARD GRID (4 per row) ── */
+/* 🎨 CARD GRID (5 per row) 🎨 */
 .explore-grid-card {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* exactly 4 per row */
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, 1fr); /* exactly 5 per row */
+  gap: 1.25rem;
+}
+
+@media (max-width: 1400px) {
+  .explore-grid-card {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 @media (max-width: 1100px) {
