@@ -21,111 +21,67 @@
 .btn-lg { padding: 1rem 2rem; font-size: 1.125rem; }
 
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes shineBlink {
-  0% { left: -100%; opacity: 0; }
-  15% { left: -100%; opacity: 1; }
-  35% { left: 150%; opacity: 1; }
-  100% { left: 150%; opacity: 0; }
-}
 
 .btn-primary, .primary-btn {
-  /* Nebula Gradient matches ABORA text */
-  background: linear-gradient(135deg, #FBBF24 0%, #D946EF 50%, #4C1D95 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 4s ease infinite;
-
+  /* Honey orange-yellow gradient for 3D depth, NOT ombre */
+  background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%);
   color: #ffffff;
   font-weight: 800;
   border-radius: 9999px;
+  border: none;
   
-  /* Thick dark purple inner border */
-  border: 3px solid #3B0764; 
-  
-  /* Text shadow to make the white text pop out from bright background */
-  text-shadow: 0 2px 0 #3B0764, 0 -1px 0 #3B0764, 1px 0 0 #3B0764, -1px 0 0 #3B0764, 0 4px 6px rgba(0,0,0,0.5);
+  /* Text shadow for readability */
+  text-shadow: 0 1px 2px rgba(180, 83, 9, 0.8), 0 2px 4px rgba(180, 83, 9, 0.4);
 
-  /* Inner rim light + Outer thin yellow stroke + 3D drop */
+  /* Inner highlight + 3D drop + Glow */
   box-shadow: 
-    inset 0 3px 0 rgba(255, 255, 255, 0.7), /* Top crisp highlight line */
-    inset 0 8px 12px rgba(255, 255, 255, 0.4), /* Top soft highlight glow */
-    inset 0 -4px 6px rgba(0, 0, 0, 0.4), /* bottom inner shadow */
-    0 0 0 2px #FDE047, /* Thin yellow outer stroke */
-    0 6px 0 2px #3B0764, /* 3D bottom purple drop */
-    0 12px 25px rgba(217, 70, 239, 0.6); /* Pinkish glow */
+    inset 0 3px 6px rgba(255, 255, 255, 0.6), /* Top highlight */
+    inset 0 -3px 6px rgba(217, 119, 6, 0.4), /* Bottom inner shadow */
+    0 6px 0 #B45309, /* 3D bottom honey-brown drop */
+    0 10px 15px rgba(245, 158, 11, 0.4); /* Honey outer glow */
     
   transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden; /* Contains the shine sweep and gloss */
+  overflow: hidden;
   margin-bottom: 6px;
   transform: translateY(0);
 }
 
-/* Ensure text and icons are above the gloss layers */
+/* Ensure text and icons are above the gloss layer */
 .btn-primary > *, .primary-btn > * {
   position: relative;
   z-index: 2;
 }
 
-/* Glassy top reflection */
+/* Subtle Glassy top reflection */
 .btn-primary::before, .primary-btn::before {
   content: '';
   position: absolute;
   top: 1px;
   left: 2%;
   width: 96%;
-  height: 45%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%);
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
   border-radius: 9999px 9999px 100px 100px;
   pointer-events: none;
   z-index: 1;
 }
 
-/* Intense sweeping shine */
-.btn-primary::after, .primary-btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 25%;
-  height: 100%;
-  background: linear-gradient(to right, 
-    rgba(255,255,255,0) 0%, 
-    rgba(255,255,255,0.8) 40%, 
-    rgba(255,255,255,1) 50%, 
-    rgba(255,255,255,0.8) 60%, 
-    rgba(255,255,255,0) 100%);
-  transform: skewX(-25deg);
-  animation: shineBlink 3s infinite;
-  pointer-events: none;
-  z-index: 1;
-  filter: blur(1px); /* Slight blur makes the shine look glowing */
-}
-
 .btn-primary:hover:not(:disabled), .primary-btn:hover:not(:disabled) {
-  filter: brightness(1.15) contrast(1.1);
+  filter: brightness(1.08);
   box-shadow: 
-    inset 0 3px 0 rgba(255, 255, 255, 0.9),
-    inset 0 8px 15px rgba(255, 255, 255, 0.6),
-    inset 0 -4px 6px rgba(0, 0, 0, 0.4),
-    0 0 0 2px #FFF, /* Brighter outer stroke on hover */
-    0 6px 0 2px #3B0764,
-    0 15px 30px rgba(251, 191, 36, 0.5); /* Outer glow shifts to gold */
+    inset 0 4px 6px rgba(255, 255, 255, 0.7),
+    inset 0 -3px 6px rgba(217, 119, 6, 0.4),
+    0 6px 0 #B45309,
+    0 12px 20px rgba(245, 158, 11, 0.5);
 }
 
 .btn-primary:active:not(:disabled), .primary-btn:active:not(:disabled) {
   transform: translateY(6px);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.5),
-    0 0 0 2px #FDE047,
-    0 0 0 2px #3B0764,
-    0 2px 5px rgba(217, 70, 239, 0.4);
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    0 0 0 #B45309,
+    0 2px 5px rgba(245, 158, 11, 0.4);
   margin-bottom: 0;
 }
 
