@@ -24,7 +24,7 @@
 
 .btn-primary, .primary-btn {
   /* Honey orange-yellow gradient for 3D depth, NOT ombre */
-  background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%);
+  background: linear-gradient(180deg, #FDE047 0%, #FBBF24 100%);
   color: #ffffff;
   font-weight: 800;
   border-radius: 9999px;
@@ -37,7 +37,7 @@
   box-shadow: 
     inset 0 3px 6px rgba(255, 255, 255, 0.6), /* Top highlight */
     inset 0 -3px 6px rgba(217, 119, 6, 0.4), /* Bottom inner shadow */
-    0 6px 0 #B45309, /* 3D bottom honey-brown drop */
+    0 6px 0 #D97706, /* 3D bottom golden-orange drop */
     0 10px 15px rgba(245, 158, 11, 0.4); /* Honey outer glow */
     
   transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,7 +72,7 @@
   box-shadow: 
     inset 0 4px 6px rgba(255, 255, 255, 0.7),
     inset 0 -3px 6px rgba(217, 119, 6, 0.4),
-    0 6px 0 #B45309,
+    0 6px 0 #D97706,
     0 12px 20px rgba(245, 158, 11, 0.5);
 }
 
@@ -80,7 +80,7 @@
   transform: translateY(6px);
   box-shadow: 
     inset 0 2px 4px rgba(255, 255, 255, 0.5),
-    0 0 0 #B45309,
+    0 0 0 #D97706,
     0 2px 5px rgba(245, 158, 11, 0.4);
   margin-bottom: 0;
 }
