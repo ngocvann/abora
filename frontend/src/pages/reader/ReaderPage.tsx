@@ -711,7 +711,7 @@ export const ReaderPage: React.FC = () => {
             <span>{formatNumber(chapter.viewCount || 0)}</span>
           </div>
           <button className={`reader-btn has-text ${chapter.hasLiked ? 'active' : ''}`} title="Bình chọn" onClick={handleToggleLike}>
-            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} />
+            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} />
             <span>{formatNumber(chapter.likeCount || 0)}</span>
           </button>
           <button className="reader-btn has-text" title="Bình luận" onClick={() => setShowComments(true)}>
@@ -855,7 +855,7 @@ export const ReaderPage: React.FC = () => {
             <Plus size={18} /> Thêm
           </button>
           <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={handleToggleLike}>
-            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} stroke={chapter.hasLiked ? 'url(#purple-ombre)' : 'currentColor'} /> Khoai
+            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} /> Khoai
           </button>
           
           <button className="action-btn icon-only" onClick={handleCopyLink} title="Sao chép liên kết">

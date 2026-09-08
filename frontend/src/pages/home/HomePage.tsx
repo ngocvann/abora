@@ -193,7 +193,7 @@ export const HomePage: React.FC = () => {
           </p>
           <div style={{ marginTop: "2rem" }}>
               <Link to="/explore">
-                <Button size="lg" className="rounded-full shadow-[0_4px_15px_rgba(251,191,36,0.4)] hover:shadow-[0_8px_25px_rgba(157,78,221,0.6)] transition-all px-8 py-3 bg-gradient-to-r from-amber-400 to-purple-600 hover:from-amber-500 hover:to-purple-700 border-0 text-[1.1rem]">
+                <Button size="lg" className="btn-primary px-8 py-3 text-[1.1rem]">
                   <Compass size={18} style={{ verticalAlign: "middle", marginBottom: "2px", marginRight: "7px" }} />
                   <span>Khám Phá Ngay</span>
                 </Button>
