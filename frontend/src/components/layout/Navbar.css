@@ -930,7 +930,7 @@
   transform: translateY(-50%);
   height: 36px;
   width: 36px;
-  background: linear-gradient(180deg, #8B5CF6 0%, #6B21A8 60%, #581C87 100%);
+  background: linear-gradient(180deg, #A855F7 0%, #9333EA 60%, #7E22CE 100%); /* Lighter, brighter purple */
   color: #FBBF24;
   border-radius: 50%;
   display: flex;
@@ -940,51 +940,28 @@
   transition: all 0.2s ease;
   z-index: 3;
   box-shadow:
-    inset 0 2px 3px rgba(255, 255, 255, 0.3),
-    inset 0 -2px 3px rgba(0, 0, 0, 0.2),
-    0 2px 0 #4C1D95,
-    0 3px 6px rgba(107, 33, 168, 0.4);
+    inset 0 2px 3px rgba(255, 255, 255, 0.35),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(126, 34, 206, 0.3); /* No solid bottom offset */
 }
 
 .search-btn-decor svg {
-  stroke-width: 3.5px !important;
+  stroke-width: 4.5px !important;
   filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
 }
 
 /* Hover: invert colors */
 .search-btn-decor:hover {
   background: linear-gradient(180deg, #FDE68A 0%, #FBBF24 60%, #D97706 100%);
-  color: #6B21A8;
+  color: #7E22CE;
   box-shadow:
     inset 0 2px 3px rgba(255, 255, 255, 0.4),
     inset 0 -2px 3px rgba(0, 0, 0, 0.15),
-    0 2px 0 #B45309,
     0 3px 6px rgba(251, 191, 36, 0.4);
 }
 
-/* Sparkle stars around search bar */
-.navbar-search::after {
-  content: '✦' !important;
-  position: absolute !important;
-  top: -6px !important;
-  right: 48px !important;
-  font-size: 10px !important;
-  color: #F59E0B !important;
-  -webkit-text-fill-color: #F59E0B !important;
-  text-shadow: 
-    0 0 4px rgba(245, 158, 11, 0.6),
-    18px 28px 0 #F59E0B,
-    18px 28px 4px rgba(245, 158, 11, 0.4),
-    -12px 20px 0 #FBBF24,
-    -12px 20px 4px rgba(251, 191, 36, 0.4) !important;
-  animation: searchBlink 2.5s ease-in-out infinite !important;
-  pointer-events: none !important;
-  z-index: 5 !important;
-}
-
-@keyframes searchBlink {
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
+.navbar-search .sparkle-star {
+  background: #FBBF24 !important;
 }
 
 /* ========================================= */

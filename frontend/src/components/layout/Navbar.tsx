@@ -213,6 +213,10 @@ export const Navbar: React.FC = () => {
               <div className="search-btn-decor" onClick={() => { if(searchQuery.trim()) { saveSearchQuery(searchQuery.trim()); navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`); setIsSearchFocused(false); } }}>
                 <Search size={15} />
               </div>
+              
+              <span className="sparkle-star" style={{ top: '-6px', left: '15px', width: '12px', height: '12px', animationDelay: '0s', zIndex: 10 }}></span>
+              <span className="sparkle-star" style={{ bottom: '-4px', right: '45px', width: '14px', height: '14px', animationDelay: '0.7s', zIndex: 10 }}></span>
+              <span className="sparkle-star" style={{ top: '5px', left: '50%', width: '10px', height: '10px', animationDelay: '1.2s', zIndex: 10 }}></span>
 
               {isSearchFocused && (
                 <div className="search-dropdown-popup">
