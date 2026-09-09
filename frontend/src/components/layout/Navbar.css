@@ -877,7 +877,7 @@
   background: transparent !important;
   border: none !important;
   color: #4C1D95 !important; /* Tím đậm chuẩn logo */
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   font-size: 0.8rem !important;
   padding: 0 52px 0 1rem !important;
   height: 100% !important;
@@ -921,6 +921,10 @@
   transition: all 0.2s ease;
   z-index: 2;
   box-shadow: 0 2px 6px rgba(107, 33, 168, 0.35);
+}
+
+.search-btn-decor svg {
+  stroke-width: 3px !important;
 }
 
 /* No arrow tail - clean circle only */
