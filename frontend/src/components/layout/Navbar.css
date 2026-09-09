@@ -858,7 +858,7 @@
 .navbar-search {
   background: linear-gradient(180deg, #FEF9E7 0%, #FEF3C7 100%) !important; /* Gradient nhẹ cho 3D */
   border-radius: 9999px !important;
-  height: 32px !important;
+  height: 28px !important;
   max-width: 260px !important;
   display: flex !important;
   align-items: center !important;
@@ -899,7 +899,7 @@
   color: #4C1D95 !important;
   font-weight: 600 !important;
   font-size: 0.75rem !important; /* Slightly smaller font */
-  padding: 0 42px 0 1rem !important; /* Adjusted for 32px button */
+  padding: 0 36px 0 1rem !important; /* Adjusted for 28px button */
   height: 100% !important;
   width: 100% !important;
   border-radius: 9999px !important;
@@ -921,7 +921,7 @@
 }
 
 .search-clear-btn {
-  right: 40px !important; /* Adjusted for smaller button */
+  right: 32px !important; /* Adjusted for smaller button */
   color: rgba(76, 29, 149, 0.5) !important;
   z-index: 3 !important;
 }
@@ -932,8 +932,8 @@
   right: -2px;
   top: 50%;
   transform: translateY(-50%);
-  height: 32px;
-  width: 32px;
+  height: 28px;
+  width: 28px;
   background: linear-gradient(180deg, #A855F7 0%, #9333EA 60%, #7E22CE 100%); /* Lighter, brighter purple */
   color: #FBBF24;
   border-radius: 50%;
@@ -950,7 +950,9 @@
 }
 
 .search-btn-decor svg {
-  stroke-width: 4.5px !important;
+  width: 14px !important;
+  height: 14px !important;
+  stroke-width: 4px !important;
   filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
 }
 
