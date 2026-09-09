@@ -858,7 +858,8 @@
 .navbar-search {
   background: linear-gradient(180deg, #FEF9E7 0%, #FEF3C7 100%) !important; /* Gradient nhẹ cho 3D */
   border-radius: 9999px !important;
-  height: 36px !important;
+  height: 32px !important;
+  max-width: 260px !important;
   display: flex !important;
   align-items: center !important;
   border: none !important;
@@ -897,8 +898,8 @@
   border: none !important;
   color: #4C1D95 !important;
   font-weight: 600 !important;
-  font-size: 0.8rem !important;
-  padding: 0 52px 0 1rem !important;
+  font-size: 0.75rem !important; /* Slightly smaller font */
+  padding: 0 42px 0 1rem !important; /* Adjusted for 32px button */
   height: 100% !important;
   width: 100% !important;
   border-radius: 9999px !important;
@@ -920,7 +921,7 @@
 }
 
 .search-clear-btn {
-  right: 48px !important;
+  right: 40px !important; /* Adjusted for smaller button */
   color: rgba(76, 29, 149, 0.5) !important;
   z-index: 3 !important;
 }
@@ -931,8 +932,8 @@
   right: -2px;
   top: 50%;
   transform: translateY(-50%);
-  height: 36px;
-  width: 36px;
+  height: 32px;
+  width: 32px;
   background: linear-gradient(180deg, #A855F7 0%, #9333EA 60%, #7E22CE 100%); /* Lighter, brighter purple */
   color: #FBBF24;
   border-radius: 50%;
