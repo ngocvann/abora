@@ -923,16 +923,16 @@
   box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
 }
 
-/* Arrow tail pointing right (vào nút tròn) */
+/* Arrow tail pointing left (vào trong thanh search, giống ảnh mẫu) */
 .search-btn-decor::before {
   content: '';
   position: absolute;
-  right: -8px;
+  left: -8px;
   top: 50%;
   transform: translateY(-50%);
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
-  border-left: 10px solid #7C3AED;
+  border-right: 10px solid #7C3AED;
   transition: all 0.2s ease;
 }
 
@@ -944,7 +944,7 @@
 }
 
 .search-btn-decor:hover::before {
-  border-left-color: #FFFDF7;
+  border-right-color: #FFFDF7;
 }
 
 /* ========================================= */
