@@ -999,3 +999,17 @@
     stroke-width: 3px !important;
   }
 }
+
+/* ========================================= */
+/* OVERRIDES: Reduce Navbar Height */
+/* ========================================= */
+
+.navbar-container {
+  padding: 0.3rem 1.5rem !important; /* Slightly tighter vertical padding */
+}
+
+.navbar-logo-img {
+  height: 75px !important; /* Reduced from 95px */
+  margin-top: -15px !important;
+  margin-bottom: -15px !important;
+}
