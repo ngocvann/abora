@@ -855,7 +855,7 @@
 /* ========================================= */
 
 .navbar-search {
-  background: #FEF3C7 !important; /* Vàng cam mật nhạt */
+  background: linear-gradient(180deg, #FEF9E7 0%, #FEF3C7 100%) !important; /* Gradient nhẹ cho 3D */
   border-radius: 9999px !important;
   height: 36px !important;
   display: flex !important;
@@ -864,9 +864,25 @@
   position: relative !important;
   overflow: visible !important;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.9),
-    inset 0 -2px 3px rgba(217, 119, 6, 0.08),
-    0 2px 6px rgba(107, 33, 168, 0.12) !important;
+    inset 0 2px 4px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(217, 119, 6, 0.12),
+    0 4px 0 #D4A017,
+    0 6px 12px rgba(107, 33, 168, 0.15) !important;
+  margin-bottom: 4px !important;
+}
+
+/* Glassy top reflection giống button */
+.navbar-search::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 4% !important;
+  width: 92% !important;
+  height: 45% !important;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%) !important;
+  border-radius: 9999px 9999px 100px 100px !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
 }
 
 .search-icon {
@@ -876,7 +892,7 @@
 .search-input {
   background: transparent !important;
   border: none !important;
-  color: #4C1D95 !important; /* Tím đậm chuẩn logo */
+  color: #4C1D95 !important;
   font-weight: 600 !important;
   font-size: 0.8rem !important;
   padding: 0 52px 0 1rem !important;
@@ -884,11 +900,13 @@
   width: 100% !important;
   border-radius: 9999px !important;
   letter-spacing: 0.01em;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 .search-input::placeholder {
   color: rgba(76, 29, 149, 0.4) !important;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
 }
 
 .search-input:focus {
@@ -901,6 +919,7 @@
 .search-clear-btn {
   right: 48px !important;
   color: rgba(76, 29, 149, 0.5) !important;
+  z-index: 3 !important;
 }
 
 /* Circular purple button on the right */
@@ -911,29 +930,48 @@
   transform: translateY(-50%);
   height: 36px;
   width: 36px;
-  background: #6B21A8; /* Tím chuẩn logo */
-  color: #FBBF24; /* Vàng cam mật - nét đậm */
+  background: #6B21A8;
+  color: #FBBF24;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  z-index: 2;
+  z-index: 3;
   box-shadow: 0 2px 6px rgba(107, 33, 168, 0.35);
 }
 
 .search-btn-decor svg {
-  stroke-width: 3px !important;
+  stroke-width: 3.5px !important;
 }
-
-/* No arrow tail - clean circle only */
 
 /* Hover: invert colors */
 .search-btn-decor:hover {
   background: #FBBF24;
   color: #6B21A8;
   box-shadow: 0 2px 8px rgba(251, 191, 36, 0.5);
+}
+
+/* Sparkle stars around search bar */
+.navbar-search::after {
+  content: '✦' !important;
+  position: absolute !important;
+  top: -6px !important;
+  right: 48px !important;
+  font-size: 10px !important;
+  color: #FBBF24 !important;
+  text-shadow: 
+    18px 28px 0 #FBBF24,
+    -12px 20px 0 rgba(251, 191, 36, 0.6) !important;
+  animation: searchBlink 2.5s ease-in-out infinite !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
+}
+
+@keyframes searchBlink {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
 }
 
 /* ========================================= */
