@@ -1013,3 +1013,36 @@
   margin-top: -15px !important;
   margin-bottom: -15px !important;
 }
+
+/* ========================================= */
+/* OVERRIDES: Nav Links & Login Button */
+/* ========================================= */
+
+.login-btn-custom {
+  color: #FBBF24 !important; /* Vàng cam mật sáng */
+  font-weight: 600 !important;
+}
+.login-btn-custom:hover {
+  color: #FDE047 !important;
+}
+
+.nav-link:hover {
+  color: #FBBF24 !important;
+}
+
+.nav-link.active {
+  color: #FBBF24 !important;
+  position: relative;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #FBBF24;
+  box-shadow: 0 2px 0 #7C3AED; /* Layer tím ở dưới */
+  border-radius: 2px;
+}

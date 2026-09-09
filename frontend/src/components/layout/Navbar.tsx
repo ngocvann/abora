@@ -184,11 +184,11 @@ export const Navbar: React.FC = () => {
           {/* Khối Giữa: Menu & Search */}
           <div className="navbar-center">
             <div className="navbar-links">
-              <Link to="/" className="nav-link">Trang chủ</Link>
-              <Link to="/explore" className="nav-link">Khám phá</Link>
-              <Link to="/forum" className="nav-link">Diễn đàn</Link>
-              <Link to="/library" className="nav-link">Thư viện</Link>
-              <Link to="/studio" className="nav-link">Viết truyện</Link>
+              <NavLink to="/" className="nav-link">Trang chủ</NavLink>
+              <NavLink to="/explore" className="nav-link">Khám phá</NavLink>
+              <NavLink to="/forum" className="nav-link">Diễn đàn</NavLink>
+              <NavLink to="/library" className="nav-link">Thư viện</NavLink>
+              <NavLink to="/studio" className="nav-link">Viết truyện</NavLink>
             </div>
 
             <div className="navbar-search" ref={searchRef}>
@@ -435,8 +435,13 @@ export const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="auth-buttons">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>Đăng nhập</Button>
-                <Button variant="primary" size="sm" onClick={() => navigate('/register')}>Đăng ký</Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="login-btn-custom">Đăng nhập</Button>
+                <div style={{ position: 'relative' }}>
+                  <Button variant="primary" size="sm" onClick={() => navigate('/register')}><span>Đăng ký</span></Button>
+                  <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+                  <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+                  <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+                </div>
               </div>
             )}
           </div>
