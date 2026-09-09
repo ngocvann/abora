@@ -979,3 +979,21 @@
 .chevron-icon.open {
   transform: rotate(180deg);
 }
+
+/* ========================================= */
+/* OVERRIDES: Mobile Search Fixes */
+/* ========================================= */
+@media (max-width: 1024px) {
+  /* Hide the desktop 3D search bar */
+  .navbar.navbar-search, .navbar-search {
+    display: none !important;
+  }
+  
+  /* Style the mobile simple search icon */
+  .mobile-search-toggle {
+    color: #FBBF24 !important;
+  }
+  .mobile-search-toggle svg {
+    stroke-width: 3px !important;
+  }
+}
