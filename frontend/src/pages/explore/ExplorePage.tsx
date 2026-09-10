@@ -7,6 +7,8 @@ import api from "../../services/api";
 import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { Button } from "../../components/ui/Button";
+import { IoMoonSharp } from "react-icons/io5";
 import "./ExplorePage.css";
 
 const PAGE_SIZE = 18;
@@ -231,8 +233,19 @@ export const ExplorePage: React.FC = () => {
                   <span>{currentRecommendation.chapterCount}<span className="meta-text"> chương</span></span>
                 </div>
               </div>
-              <Link to={`/story/${currentRecommendation.id}-${currentRecommendation.slug}`} className="carousel-btn">
-                Đọc Ngay
+              <Link to={`/story/${currentRecommendation.id}-${currentRecommendation.slug}`} style={{ textDecoration: 'none' }}>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <Button variant="primary" size="lg" className="hero-explore-btn">
+                    <IoMoonSharp size={18} style={{ color: '#92400E' }} />
+                    <span>Đọc Ngay</span>
+                  </Button>
+                  <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '12px', height: '12px', animationDelay: '0s' }}></span>
+                  <span className="sparkle-star" style={{ top: '-8px', right: '10px', width: '10px', height: '10px', animationDelay: '0.5s' }}></span>
+                  <span className="sparkle-star" style={{ bottom: '-4px', right: '-6px', width: '14px', height: '14px', animationDelay: '1s' }}></span>
+                  <span className="sparkle-star" style={{ bottom: '-6px', left: '15px', width: '10px', height: '10px', animationDelay: '1.5s' }}></span>
+                  <span className="sparkle-star" style={{ top: '50%', left: '-12px', width: '8px', height: '8px', animationDelay: '2s' }}></span>
+                  <span className="sparkle-star" style={{ top: '50%', right: '-12px', width: '8px', height: '8px', animationDelay: '2.5s' }}></span>
+                </div>
               </Link>
             </div>
           </div>
