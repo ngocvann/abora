@@ -435,7 +435,12 @@ export const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="auth-buttons">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="login-btn-custom"><span>Đăng nhập</span></Button>
+                <div className="login-btn-wrapper" style={{ position: 'relative' }}>
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="login-btn-custom"><span>Đăng nhập</span></Button>
+                  <span className="sparkle-star mobile-login-sparkle" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+                  <span className="sparkle-star mobile-login-sparkle" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+                  <span className="sparkle-star mobile-login-sparkle" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+                </div>
                 <div className="register-btn-wrapper" style={{ position: 'relative' }}>
                   <Button variant="primary" size="sm" onClick={() => navigate('/register')}><span>Đăng ký</span></Button>
                   <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
@@ -464,26 +469,41 @@ export const Navbar: React.FC = () => {
           </button>
         </div>
         <div className="mobile-drawer-links">
-          <Link to="/" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
+          <NavLink to="/" end className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
             <Home size={18} />
             <span>Trang chủ</span>
-          </Link>
-          <Link to="/explore" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+          </NavLink>
+          <NavLink to="/explore" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
             <Compass size={18} />
             <span>Khám phá</span>
-          </Link>
-          <Link to="/forum" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+          </NavLink>
+          <NavLink to="/forum" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
             <MessageCircle size={18} />
             <span>Diễn đàn</span>
-          </Link>
-          <Link to="/library" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+          </NavLink>
+          <NavLink to="/library" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
             <Library size={18} />
             <span>Thư viện</span>
-          </Link>
-          <Link to="/studio" className="mobile-drawer-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+          </NavLink>
+          <NavLink to="/studio" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
             <Book size={18} />
             <span>Viết truyện</span>
-          </Link>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+          </NavLink>
         </div>
       </div>
 

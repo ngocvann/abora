@@ -982,8 +982,12 @@
   transform: rotate(180deg);
 }
 
+.login-btn-wrapper .mobile-login-sparkle {
+  display: none !important;
+}
+
 /* ========================================= */
-/* OVERRIDES: Mobile Search Fixes */
+/* OVERRIDES: Mobile Search & Auth Fixes */
 /* ========================================= */
 @media (max-width: 1024px) {
   /* Hide the desktop 3D search bar */
@@ -991,9 +995,17 @@
     display: none !important;
   }
   
+  /* Symmetrical container padding (shifted 50% closer to edges) */
+  .navbar-container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
   /* Style the mobile simple search icon */
   .mobile-search-toggle {
     color: #FBBF24 !important;
+    margin-right: 0 !important;
+    padding: 0.3rem !important;
   }
   .mobile-search-toggle svg {
     stroke-width: 3px !important;
@@ -1002,6 +1014,17 @@
   /* Hide Register button on mobile */
   .register-btn-wrapper {
     display: none !important;
+  }
+
+  /* 10% smaller login button wrapper on mobile */
+  .login-btn-wrapper {
+    transform: scale(0.9) !important;
+    transform-origin: right center !important;
+  }
+
+  /* Show sparkles on mobile login button */
+  .login-btn-wrapper .mobile-login-sparkle {
+    display: block !important;
   }
 
   /* Transform Login button on mobile to match desktop Register button (3D primary style) */
@@ -1015,7 +1038,7 @@
     background: transparent !important;
     margin-bottom: 4px !important;
     transform: translateY(0);
-    padding: 0.4rem 1.1rem !important;
+    padding: 0.45rem 1.15rem !important;
     font-size: 0.85rem !important;
   }
   .login-btn-custom > * {
@@ -1044,6 +1067,43 @@
       inset 0 3px 6px rgba(255, 255, 255, 0.6),
       inset 0 -3px 6px rgba(217, 119, 6, 0.3) !important;
   }
+}
+
+/* ========================================= */
+/* OVERRIDES: Mobile Drawer Active Link */
+/* ========================================= */
+
+.mobile-drawer-link .mobile-drawer-sparkle {
+  display: none !important;
+}
+
+.mobile-drawer-link.active {
+  background: linear-gradient(180deg, #FDE047 0%, #FBBF24 100%) !important;
+  color: #6B21A8 !important;
+  font-weight: 800 !important;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(217, 119, 6, 0.3),
+    0 4px 12px rgba(251, 191, 36, 0.35) !important;
+  border-radius: 9999px !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.mobile-drawer-link.active span {
+  color: #6B21A8 !important;
+}
+
+.mobile-drawer-link.active svg {
+  color: #6B21A8 !important;
+  stroke-width: 2.5px !important;
+}
+
+.mobile-drawer-link.active .mobile-drawer-sparkle {
+  display: block !important;
+  background: #FFFFFF !important;
+  filter: drop-shadow(0 0 3px rgba(107, 33, 168, 0.8)) !important;
+  z-index: 10 !important;
 }
 
 /* ========================================= */
