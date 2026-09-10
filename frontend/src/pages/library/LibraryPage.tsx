@@ -320,22 +320,29 @@ export const LibraryPage: React.FC = () => {
             </button>
 
             <div className="overlay-buttons">
-              <button 
-                className="overlay-action-btn primary-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleReadStory(item);
-                }}
-                disabled={loadingReadStoryId === item.storyId}
-              >
-                {loadingReadStoryId === item.storyId ? (
-                  <Loader2 className="animate-spin" size={14} />
-                ) : item.lastReadChapterNumber ? (
-                  'Tiếp tục đọc'
-                ) : (
-                  'Bắt đầu đọc'
-                )}
-              </button>
+              <div style={{ position: 'relative', width: '100%' }}>
+                <button 
+                  className="overlay-action-btn primary-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReadStory(item);
+                  }}
+                  disabled={loadingReadStoryId === item.storyId}
+                >
+                  <span>
+                    {loadingReadStoryId === item.storyId ? (
+                      <Loader2 className="animate-spin" size={14} />
+                    ) : item.lastReadChapterNumber ? (
+                      'Tiếp tục đọc'
+                    ) : (
+                      'Bắt đầu đọc'
+                    )}
+                  </span>
+                </button>
+                <span className="sparkle-star" style={{ top: '-3px', left: '10px', width: '8px', height: '8px', animationDelay: '0s', zIndex: 10 }}></span>
+                <span className="sparkle-star" style={{ bottom: '-3px', right: '10px', width: '10px', height: '10px', animationDelay: '0.6s', zIndex: 10 }}></span>
+                <span className="sparkle-star" style={{ top: '50%', left: '-4px', width: '6px', height: '6px', animationDelay: '1.2s', zIndex: 10 }}></span>
+              </div>
               
               <button 
                 className="overlay-action-btn secondary-btn"
@@ -489,7 +496,6 @@ export const LibraryPage: React.FC = () => {
             <h1 className="library-title">
               Thư viện<span className="desktop-suffix"> của tôi</span>
             </h1>
-            <p className="library-subtitle">Quản lý và tiếp tục đọc các tác phẩm khoai của bạn</p>
           </div>
           
           <div className="library-view-toggle">

@@ -26,41 +26,43 @@
 }
 
 .library-title {
-  font-size: 2rem;
+  font-size: 1.2rem !important;
   font-weight: 800;
-  background: linear-gradient(135deg, #ffffff, #a78bfa, #60a5fa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.5rem;
-}
-
-.library-subtitle {
-  font-size: 0.9rem;
-  color: var(--text-muted, #a3b8cc);
+  color: var(--text-main, #ffffff);
+  -webkit-text-fill-color: var(--text-main, #ffffff);
+  background: none;
+  margin-bottom: 0;
 }
 
 /* View Toggle */
 .library-view-toggle {
   display: flex;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 0.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+  gap: 0.25rem;
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
 }
 
 .toggle-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted, #a3b8cc);
-  padding: 0.5rem;
-  border-radius: 8px;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(251, 191, 36, 0.4) !important;
+  padding: 0.35rem !important;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.toggle-btn svg {
+  stroke-width: 2.5px !important;
+  color: rgba(251, 191, 36, 0.4) !important;
+}
+
+.toggle-btn.active svg, .toggle-btn:hover svg {
+  color: #FBBF24 !important;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.5));
 }
 
 .toggle-btn:hover {
@@ -316,7 +318,7 @@
 
 .card-progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary, #9d4edd), var(--secondary, #3a86ff));
+  background: linear-gradient(90deg, #7C3AED 0%, #FBBF24 100%) !important;
   border-radius: 99px;
 }
 
@@ -580,17 +582,17 @@
 .list-read-btn {
   background: transparent;
   border: none;
-  color: #a78bfa;
+  color: #FBBF24 !important;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700 !important;
   padding: 0;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .list-read-btn:hover {
-  color: #c084fc;
-  text-shadow: 0 0 8px rgba(192, 132, 252, 0.4);
+  color: #FDE047 !important;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.6) !important;
 }
 
 .progress-bar-bg {
@@ -603,7 +605,7 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #9d4edd, #3a86ff);
+  background: linear-gradient(90deg, #7C3AED 0%, #FBBF24 100%) !important;
   border-radius: 99px;
   transition: width 0.4s ease;
 }
