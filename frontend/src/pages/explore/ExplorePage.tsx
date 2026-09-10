@@ -8,7 +8,6 @@ import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import { Button } from "../../components/ui/Button";
-import { IoMoonSharp } from "react-icons/io5";
 import "./ExplorePage.css";
 
 const PAGE_SIZE = 18;
