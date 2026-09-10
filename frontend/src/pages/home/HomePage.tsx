@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { IoMoonSharp } from "react-icons/io5";
-import { Flame, Loader2, Filter } from "lucide-react";
+import { Flame, Loader2 } from "lucide-react";
 import api from "../../services/api";
 import { Button } from "../../components/ui/Button";
 import { useAuthStore } from "../../store/authStore";
@@ -208,35 +208,6 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Global Filter Bar */}
-      <div className="home-filter-bar" style={{ display: 'flex', gap: '1rem', padding: '0 2rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
-          <Filter size={18} /> Lọc:
-        </div>
-        <select 
-          className="form-select" 
-          style={{ width: 'auto', padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px' }}
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">Tất cả thể loại</option>
-          {categories.map((cat: any) => (
-            <option key={cat.id} value={cat.slug}>{cat.name}</option>
-          ))}
-        </select>
-        
-        <select 
-          className="form-select" 
-          style={{ width: 'auto', padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '20px' }}
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
-        >
-          <option value="">Tất cả trạng thái</option>
-          <option value="ONGOING">Đang ra</option>
-          <option value="COMPLETED">Hoàn thành</option>
-        </select>
-      </div>
 
       {/* 1. Continue Reading Section */}
       {isAuthenticated && storiesReading && storiesReading.length > 0 && (
