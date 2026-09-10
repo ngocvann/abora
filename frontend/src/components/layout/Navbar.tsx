@@ -435,8 +435,8 @@ export const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="auth-buttons">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="login-btn-custom">Đăng nhập</Button>
-                <div style={{ position: 'relative' }}>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="login-btn-custom"><span>Đăng nhập</span></Button>
+                <div className="register-btn-wrapper" style={{ position: 'relative' }}>
                   <Button variant="primary" size="sm" onClick={() => navigate('/register')}><span>Đăng ký</span></Button>
                   <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
                   <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>

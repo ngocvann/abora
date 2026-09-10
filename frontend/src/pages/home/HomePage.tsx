@@ -219,7 +219,6 @@ export const HomePage: React.FC = () => {
       <section className="stories-section">
         <div className="section-header-row">
           <h2 className="section-title">Gợi ý dành riêng cho bạn</h2>
-          <span className="section-subtitle-tag">Dựa trên sở thích của bạn</span>
         </div>
         {isPersonalizedLoading ? (
           <div className="slider-loading">
