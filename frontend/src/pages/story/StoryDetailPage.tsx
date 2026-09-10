@@ -308,13 +308,13 @@ export const StoryDetailPage: React.FC = () => {
               <span className="stat-value">
                 {story.viewCount.toLocaleString()}
               </span>
-              <span className="stat-label">Lượt xem</span>
+              <span className="stat-label">Lượt đọc</span>
             </div>
             <div className="stat-item">
               <span className="stat-value">
                 {(story.favoriteCount ?? 0).toLocaleString()}
               </span>
-              <span className="stat-label">Yêu thích</span>
+              <span className="stat-label">Củ khoai</span>
             </div>
           </div>
 
@@ -502,7 +502,7 @@ export const StoryDetailPage: React.FC = () => {
                     <div className="related-story-stats">
                       <span className="related-story-stat-item">{chCount} chương</span>
                       <span className="related-story-stat-item">·</span>
-                      <span className="related-story-stat-item">{formatCount(item.viewCount ?? 0)} lượt xem</span>
+                      <span className="related-story-stat-item">{formatCount(item.viewCount ?? 0)} lượt đọc</span>
                     </div>
                   </div>
                 </Link>

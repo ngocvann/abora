@@ -222,11 +222,11 @@ export const ExplorePage: React.FC = () => {
               <div className="carousel-meta">
                 <div className="carousel-meta-item">
                   <Eye size={16} />
-                  <span>{currentRecommendation.viewCount.toLocaleString()}<span className="meta-text"> lượt xem</span></span>
+                  <span>{currentRecommendation.viewCount.toLocaleString()}<span className="meta-text"> lượt đọc</span></span>
                 </div>
                 <div className="carousel-meta-item">
-                  <SweetPotatoIcon size={16} />
-                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> lượt khoai</span></span>
+                  <SweetPotatoIcon size={16} fill="#FBBF24" />
+                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> củ khoai</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <BookOpen size={16} />
@@ -235,8 +235,7 @@ export const ExplorePage: React.FC = () => {
               </div>
               <Link to={`/story/${currentRecommendation.id}-${currentRecommendation.slug}`} style={{ textDecoration: 'none' }}>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <Button variant="primary" size="lg" className="hero-explore-btn">
-                    <IoMoonSharp size={18} style={{ color: '#92400E' }} />
+                  <Button variant="primary" size="md" className="hero-explore-btn">
                     <span>Đọc Ngay</span>
                   </Button>
                   <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '12px', height: '12px', animationDelay: '0s' }}></span>
@@ -468,8 +467,8 @@ export const ExplorePage: React.FC = () => {
                       <p className="list-item-desc">{story.description}</p>
                     )}
                     <div className="list-item-meta">
-                      <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt xem</span>
-                      <span className="list-meta-item"><SweetPotatoIcon size={13} /> {formatCount(story.favoriteCount)} khoai</span>
+                      <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt đọc</span>
+                      <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} củ khoai</span>
                       <span className="list-meta-item"><BookOpen size={13} /> {story.chapterCount} chương</span>
                     </div>
                   </div>
