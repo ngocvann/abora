@@ -1043,6 +1043,6 @@
   width: 100%;
   height: 2px;
   background: #FBBF24;
-  box-shadow: 0 2px 0 #7C3AED; /* Layer tím ở dưới */
+  box-shadow: 0 1px 0 #7C3AED; /* Layer tím mảnh như bóng đổ */
   border-radius: 2px;
 }
