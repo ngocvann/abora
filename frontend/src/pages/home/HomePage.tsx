@@ -70,10 +70,6 @@ export const HomePage: React.FC = () => {
   const [personalizedRows, setPersonalizedRows] = React.useState(2);
   const [trendingRows, setTrendingRows] = React.useState(2);
 
-  // Filters
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
-
   React.useEffect(() => {
     const handleResize = () => {
       if (gridRef.current) {
@@ -102,15 +98,6 @@ export const HomePage: React.FC = () => {
       clearTimeout(timer);
     };
   }, []);
-
-  // Fetch Categories for Filter
-  const { data: categories = [] } = useQuery<any[]>({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data } = await api.get("/categories");
-      return data;
-    },
-  });
 
   // 1. Fetch "Tiếp tục đọc dở"
   const { data: storiesReadingRaw = [], isLoading: isReadingLoading } = useQuery<Story[]>({
@@ -150,26 +137,9 @@ export const HomePage: React.FC = () => {
   });
   const customBannerUrl = bannerSetting?.value;
 
-  // Client-side filtering logic
-  const filterStories = (stories: Story[]) => {
-    return stories.filter(story => {
-      if (selectedStatus) {
-        if (selectedStatus === 'ONGOING') {
-          if (story.status === 'COMPLETED' || story.status === 'PAUSED' || story.status === 'HIDDEN' || story.status === 'DRAFT') {
-            return false;
-          }
-        } else if (story.status !== selectedStatus) {
-          return false;
-        }
-      }
-      if (selectedCategory && (!story.categories || !story.categories.some(c => c.slug === selectedCategory))) return false;
-      return true;
-    });
-  };
-
-  const storiesReading = filterStories(storiesReadingRaw);
-  const storiesPersonalized = filterStories(storiesPersonalizedRaw);
-  const storiesTrending = filterStories(storiesTrendingRaw);
+  const storiesReading = storiesReadingRaw;
+  const storiesPersonalized = storiesPersonalizedRaw;
+  const storiesTrending = storiesTrendingRaw;
 
   return (
     <div ref={containerRef} className="home-container fade-in">
