@@ -184,7 +184,6 @@ export const HomePage: React.FC = () => {
         <section className="stories-section">
           <div className="section-header-row">
             <h2 className="section-title">Tiếp tục đọc dở</h2>
-            <span className="section-subtitle-tag">Tiếp tục cuộc hành trình của bạn</span>
           </div>
           {isReadingLoading ? (
             <div className="slider-loading">
