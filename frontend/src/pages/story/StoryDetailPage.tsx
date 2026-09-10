@@ -320,7 +320,7 @@ export const StoryDetailPage: React.FC = () => {
 
           <div className="story-header-actions">
             <Link to={story.chapters?.length > 0 ? `/story/${story.id}-${story.slug}/chapter/${markedChapterSlug || story.chapters[0].slug}` : '#'}>
-              <Button variant="primary" size="lg" disabled={!story.chapters || story.chapters.length === 0}>
+              <Button variant="primary" size="md" className="story-read-btn" disabled={!story.chapters || story.chapters.length === 0}>
                 <span>{currentHistoryItem?.lastReadChapterSlug ? "Đọc tiếp" : "Đọc truyện"}</span>
               </Button>
             </Link>

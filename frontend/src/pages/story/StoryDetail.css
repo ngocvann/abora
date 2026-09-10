@@ -76,8 +76,14 @@
 
 .story-header-actions {
   display: flex;
+  align-items: center;
   gap: 1rem;
   margin-top: auto;
+}
+
+.story-read-btn {
+  padding: 0.55rem 1.6rem !important;
+  font-size: 0.95rem !important;
 }
 
 .story-content {
