@@ -256,7 +256,6 @@ export const HomePage: React.FC = () => {
       <section className="stories-section">
         <div className="section-header-row">
           <h2 className="section-title">Bảng xếp hạng Hot tuần này</h2>
-          <span className="section-subtitle-tag">Cập nhật xu hướng đọc truyện mới nhất</span>
         </div>
         {isTrendingLoading ? (
           <div className="slider-loading">
