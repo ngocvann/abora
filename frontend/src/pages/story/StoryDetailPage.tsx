@@ -6,7 +6,7 @@ import api from "../../services/api";
 import type { PublicStoryDetail } from "../../types/story";
 import { useAuthStore } from "../../store/authStore";
 import { Button } from "../../components/ui/Button";
-import { Library, Plus, List, Flag, Check, Globe, Lock, ChevronLeft, ChevronRight } from "lucide-react";
+import { Library, BookOpen, Plus, List, Flag, Check, Globe, Lock, ChevronLeft, ChevronRight } from "lucide-react";
 import { ReportModal } from '../../components/ui/ReportModal';
 import { getImageUrl } from "../../utils/image";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
