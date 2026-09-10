@@ -6,7 +6,7 @@ import api from "../../services/api";
 import type { PublicStoryDetail } from "../../types/story";
 import { useAuthStore } from "../../store/authStore";
 import { Button } from "../../components/ui/Button";
-import { Library, BookOpen, Plus, List, Flag, Check, Globe, Lock, ChevronLeft, ChevronRight } from "lucide-react";
+import { Library, Plus, List, Flag, Check, Globe, Lock, ChevronLeft, ChevronRight } from "lucide-react";
 import { ReportModal } from '../../components/ui/ReportModal';
 import { getImageUrl } from "../../utils/image";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
@@ -320,8 +320,8 @@ export const StoryDetailPage: React.FC = () => {
 
           <div className="story-header-actions">
             <Link to={story.chapters?.length > 0 ? `/story/${story.id}-${story.slug}/chapter/${markedChapterSlug || story.chapters[0].slug}` : '#'}>
-              <Button variant="primary" size="lg" disabled={!story.chapters || story.chapters.length === 0} style={{ display: 'flex', alignItems: 'center' }}>
-                <BookOpen size={20} style={{ marginRight: '8px' }} /> {currentHistoryItem?.lastReadChapterSlug ? "Đọc tiếp" : "Đọc truyện"}
+              <Button variant="primary" size="lg" disabled={!story.chapters || story.chapters.length === 0}>
+                <span>{currentHistoryItem?.lastReadChapterSlug ? "Đọc tiếp" : "Đọc truyện"}</span>
               </Button>
             </Link>
             
