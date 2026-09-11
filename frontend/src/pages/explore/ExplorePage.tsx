@@ -234,7 +234,7 @@ export const ExplorePage: React.FC = () => {
               </div>
               <Link to={`/story/${currentRecommendation.id}-${currentRecommendation.slug}`} style={{ textDecoration: 'none' }}>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <Button variant="primary" size="md" className="hero-explore-btn">
+                  <Button variant="primary" size="sm" className="hero-explore-btn">
                     <span>Đọc Ngay</span>
                   </Button>
                   <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '12px', height: '12px', animationDelay: '0s' }}></span>

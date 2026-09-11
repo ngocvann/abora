@@ -166,14 +166,14 @@
 }
 
 .hero-explore-btn {
-  padding: 0.35rem 1.6rem !important;
-  font-size: 0.9rem !important;
+  padding: 0.45rem 1.15rem !important;
+  font-size: 0.85rem !important;
 }
 
 @media (max-width: 768px) {
   .hero-explore-btn {
-    padding: 0.12rem 0.95rem !important;
-    font-size: 0.75rem !important;
+    padding: 0.45rem 1.15rem !important;
+    font-size: 0.85rem !important;
   }
 }
 
