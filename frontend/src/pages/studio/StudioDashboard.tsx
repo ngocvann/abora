@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import type { Story } from "../../types/story";
 import { Button } from "../../components/ui/Button";
-import { PlusCircle, BookOpen, Menu, Eye, MessageCircle, BarChart2, Share2, MoreHorizontal, ChevronRight, Copy, Check, Trash2, PowerOff, X } from 'lucide-react';
+import { BookOpen, Menu, Eye, MessageCircle, BarChart2, Share2, MoreHorizontal, ChevronRight, Copy, Check, Trash2, PowerOff, X } from 'lucide-react';
 import toast from "react-hot-toast";
 import { AnalyticsModal } from "./AnalyticsModal";
 import { getImageUrl } from "../../utils/image";
@@ -142,9 +142,14 @@ export const StudioDashboard: React.FC = () => {
         <h1 className="studio-title">
           Studio<span className="desktop-suffix"> Sáng Tác</span>
         </h1>
-        <Button onClick={() => navigate("/studio/story/new")} variant="primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <PlusCircle size={18} /> Tạo <span className="desktop-suffix">truyện </span>mới
-        </Button>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <Button onClick={() => navigate("/studio/story/new")} variant="primary" className="create-story-btn">
+            <span>Viết truyện</span>
+          </Button>
+          <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+          <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+          <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+        </div>
       </div>
 
       <div className="studio-tabs">

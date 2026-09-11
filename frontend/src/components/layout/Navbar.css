@@ -120,6 +120,10 @@
   gap: 1rem;
 }
 
+.mobile-login-wrapper {
+  display: none;
+}
+
 .user-menu {
   display: flex;
   align-items: center;
@@ -141,6 +145,10 @@
   font-size: 0.85rem;
   font-weight: 600;
   transition: all 0.2s;
+}
+
+.admin-mobile-text {
+  display: none;
 }
 
 .navbar-admin-btn:hover {
@@ -800,11 +808,32 @@
     margin-right: 5px !important; /* Keep the 5px spacing from right edge/adjacent elements */
   }
 
+  .admin-btn-text,
+  .navbar-admin-btn svg {
+    display: none !important;
+  }
+
+  .admin-mobile-text {
+    display: inline-block !important;
+    color: #581C87 !important;
+    font-weight: 900 !important;
+    font-size: 0.95rem !important;
+    line-height: 1 !important;
+  }
+
   .navbar-admin-btn {
-    padding: 4px 8px !important;
-    font-size: 0.75rem !important;
-    margin-right: 0 !important; /* Remove redundant margin to save space */
-    gap: 4px !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    border-radius: 50% !important;
+    background: #FBBF24 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-right: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 6px rgba(251, 191, 36, 0.4) !important;
   }
 
   .mobile-menu-toggle {
@@ -1012,60 +1041,26 @@
   }
 
   /* Hide Register button on mobile */
-  .register-btn-wrapper {
+  /* Hide desktop auth buttons on mobile */
+  .desktop-only-auth {
     display: none !important;
   }
 
-  /* 10% smaller login button wrapper on mobile */
-  .login-btn-wrapper {
+  /* Show mobile 3D primary login button */
+  .mobile-login-wrapper {
+    display: block !important;
     transform: scale(0.9) !important;
     transform-origin: right center !important;
   }
 
-  /* Show sparkles on mobile login button */
-  .login-btn-wrapper .mobile-login-sparkle {
-    display: block !important;
-  }
-
-  /* Transform Login button on mobile to match desktop Register button (3D primary style) */
-  .login-btn-custom {
-    position: relative !important;
-    border: none !important;
-    border-radius: 9999px !important;
-    color: #92400E !important;
+  .mobile-primary-login-btn,
+  .mobile-primary-login-btn *,
+  .mobile-primary-login-btn span,
+  .mobile-primary-login-btn .btn-content {
+    color: #78350F !important;
+    -webkit-text-fill-color: #78350F !important;
     font-weight: 800 !important;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important;
-    background: transparent !important;
-    margin-bottom: 4px !important;
-    transform: translateY(0);
-    padding: 0.45rem 1.15rem !important;
-    font-size: 0.85rem !important;
-  }
-  .login-btn-custom > * {
-    position: relative !important;
-    z-index: 2 !important;
-  }
-  .login-btn-custom::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0; left: 0; right: 0; bottom: -4px !important;
-    background: linear-gradient(to top, #6B21A8 0%, #D97706 12px, #FBBF24 100%) !important;
-    border-radius: 9999px !important;
-    z-index: 0 !important;
-    box-shadow: 0 6px 12px rgba(251, 191, 36, 0.3) !important;
-  }
-  .login-btn-custom::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 0; left: 0; right: 0; bottom: 0 !important;
-    background: 
-      linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%),
-      linear-gradient(180deg, #FDE047 0%, #FBBF24 100%) !important;
-    border-radius: 9999px !important;
-    z-index: 1 !important;
-    box-shadow: 
-      inset 0 3px 6px rgba(255, 255, 255, 0.6),
-      inset 0 -3px 6px rgba(217, 119, 6, 0.3) !important;
   }
 }
 
@@ -1124,12 +1119,36 @@
 /* OVERRIDES: Nav Links & Login Button */
 /* ========================================= */
 
-.login-btn-custom {
-  color: #FBBF24 !important; /* Vàng cam mật sáng */
-  font-weight: 600 !important;
+@media (min-width: 1025px) {
+  .login-btn-custom,
+  .login-btn-custom *,
+  .login-btn-custom span,
+  .login-btn-custom .btn-content {
+    color: #FBBF24 !important; /* Vàng cam mật sáng */
+    -webkit-text-fill-color: #FBBF24 !important;
+    font-weight: 600 !important;
+  }
+  .login-btn-custom:hover,
+  .login-btn-custom:hover * {
+    color: #FDE047 !important;
+    -webkit-text-fill-color: #FDE047 !important;
+  }
 }
-.login-btn-custom:hover {
-  color: #FDE047 !important;
+
+@media (max-width: 1024px) {
+  .login-btn-custom,
+  .login-btn-custom *,
+  .login-btn-custom .btn-content,
+  .login-btn-custom span,
+  .mobile-primary-login-btn,
+  .mobile-primary-login-btn *,
+  .mobile-primary-login-btn .btn-content,
+  .mobile-primary-login-btn span {
+    color: #78350F !important;
+    -webkit-text-fill-color: #78350F !important;
+    font-weight: 800 !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+  }
 }
 
 .nav-link:hover {

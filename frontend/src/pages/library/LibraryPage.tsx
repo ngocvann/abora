@@ -321,24 +321,24 @@ export const LibraryPage: React.FC = () => {
 
             <div className="overlay-buttons">
               <div style={{ position: 'relative', width: '100%' }}>
-                <button 
-                  className="overlay-action-btn primary-btn"
+                <Button 
+                  variant="primary"
+                  size="sm"
+                  style={{ width: '100%' }}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleReadStory(item);
                   }}
                   disabled={loadingReadStoryId === item.storyId}
                 >
-                  <span>
-                    {loadingReadStoryId === item.storyId ? (
-                      <Loader2 className="animate-spin" size={14} />
-                    ) : item.lastReadChapterNumber ? (
-                      'Tiếp tục đọc'
-                    ) : (
-                      'Bắt đầu đọc'
-                    )}
-                  </span>
-                </button>
+                  {loadingReadStoryId === item.storyId ? (
+                    <Loader2 className="animate-spin" size={14} />
+                  ) : item.lastReadChapterNumber ? (
+                    'Tiếp tục đọc'
+                  ) : (
+                    'Bắt đầu đọc'
+                  )}
+                </Button>
                 <span className="sparkle-star" style={{ top: '-3px', left: '10px', width: '8px', height: '8px', animationDelay: '0s', zIndex: 10 }}></span>
                 <span className="sparkle-star" style={{ bottom: '-3px', right: '10px', width: '10px', height: '10px', animationDelay: '0.6s', zIndex: 10 }}></span>
                 <span className="sparkle-star" style={{ top: '50%', left: '-4px', width: '6px', height: '6px', animationDelay: '1.2s', zIndex: 10 }}></span>
@@ -405,7 +405,7 @@ export const LibraryPage: React.FC = () => {
             <Eye size={13} /> {formatCount(item.viewCount || 0)}
           </span>
           <span className="library-stat-item-heart">
-            <SweetPotatoIcon size={13} /> {formatCount(item.starCount || 0)}
+            <SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(item.starCount || 0)}
           </span>
         </div>
       </div>
@@ -450,7 +450,7 @@ export const LibraryPage: React.FC = () => {
 
           <div className="list-stats">
             <span className="library-stat-item library-stat-item-view"><Eye size={13} /> {formatCount(item.viewCount || 0)}</span>
-            <span className="library-stat-item library-stat-item-heart"><SweetPotatoIcon size={13} /> {formatCount(item.starCount || 0)}</span>
+            <span className="library-stat-item library-stat-item-heart"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(item.starCount || 0)}</span>
             <span className="library-stat-item library-stat-item-chapters"><BookOpen size={13} /> {item.chapterCount} chương</span>
           </div>
 

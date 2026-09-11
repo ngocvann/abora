@@ -28,22 +28,41 @@
 
 
 
+.btn-content,
+.btn > * {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn-primary, .primary-btn {
   position: relative;
   border: none;
   border-radius: 9999px;
-  color: #92400E; /* Match icon color (Dark Honey Orange) */
-  font-weight: 800;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8); /* White soft glow for text */
+  color: #78350F !important; /* Match icon color (Dark Honey Orange) */
+  -webkit-text-fill-color: #78350F !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important; /* White soft glow for text */
   background: transparent;
   margin-bottom: 6px;
   transform: translateY(0);
   transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-primary > *, .primary-btn > * {
-  position: relative;
-  z-index: 2;
+.btn-primary .btn-content,
+.btn-primary span,
+.btn-primary > *,
+.primary-btn .btn-content,
+.primary-btn span,
+.primary-btn > * {
+  position: relative !important;
+  z-index: 2 !important;
+  color: #78350F !important;
+  -webkit-text-fill-color: #78350F !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important;
 }
 
 /* ::before = Ombre 3D Drop Shadow layer (Vertical: Purple bottom to Orange top) */

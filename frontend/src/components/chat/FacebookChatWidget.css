@@ -558,32 +558,10 @@
     width: 100%;
     justify-content: center;
   }
+}
 
-  .fb-chat-box,
-  .fb-new-chat-box {
-    width: calc(100vw - 10px) !important;
-    max-width: 100vw !important;
-    height: 75vh !important;
-    max-height: 500px !important;
-    border-radius: 16px 16px 0 0 !important;
-  }
-
-  .fb-chat-bubbles-col {
-    position: fixed;
-    right: 10px;
-    bottom: 85px !important;
-    margin-bottom: 0 !important;
-    z-index: 9999;
-  }
-
-  .fb-chat-new-btn,
-  .fb-chat-bubble-avatar {
-    width: 44px !important;
-    height: 44px !important;
-  }
-
-  .fb-chat-bubble-wrapper {
-    width: 44px !important;
-    height: 44px !important;
+@media (max-width: 768px) {
+  .fb-chat-widget-container {
+    display: none !important;
   }
 }

@@ -2,7 +2,7 @@
 
 .library-page {
   min-height: calc(100vh - 80px);
-  padding: 2.5rem 1rem 4rem;
+  padding: 1rem 1rem 4rem; /* Halved top padding on desktop */
   background: transparent;
   color: var(--text-main, #f8fafc);
 }
@@ -284,15 +284,7 @@
 }
 
 .overlay-action-btn.primary-btn {
-  background: var(--primary-color, #9d4edd);
-  border-color: var(--primary-color, #9d4edd);
-  color: white;
-}
-
-.overlay-action-btn.primary-btn:hover {
-  background: var(--primary-hover, #7b2cbf);
-  border-color: var(--primary-hover, #7b2cbf);
-  box-shadow: 0 0 10px rgba(157, 78, 221, 0.4);
+  color: #78350F !important;
 }
 
 .overlay-action-btn.secondary-btn {

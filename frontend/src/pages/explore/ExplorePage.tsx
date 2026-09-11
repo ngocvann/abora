@@ -217,7 +217,7 @@ export const ExplorePage: React.FC = () => {
                 <span className="carousel-tag">{currentRecommendation.categories[0].name}</span>
               )}
               <h2 className="carousel-title">{currentRecommendation.title}</h2>
-              <p className="carousel-desc">{currentRecommendation.description}</p>
+              <p className="carousel-desc">{currentRecommendation.description || "\u00A0"}</p>
               <div className="carousel-meta">
                 <div className="carousel-meta-item">
                   <Eye size={16} />
@@ -225,7 +225,7 @@ export const ExplorePage: React.FC = () => {
                 </div>
                 <div className="carousel-meta-item">
                   <SweetPotatoIcon size={16} fill="#FBBF24" />
-                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> củ khoai</span></span>
+                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> Củ khoai</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <BookOpen size={16} />
@@ -435,7 +435,7 @@ export const ExplorePage: React.FC = () => {
                         <span>{formatCount(story.viewCount)}</span>
                       </div>
                       <div className="story-card-stat">
-                        <SweetPotatoIcon size={11} />
+                        <SweetPotatoIcon size={11} fill="#FBBF24" />
                         <span>{formatCount(story.favoriteCount)}</span>
                       </div>
                     </div>
@@ -467,7 +467,7 @@ export const ExplorePage: React.FC = () => {
                     )}
                     <div className="list-item-meta">
                       <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt đọc</span>
-                      <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} củ khoai</span>
+                      <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} Củ khoai</span>
                       <span className="list-meta-item"><BookOpen size={13} /> {story.chapterCount} chương</span>
                     </div>
                   </div>

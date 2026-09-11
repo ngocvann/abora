@@ -118,6 +118,7 @@
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
+  min-height: 3.2rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -162,6 +163,18 @@
 .carousel-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+}
+
+.hero-explore-btn {
+  padding: 0.35rem 1.6rem !important;
+  font-size: 0.9rem !important;
+}
+
+@media (max-width: 768px) {
+  .hero-explore-btn {
+    padding: 0.12rem 0.95rem !important;
+    font-size: 0.75rem !important;
+  }
 }
 
 .carousel-dots {
@@ -365,6 +378,7 @@
     font-size: 0.76rem;
     text-align: left;
     line-height: 1.4;
+    min-height: 2.15rem;
     margin-bottom: 0.1rem;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* clamp to 2 lines on mobile for compactness */
@@ -533,6 +547,12 @@
 .search-results-info-text {
   color: var(--text-muted, #a3b8cc);
   font-size: 0.88rem;
+}
+
+@media (max-width: 768px) {
+  .search-results-info-text {
+    display: none !important;
+  }
 }
 
 .view-toggle-group {

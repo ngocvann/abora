@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Camera, MessageSquare, MessageCircle, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
+import { Loader2, Camera, MessageCircle, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
@@ -752,13 +752,18 @@ export const ProfilePage: React.FC = () => {
                     maxLength={2000}
                   />
                   <div className="creator-actions">
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      disabled={createStatusMutation.isPending || !newStatusContent.trim()}
-                    >
-                      {createStatusMutation.isPending ? 'Đang đăng...' : 'Đăng trạng thái'}
-                    </Button>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={createStatusMutation.isPending || !newStatusContent.trim()}
+                      >
+                        <span>{createStatusMutation.isPending ? 'Đang đăng...' : 'Đăng bài'}</span>
+                      </Button>
+                      <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+                      <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+                      <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -902,8 +907,7 @@ export const ProfilePage: React.FC = () => {
                         className="interaction-btn"
                         onClick={() => setOpenCommentsPostId(openCommentsPostId === post.id ? null : post.id)}
                       >
-                        <MessageSquare size={16} />
-                        <span>{post.commentCount}</span>
+                        <span>{post.commentCount} bình luận</span>
                       </button>
                       </div>
 

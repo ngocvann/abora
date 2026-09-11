@@ -23,9 +23,6 @@ export const SweetPotatoIcon: React.FC<IconProps> = ({
       className={`sweet-potato-icon ${isFilled ? 'filled' : 'outline'} ${className}`}
       style={{
         objectFit: 'contain',
-        filter: isFilled 
-          ? 'drop-shadow(0px 0px 2px rgba(255,255,255,0.8))' 
-          : 'brightness(0) invert(1) opacity(0.8)',
         ...style
       }}
       alt="Khoai"

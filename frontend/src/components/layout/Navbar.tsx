@@ -345,8 +345,11 @@ export const Navbar: React.FC = () => {
                   <button 
                     onClick={() => navigate('/admin')}
                     className="navbar-admin-btn"
+                    title="Trang quản trị Admin"
                   >
-                    <Shield size={12} /> Admin
+                    <Shield size={12} />
+                    <span className="admin-btn-text">Admin</span>
+                    <span className="admin-mobile-text">A</span>
                   </button>
                 )}
 
@@ -435,14 +438,20 @@ export const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="auth-buttons">
-                <div className="login-btn-wrapper" style={{ position: 'relative' }}>
+                {/* Desktop Login Button */}
+                <div className="login-btn-wrapper desktop-only-auth" style={{ position: 'relative' }}>
                   <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="login-btn-custom"><span>Đăng nhập</span></Button>
-                  <span className="sparkle-star mobile-login-sparkle" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
-                  <span className="sparkle-star mobile-login-sparkle" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
-                  <span className="sparkle-star mobile-login-sparkle" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
                 </div>
-                <div className="register-btn-wrapper" style={{ position: 'relative' }}>
+                {/* Desktop Register Button */}
+                <div className="register-btn-wrapper desktop-only-auth" style={{ position: 'relative' }}>
                   <Button variant="primary" size="sm" onClick={() => navigate('/register')}><span>Đăng ký</span></Button>
+                  <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+                  <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+                  <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+                </div>
+                {/* Mobile Login Button (Primary 3D) */}
+                <div className="mobile-login-wrapper" style={{ position: 'relative' }}>
+                  <Button variant="primary" size="sm" onClick={() => navigate('/login')} className="mobile-primary-login-btn"><span>Đăng nhập</span></Button>
                   <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
                   <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
                   <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>

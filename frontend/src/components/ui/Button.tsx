@@ -16,7 +16,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {isLoading ? <span className="spinner"></span> : children}
+        {isLoading ? <span className="spinner"></span> : <span className="btn-content">{children}</span>}
       </button>
     );
   }
