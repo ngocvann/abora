@@ -39,6 +39,7 @@
 
 .btn-primary, .primary-btn {
   position: relative;
+  isolation: isolate;
   border: none;
   border-radius: 9999px;
   color: #78350F !important; /* Match icon color (Dark Honey Orange) */
@@ -72,8 +73,8 @@
   top: 0; left: 0; right: 0; bottom: -6px; /* extend 6px down */
   /* Gradient starts at Purple at the very bottom, fades to Orange within 12px so it's visible in the 6px drop */
   background: linear-gradient(to top, #6B21A8 0%, #D97706 12px, #FBBF24 100%);
-  border-radius: 9999px;
-  z-index: 0;
+  border-radius: inherit;
+  z-index: -2;
   box-shadow: 0 10px 15px rgba(251, 191, 36, 0.3); /* Glow */
   transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -86,8 +87,8 @@
   background: 
     linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%),
     linear-gradient(180deg, #FDE047 0%, #FBBF24 100%);
-  border-radius: 9999px;
-  z-index: 1;
+  border-radius: inherit;
+  z-index: -1;
   box-shadow: 
     inset 0 3px 6px rgba(255, 255, 255, 0.6),
     inset 0 -3px 6px rgba(217, 119, 6, 0.3);

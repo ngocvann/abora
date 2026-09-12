@@ -1106,7 +1106,7 @@ export const ReaderPage: React.FC = () => {
                   navigate('/library');
                 }}
               >
-                Thêm vào thư viện
+                <span className="btn-content">Thêm vào thư viện</span>
               </button>
               <button 
                 className="btn btn-secondary" 
