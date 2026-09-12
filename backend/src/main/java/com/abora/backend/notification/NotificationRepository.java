@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
@@ -14,6 +15,11 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     /** Đếm số thông báo chưa đọc */
     long countByUserIdAndReadFalse(Long userId);
+
+    /** Tìm thông báo tương tác cũ để cập nhật tránh rác/spam */
+    Optional<Notification> findFirstByUserIdAndActorIdAndTypeAndEntityTypeAndEntityId(
+            Long userId, Long actorId, NotificationType type, String entityType, Long entityId
+    );
 
     /** Đánh dấu tất cả thông báo của user là đã đọc */
     @Modifying

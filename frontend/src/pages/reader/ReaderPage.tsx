@@ -161,6 +161,7 @@ export const ReaderPage: React.FC = () => {
   }>({ range: null, coords: null, text: '' });
 
   const initialScrollChapterIdRef = useRef<number | null>(null);
+  const lastLikeClickRef = useRef<number>(0);
 
   // Quote modal states
   const [showQuoteModal, setShowQuoteModal] = useState(false);
@@ -267,10 +268,13 @@ export const ReaderPage: React.FC = () => {
       navigate('/login', { state: { returnUrl: `/story/${slug}/chapter/${chapterSlug}` } });
       return;
     }
-    if (toggleLikeMutation.isPending) {
+
+    const now = Date.now();
+    if (now - lastLikeClickRef.current < 500 || toggleLikeMutation.isPending) {
       toast.error("Ném Khoai Lang từ từ thôi shop!", { id: "spam-like-toast" });
       return;
     }
+    lastLikeClickRef.current = now;
     toggleLikeMutation.mutate();
   };
 

@@ -64,6 +64,22 @@ public class NotificationService {
         // Không gửi thông báo cho chính mình
         if (actorId != null && actorId.equals(recipientUserId)) return;
 
+        // Tránh tạo hàng loạt thông báo trùng lặp từ cùng 1 người dùng cho cùng 1 thực thể
+        if (actorId != null && type != NotificationType.SYSTEM_ALERT) {
+            var existing = notificationRepository.findFirstByUserIdAndActorIdAndTypeAndEntityTypeAndEntityId(
+                    recipientUserId, actorId, type, entityType, entityId
+            );
+            if (existing.isPresent()) {
+                Notification n = existing.get();
+                n.setMessage(message);
+                n.setTargetUrl(targetUrl);
+                n.setRead(false);
+                n.setCreatedAt(java.time.Instant.now());
+                notificationRepository.save(n);
+                return;
+            }
+        }
+
         User recipient = userRepository.getReferenceById(recipientUserId);
 
         Notification notification = new Notification();
