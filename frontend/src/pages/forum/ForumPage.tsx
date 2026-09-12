@@ -1,7 +1,7 @@
 import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, MessageSquare, MessagesSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X, Image as ImageIcon, Globe, Lock } from 'lucide-react';
+import { Loader2, MessageSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X, Image as ImageIcon, Globe, Lock } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
@@ -421,8 +421,7 @@ export const ForumPage: React.FC = () => {
           )}
 
           <h2 className="feed-title" style={{ display: 'flex', alignItems: 'center' }}>
-            <MessagesSquare size={24} style={{ color: '#a855f7', marginRight: '16px' }} />
-            Thảo luận cộng đồng
+            Bài viết mới nhất
           </h2>
 
           {selectedHashtag && (
