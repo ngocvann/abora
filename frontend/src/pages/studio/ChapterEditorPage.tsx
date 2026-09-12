@@ -64,6 +64,7 @@ import { Button } from '../../components/ui/Button';
 import { ArrowLeft, MoreHorizontal, Eye, ChevronDown } from 'lucide-react';
 import { getImageUrl } from '../../utils/image';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import toast from 'react-hot-toast';
 import './Studio.css';
 
 interface Chapter {
@@ -348,7 +349,10 @@ export const ChapterEditorPage: React.FC = () => {
   });
 
   const handleSave = (status: 'DRAFT' | 'PUBLISHED') => {
-    if (!title || !content) return alert('Vui lòng nhập tiêu đề và nội dung.');
+    if (!title || !content) {
+      toast.error('Vui lòng nhập tiêu đề và nội dung.');
+      return;
+    }
     saveMutation.mutate(status);
   };
 

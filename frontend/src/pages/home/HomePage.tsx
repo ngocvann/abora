@@ -2,12 +2,13 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { IoMoonSharp } from "react-icons/io5";
-import { Flame, Loader2 } from "lucide-react";
+import { Flame } from "lucide-react";
 import api from "../../services/api";
 import { Button } from "../../components/ui/Button";
 import { useAuthStore } from "../../store/authStore";
 import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
+import { StoryCardSkeleton } from "../../components/ui/Skeleton";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import "./HomePage.css";
 
@@ -186,8 +187,12 @@ export const HomePage: React.FC = () => {
             <h2 className="section-title">Tiếp tục đọc dở</h2>
           </div>
           {isReadingLoading ? (
-            <div className="slider-loading">
-              <Loader2 className="animate-spin text-primary" size={24} />
+            <div className="slider-wrapper">
+              <div className="slider-content">
+                {Array.from({ length: columns }).map((_, i) => (
+                  <StoryCardSkeleton key={i} />
+                ))}
+              </div>
             </div>
           ) : (
             <>
@@ -220,8 +225,12 @@ export const HomePage: React.FC = () => {
           <h2 className="section-title">Gợi ý dành riêng cho bạn</h2>
         </div>
         {isPersonalizedLoading ? (
-          <div className="slider-loading">
-            <Loader2 className="animate-spin text-primary" size={24} />
+          <div className="slider-wrapper">
+            <div className="slider-content">
+              {Array.from({ length: columns }).map((_, i) => (
+                <StoryCardSkeleton key={i} />
+              ))}
+            </div>
           </div>
         ) : storiesPersonalized.length === 0 ? (
           <div className="slider-empty">
@@ -257,8 +266,12 @@ export const HomePage: React.FC = () => {
           <h2 className="section-title">Bảng xếp hạng Hot tuần này</h2>
         </div>
         {isTrendingLoading ? (
-          <div className="slider-loading">
-            <Loader2 className="animate-spin text-primary" size={24} />
+          <div className="slider-wrapper">
+            <div className="slider-content">
+              {Array.from({ length: columns }).map((_, i) => (
+                <StoryCardSkeleton key={i} />
+              ))}
+            </div>
           </div>
         ) : storiesTrending.length === 0 ? (
           <div className="slider-empty">

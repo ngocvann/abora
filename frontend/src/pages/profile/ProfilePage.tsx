@@ -1264,7 +1264,7 @@ export const ProfilePage: React.FC = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 if (!newListName.trim()) {
-                  alert('Tên danh sách không được trống');
+                  toast.error('Tên danh sách không được trống');
                   return;
                 }
                 createReadingListMutation.mutate({

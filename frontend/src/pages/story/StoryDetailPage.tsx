@@ -11,6 +11,8 @@ import { Library, BookOpen, Plus, List, Flag, Check, Globe, Lock, ChevronLeft, C
 import { ReportModal } from '../../components/ui/ReportModal';
 import { getImageUrl } from "../../utils/image";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { toast } from 'react-hot-toast';
+import { StoryDetailSkeleton } from '../../components/ui/Skeleton';
 import "./StoryDetail.css";
 
 const fetchStoryDetail = async (slug: string): Promise<PublicStoryDetail> => {
@@ -146,7 +148,7 @@ export const StoryDetailPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["readingLists", currentUser?.id] });
     },
     onError: () => {
-      alert("Đã có lỗi xảy ra khi cập nhật danh sách đọc");
+      toast.error("Đã có lỗi xảy ra khi cập nhật danh sách đọc");
     }
   });
 
@@ -209,12 +211,20 @@ export const StoryDetailPage: React.FC = () => {
         return api.post('/user/reading-history/add', { storyId: story?.id, status: 'READ_LATER' });
       }
     },
-    onSuccess: () => {
-      setAddedToLibrary(!addedToLibrary);
-      queryClient.invalidateQueries({ queryKey: ["library"] });
+    onMutate: async () => {
+      const prev = addedToLibrary;
+      setAddedToLibrary(!prev);
+      return { prev };
     },
-    onError: () => {
-      alert("Đã có lỗi xảy ra khi cập nhật thư viện");
+    onSuccess: (_, __, context) => {
+      queryClient.invalidateQueries({ queryKey: ["library"] });
+      toast.success(context?.prev ? "Đã xóa khỏi thư viện" : "Đã thêm vào thư viện");
+    },
+    onError: (_err, _vars, context) => {
+      if (context) {
+        setAddedToLibrary(context.prev);
+      }
+      toast.error("Đã có lỗi xảy ra khi cập nhật thư viện");
     }
   });
 
@@ -223,33 +233,23 @@ export const StoryDetailPage: React.FC = () => {
       api.post('/reading-lists', { name, isPublic }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["readingLists", currentUser?.id] });
+      toast.success("Tạo danh sách đọc thành công");
     },
     onError: () => {
-      alert("Đã có lỗi xảy ra khi tạo danh sách đọc");
+      toast.error("Đã có lỗi xảy ra khi tạo danh sách đọc");
     }
   });
 
   const handleReportClick = () => {
     if (!isAuthenticated) {
-      alert("Vui lòng đăng nhập để báo cáo truyện này!");
+      toast.error("Vui lòng đăng nhập để báo cáo truyện này!");
       return;
     }
     setIsReportModalOpen(true);
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <span
-          className="spinner"
-          style={{
-            width: "3rem",
-            height: "3rem",
-            borderTopColor: "var(--primary-color)",
-          }}
-        ></span>
-      </div>
-    );
+    return <StoryDetailSkeleton />;
   }
 
   if (isError || !story) {

@@ -8,6 +8,7 @@ import { Button } from '../ui/Button';
 import { ReportModal } from '../ui/ReportModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { AdminDeleteReasonModal } from '../ui/AdminDeleteReasonModal';
+import { toast } from 'react-hot-toast';
 import './CommentSidebar.css';
 
 interface Comment {
@@ -154,10 +155,11 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
       setNewComment('');
       setReplyTo(null);
       queryClient.invalidateQueries({ queryKey: ['comments', chapterId] });
+      toast.success('Bình luận đã được đăng');
     },
     onError: (err) => {
       console.error(err);
-      alert('Không thể gửi bình luận. Có thể bạn chưa đăng nhập hoặc đã xảy ra lỗi.');
+      toast.error('Không thể gửi bình luận. Có thể bạn chưa đăng nhập hoặc đã xảy ra lỗi.');
     }
   });
 
@@ -172,8 +174,9 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
     onSuccess: () => {
       setEditingCommentId(null);
       queryClient.invalidateQueries({ queryKey: ['comments', chapterId] });
+      toast.success('Đã cập nhật bình luận');
     },
-    onError: () => alert('Không thể cập nhật bình luận.')
+    onError: () => toast.error('Không thể cập nhật bình luận.')
   });
 
   const [adminDeleteCommentId, setAdminDeleteCommentId] = useState<number | null>(null);
@@ -185,13 +188,14 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', chapterId] });
+      toast.success('Đã xóa bình luận');
     },
-    onError: () => alert('Không thể xóa bình luận.')
+    onError: () => toast.error('Không thể xóa bình luận.')
   });
 
   const handleSubmit = () => {
     if (!isAuthenticated) {
-      alert("Vui lòng đăng nhập để bình luận.");
+      toast.error("Vui lòng đăng nhập để bình luận.");
       return;
     }
     if (!newComment.trim()) return;

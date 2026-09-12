@@ -10,6 +10,7 @@ import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { ReportModal } from '../../components/ui/ReportModal';
 import { AdminDeleteReasonModal } from '../../components/ui/AdminDeleteReasonModal';
 import { getImageUrl } from '../../utils/image';
+import { toast } from 'react-hot-toast';
 import './ForumPage.css';
 
 interface Post {
@@ -101,7 +102,7 @@ export const ForumPage: React.FC = () => {
       const isVideo = file.type.startsWith('video/') || res.data.mediaType === 'VIDEO';
       setMediaType(isVideo ? 'VIDEO' : 'IMAGE');
     } catch {
-      alert('Tải tập tin đa phương tiện thất bại.');
+      toast.error('Tải tập tin đa phương tiện thất bại.');
     } finally {
       setIsUploadingMedia(false);
     }
@@ -233,7 +234,7 @@ export const ForumPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
     },
     onError: () => {
-      alert('Không thể đăng bài viết. Vui lòng thử lại.');
+      toast.error('Không thể đăng bài viết. Vui lòng thử lại.');
     }
   });
 
@@ -257,8 +258,9 @@ export const ForumPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
       queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
+      toast.success('Đã xóa bài viết');
     },
-    onError: () => alert('Không thể xóa bài viết.')
+    onError: () => toast.error('Không thể xóa bài viết.')
   });
 
   // ─── Update Post Mutation ──────────────────────────────────────────────────
@@ -270,8 +272,9 @@ export const ForumPage: React.FC = () => {
     onSuccess: () => {
       setEditingPostId(null);
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
+      toast.success('Đã cập nhật bài viết');
     },
-    onError: () => alert('Không thể cập nhật bài viết.')
+    onError: () => toast.error('Không thể cập nhật bài viết.')
   });
 
   const handleCreatePost = (e: React.FormEvent) => {
@@ -632,7 +635,7 @@ export const ForumPage: React.FC = () => {
                       className={`action-btn like-btn ${post.isLikedByMe ? 'liked' : ''}`}
                       onClick={() => {
                         if (!user) {
-                          alert('Vui lòng đăng nhập để khoai bài viết.');
+                          toast.error('Vui lòng đăng nhập để khoai bài viết.');
                           return;
                         }
                         toggleLikeMutation.mutate(post.id);
@@ -817,8 +820,9 @@ const PostCommentsSection: React.FC<{ postId: number, postOwnerUsername: string,
       queryClient.invalidateQueries({ queryKey: ['post-comments', postId] });
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
       queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
+      toast.success('Bình luận thành công');
     },
-    onError: () => alert('Không thể gửi bình luận.')
+    onError: () => toast.error('Không thể gửi bình luận.')
   });
 
   const updateCommentMutation = useMutation({
@@ -829,8 +833,9 @@ const PostCommentsSection: React.FC<{ postId: number, postOwnerUsername: string,
     onSuccess: () => {
       setEditingCommentId(null);
       queryClient.invalidateQueries({ queryKey: ['post-comments', postId] });
+      toast.success('Đã cập nhật bình luận');
     },
-    onError: () => alert('Không thể cập nhật bình luận.')
+    onError: () => toast.error('Không thể cập nhật bình luận.')
   });
 
   const deleteCommentMutation = useMutation({
@@ -841,8 +846,9 @@ const PostCommentsSection: React.FC<{ postId: number, postOwnerUsername: string,
       queryClient.invalidateQueries({ queryKey: ['post-comments', postId] });
       queryClient.invalidateQueries({ queryKey: ['forum-posts'] });
       queryClient.invalidateQueries({ queryKey: ['user-timeline'] });
+      toast.success('Đã xóa bình luận');
     },
-    onError: () => alert('Không thể xóa bình luận.')
+    onError: () => toast.error('Không thể xóa bình luận.')
   });
 
   const handleSendComment = (e: React.FormEvent) => {

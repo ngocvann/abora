@@ -4,6 +4,7 @@ import api from '../../services/api';
 import styles from './AdminDashboard.module.css';
 import { ConfirmModal } from '../../components/ui/ConfirmModal';
 import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
+import { toast } from 'react-hot-toast';
 
 interface DashboardStats {
   totalUsers: number;
@@ -109,7 +110,7 @@ export const AdminDashboard: React.FC = () => {
       }
     } catch (err) {
       console.error('Upload failed', err);
-      alert('Upload ảnh thất bại.');
+      toast.error('Upload ảnh thất bại.');
     } finally {
       setIsUploadingBanner(false);
     }
@@ -122,10 +123,10 @@ export const AdminDashboard: React.FC = () => {
         api.post('/settings/home_banner', { value: homeBannerMode === 'custom' ? homeBannerUrl : '' }),
         api.post('/settings/explore_banner', { value: exploreBannerMode === 'custom' ? exploreBannerUrl : '' })
       ]);
-      alert('Đã lưu cài đặt giao diện thành công!');
+      toast.success('Đã lưu cài đặt giao diện thành công!');
     } catch (err) {
       console.error('Save failed', err);
-      alert('Lưu cài đặt thất bại.');
+      toast.error('Lưu cài đặt thất bại.');
     } finally {
       setIsSavingBanner(false);
     }
@@ -267,7 +268,7 @@ export const AdminDashboard: React.FC = () => {
             setTimeout(() => setSendSuccess(null), 3000);
           } catch (err) {
             console.error('Lỗi khi gửi thông báo', err);
-            alert('Có lỗi xảy ra khi gửi thông báo. Vui lòng thử lại.');
+            toast.error('Có lỗi xảy ra khi gửi thông báo. Vui lòng thử lại.');
           } finally {
             setIsSending(false);
             setShowConfirm(false);

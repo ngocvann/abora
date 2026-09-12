@@ -70,9 +70,7 @@ export const CreateStoryPage: React.FC = () => {
         error?.response?.data?.message ||
         error?.message ||
         "Lỗi không xác định";
-      alert(
-        `Đã xảy ra lỗi khi tạo truyện: ${errorMsg}\nHãy báo lại lỗi này cho tôi!`,
-      );
+      toast.error(`Đã xảy ra lỗi khi tạo truyện: ${errorMsg}`);
     },
   });
 

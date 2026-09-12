@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useMutation } from '@tanstack/react-query';
 import api from '../../services/api';
 import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 import './ConfirmModal.css';
 
 interface ReportModalProps {
@@ -37,7 +38,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, targe
       }, 2000);
     },
     onError: (error: any) => {
-      alert("Đã có lỗi xảy ra khi gửi báo cáo: " + (error.response?.data?.message || error.message));
+      toast.error("Đã có lỗi xảy ra khi gửi báo cáo: " + (error.response?.data?.message || error.message));
     }
   });
 
@@ -46,11 +47,11 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, targe
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCategory) {
-      alert("Vui lòng chọn một lý do báo cáo.");
+      toast.error("Vui lòng chọn một lý do báo cáo.");
       return;
     }
     if (selectedCategory === "Khác" && !details.trim()) {
-      alert("Vui lòng cung cấp thêm chi tiết cho lý do báo cáo.");
+      toast.error("Vui lòng cung cấp thêm chi tiết cho lý do báo cáo.");
       return;
     }
 

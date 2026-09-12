@@ -237,7 +237,24 @@ export const ReaderPage: React.FC = () => {
         return api.post(`/stories/${chapter.storyId}/chapters/${chapter.id}/like`);
       }
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["chapter", slug, chapterSlug] });
+      const previousChapterData = queryClient.getQueryData(["chapter", slug, chapterSlug]);
+      queryClient.setQueryData(["chapter", slug, chapterSlug], (old: any) => {
+        if (!old) return old;
+        const newHasLiked = !old.hasLiked;
+        const newLikeCount = newHasLiked ? (old.likeCount || 0) + 1 : Math.max(0, (old.likeCount || 0) - 1);
+        return { ...old, hasLiked: newHasLiked, likeCount: newLikeCount };
+      });
+      return { previousChapterData };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousChapterData) {
+        queryClient.setQueryData(["chapter", slug, chapterSlug], context.previousChapterData);
+      }
+      toast.error("Không thể cập nhật lượt tặng củ khoai");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["chapter", slug, chapterSlug] });
     }
   });
@@ -286,12 +303,19 @@ export const ReaderPage: React.FC = () => {
         return api.post('/user/reading-history/add', { storyId: story?.id, status: 'READ_LATER' });
       }
     },
-    onSuccess: () => {
-      setAddedToLibrary(!addedToLibrary);
-      queryClient.invalidateQueries({ queryKey: ["library"] });
-      toast.success(addedToLibrary ? "Đã xóa khỏi thư viện" : "Đã thêm vào thư viện");
+    onMutate: async () => {
+      const prev = addedToLibrary;
+      setAddedToLibrary(!prev);
+      return { prev };
     },
-    onError: () => {
+    onSuccess: (_, __, context) => {
+      queryClient.invalidateQueries({ queryKey: ["library"] });
+      toast.success(context?.prev ? "Đã xóa khỏi thư viện" : "Đã thêm vào thư viện");
+    },
+    onError: (_err, _vars, context) => {
+      if (context) {
+        setAddedToLibrary(context.prev);
+      }
       toast.error("Đã có lỗi xảy ra khi cập nhật thư viện");
     }
   });

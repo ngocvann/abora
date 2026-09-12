@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Download, Upload, Loader2, Move, ZoomIn, ZoomOut, Check } from 'lucide-react';
 import { getImageUrl } from '../../utils/image';
+import toast from 'react-hot-toast';
 import './QuoteGeneratorModal.css';
 
 interface QuoteGeneratorModalProps {
@@ -426,7 +427,7 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
       }
     } catch (err) {
       console.error('Lỗi khi tải ảnh:', err);
-      alert('Không thể tạo ảnh do chính sách bảo mật trình duyệt (CORS). Vui lòng thử lại với một hình nền khác hoặc hình ảnh tự tải lên.');
+      toast.error('Không thể tạo ảnh do chính sách bảo mật trình duyệt (CORS). Vui lòng thử lại với một hình nền khác hoặc hình ảnh tự tải lên.');
       setIsGenerating(false);
     }
   };

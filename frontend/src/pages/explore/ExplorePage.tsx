@@ -6,6 +6,7 @@ import { Eye, Loader2, BookOpen, Tag, List, LayoutGrid } from 'lucide-react';
 import api from "../../services/api";
 import { getImageUrl } from "../../utils/image";
 import type { Story } from "../../types/story";
+import { StoryCardSkeleton } from "../../components/ui/Skeleton";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import { Button } from "../../components/ui/Button";
 import "./ExplorePage.css";
@@ -450,8 +451,10 @@ export const ExplorePage: React.FC = () => {
           </div>
 
           {isGridLoading ? (
-            <div className="flex justify-center py-20">
-              <Loader2 className="animate-spin text-primary" size={36} />
+            <div className="explore-grid-card">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <StoryCardSkeleton key={i} />
+              ))}
             </div>
           ) : filteredStories.length === 0 ? (
             <div className="text-center py-20 glass-panel rounded-2xl">
