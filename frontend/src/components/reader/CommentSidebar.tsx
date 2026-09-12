@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, Pin, PinOff, MoreHorizontal } from 'lucide-react';
 import api from '../../services/api';
@@ -56,6 +57,15 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const user = useAuthStore(state => state.user);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const handleNavigateToUser = (username: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (username) {
+      onClose();
+      navigate(`/${username}`);
+    }
+  };
   
   const [isParagraphExpanded, setIsParagraphExpanded] = useState(false);
 
@@ -260,7 +270,12 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   const renderComment = (comment: Comment, isReply = false) => (
     <div key={comment.id} id={`comment-${comment.id}`} className="reader-comment-item-container">
       <div className="reader-comment-item">
-        <div className={`reader-comment-avatar ${isReply ? 'reply-avatar' : ''}`}>
+        <div 
+          className={`reader-comment-avatar ${isReply ? 'reply-avatar' : ''}`}
+          onClick={(e) => handleNavigateToUser(comment.userName, e)}
+          style={{ cursor: 'pointer' }}
+          title={`Xem trang cá nhân của ${comment.displayName || comment.userName}`}
+        >
           <img 
             src={getImageUrl(comment.avatarUrl, 'avatar', comment.displayName || comment.userName)} 
             alt={comment.displayName || comment.userName} 
@@ -272,7 +287,14 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
         <div className="reader-comment-bubble">
           <div className="reader-comment-author-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <span className="reader-comment-author">{comment.displayName || comment.userName}</span>
+              <span 
+                className="reader-comment-author"
+                onClick={(e) => handleNavigateToUser(comment.userName, e)}
+                style={{ cursor: 'pointer' }}
+                title={`Xem trang cá nhân của ${comment.displayName || comment.userName}`}
+              >
+                {comment.displayName || comment.userName}
+              </span>
               <span className="reader-comment-time" style={{ marginLeft: '8px' }}>
                 {formatRelativeTime(comment.createdAt)}
               </span>

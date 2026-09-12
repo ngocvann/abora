@@ -165,10 +165,26 @@
   margin-bottom: 0.5rem;
 }
 
+.reader-comment-avatar {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.reader-comment-avatar:hover {
+  opacity: 0.85;
+}
+
 .reader-comment-author {
   font-weight: 600;
   font-size: 0.9rem;
   color: var(--text-primary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.reader-comment-author:hover {
+  color: var(--primary-color, #8b5cf6);
+  text-decoration: underline;
 }
 
 .reader-comment-time {
