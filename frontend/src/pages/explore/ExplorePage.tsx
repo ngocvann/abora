@@ -518,7 +518,7 @@ export const ExplorePage: React.FC = () => {
                       <p className="list-item-desc">{story.description}</p>
                     )}
                     <div className="list-item-meta">
-                      <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt đọc</span>
+                      <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)}</span>
                       <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} Củ Khoai</span>
                       <span className="list-meta-item"><BookOpen size={13} /> {story.chapterCount} chương</span>
                     </div>
