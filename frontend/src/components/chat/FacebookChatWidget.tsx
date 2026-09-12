@@ -594,20 +594,20 @@ export const FacebookChatWidget: React.FC = () => {
           }}
           onTouchEnd={handleTouchEndLongPress}
         >
-          {/* Hide Minus Button (Revealed on Desktop hover & Mobile long-press) */}
-          <button
-            className={`fb-dock-hide-minus-btn ${showHideBtn ? 'visible' : ''}`}
-            title="Ẩn bong bóng tin nhắn (Bấm icon Tin nhắn trên thanh điều hướng để hiện lại)"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsDockVisible(false);
-            }}
-          >
-            <Minus size={14} />
-          </button>
-
           {/* Floating New Chat Action Button (Exact 100% match with Profile Page Message Button) */}
           <div className="profile-msg-btn-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
+            {/* Close X Button at top-right corner on hover */}
+            <button
+              className={`fb-dock-close-x-btn ${showHideBtn ? 'visible' : ''}`}
+              title="Ẩn bong bóng tin nhắn (Bấm icon Tin nhắn trên thanh điều hướng để hiện lại)"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDockVisible(false);
+              }}
+            >
+              <X size={12} />
+            </button>
+
             <Button
               variant="primary"
               size="sm"
