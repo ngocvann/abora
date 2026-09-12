@@ -606,7 +606,7 @@ export const FacebookChatWidget: React.FC = () => {
                 setIsDockVisible(false);
               }}
             >
-              <X size={17} />
+              <X size={13} />
             </button>
 
             <Button
