@@ -18,7 +18,7 @@
 
 .story-header-cover {
   flex-shrink: 0;
-  width: 240px;
+  width: 180px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -36,7 +36,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding-top: 1.5rem; /* Shifts the details up to balance with the cover height */
+  padding-top: 0.25rem; /* Adjusted for smaller cover height */
 }
 
 .story-header-title {
@@ -176,7 +176,7 @@
     gap: 1.25rem;
   }
   .story-header-cover {
-    width: 180px;
+    width: 135px;
     margin: 0 auto;
   }
   .story-header-title {
