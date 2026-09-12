@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { ImageCropperModal } from '../../components/ui/ImageCropperModal';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Camera, MessageCircle, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
+import { Loader2, Camera, Send, X, Edit3, Calendar, Plus, Lock, Globe, Trash2, ChevronDown, ChevronUp, BookOpen, MoreHorizontal, Flag, MoreVertical, BellOff, UserX, Info, Users, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
@@ -14,6 +14,7 @@ import { ReportModal } from '../../components/ui/ReportModal';
 import { AdminDeleteReasonModal } from '../../components/ui/AdminDeleteReasonModal';
 import { getImageUrl } from '../../utils/image';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { AiOutlineMessage } from 'react-icons/ai';
 import './ProfilePage.css';
 
 
@@ -623,42 +624,41 @@ export const ProfilePage: React.FC = () => {
                 ) : (
                   currentUser && (
                     <>
-                      <button
-                        className={`follow-action-btn ${profile.isFollowing ? 'followed' : 'unfollowed'}`}
-                        onClick={() => followMutation.mutate()}
-                        disabled={followMutation.isPending}
-                      >
-                        {followMutation.isPending ? (
-                          <Loader2 className="animate-spin inline" size={14} />
-                        ) : profile.isFollowing ? (
-                          'Đang theo dõi'
-                        ) : (
-                          'Theo dõi'
-                        )}
-                      </button>
+                      <div className="profile-follow-btn-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => followMutation.mutate()}
+                          disabled={followMutation.isPending}
+                          className="profile-follow-btn-custom"
+                        >
+                          {followMutation.isPending ? (
+                            <Loader2 className="animate-spin inline" size={14} />
+                          ) : profile.isFollowing ? (
+                            'Đang theo dõi'
+                          ) : (
+                            'Theo dõi'
+                          )}
+                        </Button>
+                        <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+                        <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+                        <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+                      </div>
 
-                      <button
-                        type="button"
-                        title={`Nhắn tin với ${profile.displayName}`}
-                        onClick={() => openChat({ id: profile.id, username: profile.username, displayName: profile.displayName, avatarUrl: profile.avatarUrl })}
-                        style={{
-                          width: '38px',
-                          height: '38px',
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #a855f7 0%, #1e1b4b 100%)',
-                          color: '#fff',
-                          border: '1px solid rgba(168, 85, 247, 0.4)',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginLeft: '0.5rem',
-                          boxShadow: '0 4px 12px rgba(168, 85, 247, 0.3)',
-                          transition: 'transform 0.2s ease, boxShadow 0.2s ease'
-                        }}
-                      >
-                        <MessageCircle size={18} />
-                      </button>
+                      <div className="profile-msg-btn-wrapper" style={{ position: 'relative', display: 'inline-block', marginLeft: '0.5rem' }}>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          title={`Nhắn tin với ${profile.displayName}`}
+                          onClick={() => openChat({ id: profile.id, username: profile.username, displayName: profile.displayName, avatarUrl: profile.avatarUrl })}
+                          className="profile-msg-btn-custom"
+                          style={{ padding: '0.55rem 0.9rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                        >
+                          <AiOutlineMessage size={18} style={{ color: '#78350F' }} />
+                        </Button>
+                        <span className="sparkle-star" style={{ top: '-4px', left: '-4px', width: '9px', height: '9px', animationDelay: '0.2s', zIndex: 10 }}></span>
+                        <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '11px', height: '11px', animationDelay: '0.8s', zIndex: 10 }}></span>
+                      </div>
                     </>
                   )
                 )}
@@ -719,19 +719,19 @@ export const ProfilePage: React.FC = () => {
           className={`profile-tab-button ${activeTab === 'posts' ? 'active' : ''}`}
           onClick={() => setActiveTab('posts')}
         >
-          Bài viết<span className="desktop-suffix"> cá nhân</span> ({timelinePosts.length})
+          Bài viết<span className="desktop-suffix"> cá nhân</span>
         </button>
         <button
           className={`profile-tab-button ${activeTab === 'stories' ? 'active' : ''}`}
           onClick={() => setActiveTab('stories')}
         >
-          {isMe ? 'Truyện của tôi' : 'Truyện'} ({stories.length})
+          {isMe ? 'Truyện của tôi' : 'Truyện'}
         </button>
         <button
           className={`profile-tab-button ${activeTab === 'reading_lists' ? 'active' : ''}`}
           onClick={() => setActiveTab('reading_lists')}
         >
-          Danh sách đọc ({readingLists.length})
+          Danh sách đọc
         </button>
       </div>
 
