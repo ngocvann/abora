@@ -131,12 +131,28 @@
 
 .auth-forgot-link {
   font-size: 0.875rem;
-  color: var(--primary-color, #7c3aed);
-  transition: opacity 0.2s;
+  color: #FBBF24 !important;
+  font-weight: 500;
+  transition: opacity 0.2s, color 0.2s;
 }
 
 .auth-forgot-link:hover {
-  opacity: 0.75;
+  color: #FDE047 !important;
+  opacity: 0.9;
+  text-decoration: underline;
+}
+
+.auth-register-link {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 45%, #FBBF24 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-weight: 700 !important;
+  display: inline-block;
+  transition: filter 0.2s;
+}
+
+.auth-register-link:hover {
+  filter: brightness(1.2);
   text-decoration: underline;
 }
 

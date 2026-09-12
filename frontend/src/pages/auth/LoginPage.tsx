@@ -151,7 +151,7 @@ export const LoginPage: React.FC = () => {
 
           <div className="auth-footer">
             Chưa có tài khoản?{' '}
-            <Link to="/register" className="text-gradient font-bold">
+            <Link to="/register" className="auth-register-link font-bold">
               Đăng ký ngay
             </Link>
           </div>
