@@ -543,14 +543,8 @@
 
 /* Mobile Responsive Optimizations for Chat Widget */
 @media (max-width: 768px) {
-  .fb-chat-widget-container {
-    display: flex !important;
-    pointer-events: none !important;
-  }
-
   .fb-chat-bubbles-col {
-    display: flex !important;
-    pointer-events: auto !important;
+    display: none !important;
   }
 }
 
