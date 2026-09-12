@@ -987,5 +987,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .profile-page {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
+
 
 

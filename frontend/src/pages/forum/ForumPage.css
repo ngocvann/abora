@@ -538,7 +538,7 @@
 /* Mobile Responsive Optimizations for Forum */
 @media (max-width: 768px) {
   .forum-page {
-    padding: 1rem 0.5rem;
+    padding: 1rem 0.5rem !important;
   }
 
   .forum-container {

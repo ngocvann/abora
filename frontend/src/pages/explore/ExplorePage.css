@@ -337,11 +337,16 @@
     grid-template-columns: 1fr;
   }
 
+  .explore-container {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+  }
+
   .explore-banner {
-    padding: 1.25rem 1.5rem 0 1.5rem; /* Reset bottom padding */
+    padding: 1.25rem 0.85rem 0 0.85rem; /* Reset bottom padding */
     border-radius: 0;
-    margin-left: -2rem;
-    margin-right: -2rem;
+    margin-left: -0.85rem;
+    margin-right: -0.85rem;
     margin-top: -15px; /* Pull banner closer to navbar */
     width: auto !important;
     height: auto;

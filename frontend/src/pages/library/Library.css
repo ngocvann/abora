@@ -1264,6 +1264,17 @@
   color: #ef4444;
 }
 
+@media (max-width: 768px) {
+  .library-page {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  .library-container {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+  }
+}
+
 
 
 
