@@ -1,3 +1,4 @@
+import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useParams, Link } from "react-router-dom";
@@ -311,7 +312,8 @@ export const StoryDetailPage: React.FC = () => {
               <span className="stat-label">Lượt đọc</span>
             </div>
             <div className="stat-item">
-              <span className="stat-value">
+              <span className="stat-value" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <SweetPotatoIcon size={16} fill="#FBBF24" />
                 {(story.favoriteCount ?? 0).toLocaleString()}
               </span>
               <span className="stat-label">Củ Khoai</span>

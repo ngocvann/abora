@@ -844,7 +844,20 @@
 
 @media (max-width: 768px) {
   .story-detail-container {
+    padding-top: 0.25rem !important; /* Reduced top padding by 1/3 between cover and navbar */
     padding-left: 0.85rem !important;
     padding-right: 0.85rem !important;
+  }
+
+  .story-header {
+    padding-top: 0.5rem !important;
+  }
+
+  .story-header-author {
+    margin-bottom: 0.85rem !important; /* Halved vertical gap between author name and stats row */
+  }
+
+  .story-header-stats {
+    margin-bottom: 1rem !important;
   }
 }
