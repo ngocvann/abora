@@ -472,6 +472,7 @@ export const FacebookChatWidget: React.FC = () => {
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
     }
+    handleDragEnd();
   };
 
   // Poll total unread count
@@ -597,6 +598,7 @@ export const FacebookChatWidget: React.FC = () => {
             if (e.touches.length > 0) handleTouchStartLongPress(e.touches[0].clientX, e.touches[0].clientY);
           }}
           onTouchEnd={handleTouchEndLongPress}
+          onTouchCancel={handleTouchEndLongPress}
         >
           {/* Floating New Chat Action Button (Exact 100% match with Profile Page Message Button) */}
           <div className="profile-msg-btn-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
