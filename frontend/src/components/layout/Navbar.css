@@ -505,15 +505,18 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background: rgba(15, 15, 20, 0.85);
+  height: calc(60px + env(safe-area-inset-bottom, 0px));
+  background: rgba(15, 15, 20, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 100;
   justify-content: space-around;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0 1rem env(safe-area-inset-bottom, 0px) 1rem;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .mobile-bottom-nav-item {
@@ -805,7 +808,7 @@
   }
   
   body {
-    padding-bottom: 60px !important;
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .navbar-container {
