@@ -47,7 +47,7 @@ export const AnalyticsModal: React.FC<AnalyticsModalProps> = ({ story, onClose }
                 <SweetPotatoIcon size={24} />
               </div>
               <div className="stat-card-info">
-                <span className="stat-card-label">lượt củ khoai</span>
+                <span className="stat-card-label">lượt Củ Khoai</span>
                 <span className="stat-card-value">{story.favoriteCount}</span>
               </div>
             </div>
@@ -79,7 +79,7 @@ export const AnalyticsModal: React.FC<AnalyticsModalProps> = ({ story, onClose }
               <div className="metric-item">
                 <TrendingUp size={20} className="metric-icon" />
                 <div className="metric-details">
-                  <span className="metric-name">Tỷ lệ chuyển đổi (củ khoai / xem)</span>
+                  <span className="metric-name">Tỷ lệ chuyển đổi (Củ Khoai / xem)</span>
                   <div className="metric-bar-container">
                     <div className="metric-bar" style={{ width: `${Math.min(100, Number(conversionRate))}%` }}></div>
                   </div>

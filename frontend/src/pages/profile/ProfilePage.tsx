@@ -989,7 +989,7 @@ export const ProfilePage: React.FC = () => {
                             <Eye size={13} />
                             {story.viewCount}
                           </span>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="củ khoai">
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }} title="Củ Khoai">
                             <SweetPotatoIcon size={13} />
                             {story.favoriteCount || 0}
                           </span>
@@ -1280,7 +1280,7 @@ export const ProfilePage: React.FC = () => {
                   type="text"
                   value={newListName}
                   onChange={(e) => setNewListName(e.target.value)}
-                  placeholder="Ví dụ: truyện củ khoai, Đọc sau..."
+                  placeholder="Ví dụ: truyện Củ Khoai, Đọc sau..."
                   required
                 />
               </div>

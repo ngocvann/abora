@@ -314,7 +314,7 @@ export const StoryDetailPage: React.FC = () => {
               <span className="stat-value">
                 {(story.favoriteCount ?? 0).toLocaleString()}
               </span>
-              <span className="stat-label">củ khoai</span>
+              <span className="stat-label">Củ Khoai</span>
             </div>
           </div>
 

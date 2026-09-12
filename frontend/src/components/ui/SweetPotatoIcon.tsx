@@ -26,7 +26,7 @@ export const SweetPotatoIcon: React.FC<IconProps> = ({
         objectFit: 'contain',
         ...style
       }}
-      alt="củ khoai"
+      alt="Củ Khoai"
       {...props}
     />
   );

@@ -225,7 +225,7 @@ export const ExplorePage: React.FC = () => {
                 </div>
                 <div className="carousel-meta-item">
                   <SweetPotatoIcon size={16} fill="#FBBF24" />
-                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> củ khoai</span></span>
+                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> Củ Khoai</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <BookOpen size={16} />
@@ -516,7 +516,7 @@ export const ExplorePage: React.FC = () => {
                     )}
                     <div className="list-item-meta">
                       <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt đọc</span>
-                      <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} củ khoai</span>
+                      <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} Củ Khoai</span>
                       <span className="list-meta-item"><BookOpen size={13} /> {story.chapterCount} chương</span>
                     </div>
                   </div>

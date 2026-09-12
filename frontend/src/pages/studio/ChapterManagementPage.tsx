@@ -715,7 +715,7 @@ export const ChapterManagementPage: React.FC = () => {
                                       <span className="chapter-meta-stat" title="Lượt xem">
                                         <Eye size={15} /> {chapter.viewCount || 0}
                                       </span>
-                                      <span className="chapter-meta-stat" title="lượt củ khoai">
+                                      <span className="chapter-meta-stat" title="lượt Củ Khoai">
                                         <SweetPotatoIcon size={15} /> {chapter.likeCount || 0}
                                       </span>
                                       <span className="chapter-meta-stat" title="Bình luận">

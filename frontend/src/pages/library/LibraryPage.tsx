@@ -610,7 +610,7 @@ export const LibraryPage: React.FC = () => {
             <div className="library-empty">
               <ListIcon size={48} className="text-muted" />
               <h3>Chưa có danh sách truyện</h3>
-              <p>Tạo danh sách truyện để gom nhóm các tác phẩm củ khoai của bạn.</p>
+              <p>Tạo danh sách truyện để gom nhóm các tác phẩm Củ Khoai của bạn.</p>
               
               <Button 
                 onClick={() => {

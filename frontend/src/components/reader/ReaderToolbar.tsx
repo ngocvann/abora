@@ -57,7 +57,7 @@ export const ReaderToolbar: React.FC<ReaderToolbarProps> = ({
           className="relative mr-2"
         >
           <SweetPotatoIcon size={18} className="mr-2" fill={hasLiked ? "currentColor" : "none"} />
-          củ khoai
+          Củ Khoai
           {likeCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
               {likeCount}
