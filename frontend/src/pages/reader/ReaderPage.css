@@ -827,8 +827,8 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 
 .paragraph-comment-indicator .badge {
   position: absolute;
-  top: -2px;
-  right: -2px;
+  top: -1px;
+  right: -1px;
   font-size: 0.6rem;
   font-weight: 800;
   color: var(--primary-color, #9d4edd);
