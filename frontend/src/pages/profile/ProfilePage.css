@@ -22,10 +22,11 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(76, 29, 149, 0.95) 0%, rgba(124, 45, 18, 0.9) 60%, rgba(180, 83, 9, 0.95) 100%) !important;
-  border: 1px solid rgba(251, 191, 36, 0.25) !important;
+  background: linear-gradient(135deg, rgba(88, 28, 135, 0.6) 0%, rgba(126, 34, 206, 0.45) 50%, rgba(107, 33, 168, 0.55) 100%) !important;
+  border: 1px solid rgba(168, 85, 247, 0.25) !important;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
 }
 
 /* Banner / Decorative Top background */
@@ -35,8 +36,8 @@
   left: 0;
   right: 0;
   height: 100px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(245, 158, 11, 0.25));
-  border-bottom: 1px solid rgba(251, 191, 36, 0.15);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(192, 132, 252, 0.15));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .profile-header-content {
@@ -311,9 +312,9 @@
   background: none;
   border: none;
   color: #FBBF24 !important;
-  opacity: 0.75;
-  font-size: 1rem;
-  font-weight: 700;
+  opacity: 0.8;
+  font-size: 0.95rem;
+  font-weight: 500;
   padding: 0.75rem 0.5rem;
   cursor: pointer;
   position: relative;
@@ -328,6 +329,7 @@
 .profile-tab-button.active {
   color: #FBBF24 !important;
   opacity: 1;
+  font-weight: 600;
 }
 
 .profile-tab-button.active::after {
