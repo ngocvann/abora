@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus } from 'lucide-react';
 import api from '../../services/api';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -63,9 +62,6 @@ export const RegisterPage: React.FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card glass-panel fade-in">
-        <div className="auth-icon-header">
-          <UserPlus size={38} className="auth-page-icon" />
-        </div>
         <h2 className="auth-title">Tạo tài khoản</h2>
         <p className="auth-subtitle">Gia nhập cộng đồng Abora ngay hôm nay</p>
 
