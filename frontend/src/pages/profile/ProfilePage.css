@@ -237,19 +237,27 @@
 @media (max-width: 650px) {
   .profile-info-details {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .profile-name-container {
-    position: relative;
+    position: static;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 0.5rem;
   }
 
   .profile-display-name {
     text-align: center;
-    padding: 0 40px; /* Prevent overlap with the edit/follow button */
+    padding: 0 !important;
+    font-size: 1.5rem;
+    word-break: break-word;
   }
 
   .profile-edit-icon {
@@ -257,11 +265,14 @@
   }
 
   .profile-actions-wrapper {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-top: 0 !important;
+    position: static !important;
+    transform: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100%;
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
   }
 }
 
