@@ -830,17 +830,47 @@ export const ReaderPage: React.FC = () => {
 
       {/* Bottom Actions */}
       <div className="reader-bottom-actions" onClick={(e) => e.stopPropagation()}>
-        {chapter.nextChapterSlug ? (
-          <button className="btn-next-chapter" onClick={() => navigate(`/story/${slug}/chapter/${chapter.nextChapterSlug}`)}>
-            Đọc phần tiếp theo
-          </button>
-        ) : (
-          <button className="btn-next-chapter disabled">
-            Đã đến chương mới nhất
-          </button>
-        )}
+        <div style={{ position: 'relative', display: 'inline-block', width: '100%', maxWidth: '360px', margin: '0 auto' }}>
+          {chapter.nextChapterSlug ? (
+            <button 
+              className="btn btn-primary btn-next-chapter-3d" 
+              style={{ width: '100%', padding: '12px 24px', fontSize: '1.05rem', fontWeight: 700 }}
+              onClick={() => navigate(`/story/${slug}/chapter/${chapter.nextChapterSlug}`)}
+            >
+              <span className="btn-content">Đọc phần tiếp theo</span>
+            </button>
+          ) : (
+            <button 
+              className="btn btn-secondary btn-next-chapter-3d disabled" 
+              disabled
+              style={{ width: '100%', padding: '12px 24px', fontSize: '1.05rem', fontWeight: 600, opacity: 0.5, cursor: 'not-allowed' }}
+            >
+              <span>Đã đến chương mới nhất</span>
+            </button>
+          )}
+          {chapter.nextChapterSlug && (
+            <>
+              <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+              <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+              <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+            </>
+          )}
+        </div>
         
         <div className="reader-action-icons">
+          {/* 1. Củ Khoai */}
+          <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={handleToggleLike} title="Củ Khoai">
+            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} />
+            <span className="action-btn-text">Củ Khoai</span>
+          </button>
+
+          {/* 2. Bình luận */}
+          <button className="action-btn" onClick={() => setShowComments(true)} title="Bình luận">
+            <MessageSquare size={18} />
+            <span className="action-btn-text">Bình luận</span>
+          </button>
+
+          {/* 3. + Thêm */}
           <button 
             className="action-btn" 
             onClick={(e) => {
@@ -851,18 +881,15 @@ export const ReaderPage: React.FC = () => {
               }
               setIsLibraryDropdownOpen(true);
             }}
+            title="Thêm vào thư viện"
           >
-            <Plus size={18} /> Thêm
+            <Plus size={18} />
+            <span className="action-btn-text action-btn-text-them">Thêm</span>
           </button>
-          <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={handleToggleLike}>
-            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} /> Củ Khoai
-          </button>
-          
+
+          {/* 4. Link */}
           <button className="action-btn icon-only" onClick={handleCopyLink} title="Sao chép liên kết">
             <LinkIcon size={18} />
-          </button>
-          <button className="action-btn icon-only" onClick={() => setShowComments(true)} title="Bình luận">
-            <MessageCircle size={18} />
           </button>
         </div>
       </div>
