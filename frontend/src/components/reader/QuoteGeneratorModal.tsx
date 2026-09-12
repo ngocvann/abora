@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Download, Upload, Loader2, Move, ZoomIn, ZoomOut, Check } from 'lucide-react';
 import { getImageUrl } from '../../utils/image';
 import toast from 'react-hot-toast';
@@ -436,7 +437,7 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
 
   // ── Crop UI overlay ──────────────────────────────────────────────────────────
   if (showCropUI && pendingImage) {
-    return (
+    return createPortal(
       <div className="quote-modal-overlay">
         <div className="crop-ui-panel">
           <div className="crop-ui-header">
@@ -493,11 +494,12 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
             <Check size={16} /> Xác nhận
           </button>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
-  return (
+  return createPortal(
     <div className="quote-modal-overlay" onClick={onClose}>
       <div className="quote-modal-panel" onClick={(e) => e.stopPropagation()}>
         {/* Left Side: Preview */}
@@ -640,6 +642,7 @@ export const QuoteGeneratorModal: React.FC<QuoteGeneratorModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
