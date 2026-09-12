@@ -160,7 +160,7 @@
 .footer-quote {
   font-family: 'Satisfy', cursive !important;
   font-size: 1.25rem !important;
-  background: linear-gradient(135deg, #c084fc 0%, #a855f7 40%, #FBBF24 100%) !important;
+  background: linear-gradient(to top, #9333ea 0%, #c084fc 35%, #FDE047 75%, #FBBF24 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4)) !important;
