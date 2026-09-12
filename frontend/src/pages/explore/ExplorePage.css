@@ -525,23 +525,24 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem; /* increased space between category buttons by ~3px */
-  scrollbar-color: rgba(251, 191, 36, 0.4) transparent;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(251, 191, 36, 0.5) transparent !important;
 }
 
 .category-scroll-inner::-webkit-scrollbar {
-  width: 5px;
+  width: 3px !important;
 }
 .category-scroll-inner::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 999px !important;
 }
 .category-scroll-inner::-webkit-scrollbar-thumb {
-  background: rgba(251, 191, 36, 0.4) !important; /* yellow scrollbar thumb */
-  border-radius: 999px;
+  background: rgba(251, 191, 36, 0.5) !important; /* yellow scrollbar thumb */
+  border-radius: 999px !important;
   transition: background 0.2s;
 }
 .category-scroll-inner::-webkit-scrollbar-thumb:hover {
-  background: rgba(251, 191, 36, 0.7) !important; /* brighter yellow on hover */
+  background: rgba(251, 191, 36, 0.8) !important; /* brighter yellow on hover */
 }
 
 .category-item {
