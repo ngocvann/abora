@@ -388,7 +388,7 @@ export const FacebookChatWidget: React.FC = () => {
     setIsSnapping(false);
     hasMovedRef.current = false;
     dragStartRef.current = { x: clientX, y: clientY };
-    const defaultLeft = window.innerWidth - 65;
+    const defaultLeft = window.innerWidth - 80;
     const defaultBottom = window.innerWidth <= 600 ? 85 : 20;
     const currentLeft = dockPos?.left ?? defaultLeft;
     const currentBottom = dockPos?.bottom ?? defaultBottom;
@@ -404,7 +404,7 @@ export const FacebookChatWidget: React.FC = () => {
       hasMovedRef.current = true;
     }
 
-    const newLeft = Math.max(5, Math.min(window.innerWidth - 55, initialPosRef.current.left + deltaX));
+    const newLeft = Math.max(10, Math.min(window.innerWidth - 75, initialPosRef.current.left + deltaX));
     const newBottom = Math.max(5, Math.min(window.innerHeight - 75, initialPosRef.current.bottom + deltaY));
 
     setDockPos({ left: newLeft, bottom: newBottom });
@@ -415,14 +415,15 @@ export const FacebookChatWidget: React.FC = () => {
     setIsSnapping(true);
 
     setDockPos((prev) => {
-      const defaultLeft = window.innerWidth - 65;
+      const defaultLeft = window.innerWidth - 80;
       const currentLeft = prev?.left ?? defaultLeft;
       const currentBottom = prev?.bottom ?? 20;
 
       const midX = window.innerWidth / 2;
-      const snapMargin = 15;
-      const buttonWidth = 50;
-      const snapLeft = currentLeft < midX ? snapMargin : Math.max(snapMargin, window.innerWidth - buttonWidth - snapMargin);
+      const snapMarginRight = 25;
+      const snapMarginLeft = 20;
+      const buttonWidth = 55;
+      const snapLeft = currentLeft < midX ? snapMarginLeft : Math.max(20, window.innerWidth - buttonWidth - snapMarginRight);
       const snapBottom = Math.max(15, Math.min(window.innerHeight - 80, currentBottom));
 
       return { left: snapLeft, bottom: snapBottom };
@@ -605,7 +606,7 @@ export const FacebookChatWidget: React.FC = () => {
                 setIsDockVisible(false);
               }}
             >
-              <X size={15} />
+              <X size={17} />
             </button>
 
             <Button

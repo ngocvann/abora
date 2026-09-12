@@ -344,10 +344,10 @@
   cursor: not-allowed;
 }
 
-/* Minimized Bubbles Column (Right 20px, Bottom 20px by default, Draggable with magnetic edge snap) */
+/* Minimized Bubbles Column (Right 25px margin, Bottom 20px by default, Draggable with magnetic edge snap) */
 .fb-chat-bubbles-col {
   position: fixed;
-  left: calc(100vw - 65px);
+  left: calc(100vw - 80px);
   bottom: 20px;
   z-index: 9992;
   display: flex;
@@ -371,10 +371,10 @@
 
 .fb-dock-close-x-btn {
   position: absolute;
-  top: -9px;
-  right: -9px;
-  width: 22px;
-  height: 22px;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: rgba(30, 30, 42, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.25);
