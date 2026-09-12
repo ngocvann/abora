@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Minus, X, Send, Loader2, Image as ImageIcon, 
-  MoreVertical, BellOff, UserX, Edit2, MessageCircle
+  MoreVertical, BellOff, UserX, Edit2
 } from 'lucide-react';
+import { AiOutlineMessage } from 'react-icons/ai';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
@@ -371,9 +372,10 @@ export const FacebookChatWidget: React.FC = () => {
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [userSearchQuery, setUserSearchQuery] = useState('');
 
-  // 2D Drag & Drop state (Left & Bottom)
+  // 2D Magnetic Drag & Drop state (Left & Bottom)
   const [dockPos, setDockPos] = useState<{ left: number; bottom: number } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isSnapping, setIsSnapping] = useState(false);
   const [showHideBtn, setShowHideBtn] = useState(false);
   const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const initialPosRef = useRef<{ left: number; bottom: number }>({ left: 20, bottom: 20 });
@@ -382,10 +384,13 @@ export const FacebookChatWidget: React.FC = () => {
 
   const handleDragStart = (clientX: number, clientY: number) => {
     setIsDragging(true);
+    setIsSnapping(false);
     hasMovedRef.current = false;
     dragStartRef.current = { x: clientX, y: clientY };
-    const currentLeft = dockPos?.left ?? 20;
-    const currentBottom = dockPos?.bottom ?? (window.innerWidth <= 600 ? 85 : 20);
+    const defaultLeft = window.innerWidth - 65;
+    const defaultBottom = window.innerWidth <= 600 ? 85 : 20;
+    const currentLeft = dockPos?.left ?? defaultLeft;
+    const currentBottom = dockPos?.bottom ?? defaultBottom;
     initialPosRef.current = { left: currentLeft, bottom: currentBottom };
   };
 
@@ -398,14 +403,29 @@ export const FacebookChatWidget: React.FC = () => {
       hasMovedRef.current = true;
     }
 
-    const newLeft = Math.max(10, Math.min(window.innerWidth - 60, initialPosRef.current.left + deltaX));
-    const newBottom = Math.max(10, Math.min(window.innerHeight - 80, initialPosRef.current.bottom + deltaY));
+    const newLeft = Math.max(5, Math.min(window.innerWidth - 55, initialPosRef.current.left + deltaX));
+    const newBottom = Math.max(5, Math.min(window.innerHeight - 75, initialPosRef.current.bottom + deltaY));
 
     setDockPos({ left: newLeft, bottom: newBottom });
   };
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    setIsSnapping(true);
+
+    setDockPos((prev) => {
+      const defaultLeft = window.innerWidth - 65;
+      const currentLeft = prev?.left ?? defaultLeft;
+      const currentBottom = prev?.bottom ?? 20;
+
+      const midX = window.innerWidth / 2;
+      const snapMargin = 15;
+      const buttonWidth = 50;
+      const snapLeft = currentLeft < midX ? snapMargin : Math.max(snapMargin, window.innerWidth - buttonWidth - snapMargin);
+      const snapBottom = Math.max(15, Math.min(window.innerHeight - 80, currentBottom));
+
+      return { left: snapLeft, bottom: snapBottom };
+    });
   };
 
   useEffect(() => {
@@ -562,10 +582,10 @@ export const FacebookChatWidget: React.FC = () => {
         ))}
       </div>
 
-      {/* Minimized Floating Chat Bubbles & Action Dock (Supports 2D Drag & Drop) */}
+      {/* Minimized Floating Chat Bubbles & Action Dock (Supports 2D Magnetic Drag & Drop) */}
       {isDockVisible && (
         <div
-          className={`fb-chat-bubbles-col ${isDragging ? 'dragging' : ''}`}
+          className={`fb-chat-bubbles-col ${isDragging ? 'dragging' : ''} ${isSnapping ? 'snapping' : ''}`}
           style={dockPos !== null ? { left: `${dockPos.left}px`, bottom: `${dockPos.bottom}px` } : undefined}
           onMouseDown={(e) => handleDragStart(e.clientX, e.clientY)}
           onTouchStart={(e) => {
@@ -585,7 +605,7 @@ export const FacebookChatWidget: React.FC = () => {
             <Minus size={14} />
           </button>
 
-          {/* Floating New Chat Circular Action Button */}
+          {/* Floating New Chat Action Button (Matches Profile Message Button style) */}
           <div style={{ position: 'relative', display: 'inline-block' }}>
             <button
               className="fb-chat-new-btn"
@@ -597,7 +617,7 @@ export const FacebookChatWidget: React.FC = () => {
               }}
               title="Tin nhắn mới"
             >
-              <MessageCircle size={20} />
+              <AiOutlineMessage size={20} style={{ color: '#78350F' }} />
             </button>
             <span className="sparkle-star" style={{ top: '-4px', left: '-4px', width: '9px', height: '9px', animationDelay: '0s', zIndex: 10 }}></span>
             <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '11px', height: '11px', animationDelay: '0.7s', zIndex: 10 }}></span>

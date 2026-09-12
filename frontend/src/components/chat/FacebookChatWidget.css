@@ -344,10 +344,10 @@
   cursor: not-allowed;
 }
 
-/* Minimized Bubbles Column (Left 20px, Bottom 20px by default, Draggable) */
+/* Minimized Bubbles Column (Right 20px, Bottom 20px by default, Draggable with magnetic edge snap) */
 .fb-chat-bubbles-col {
   position: fixed;
-  left: 20px;
+  left: calc(100vw - 65px);
   bottom: 20px;
   z-index: 9992;
   display: flex;
@@ -362,6 +362,11 @@
 
 .fb-chat-bubbles-col.dragging {
   cursor: grabbing;
+  transition: none !important;
+}
+
+.fb-chat-bubbles-col.snapping {
+  transition: left 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), bottom 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 .fb-dock-hide-minus-btn {
@@ -440,12 +445,12 @@
   background: #ef4444;
 }
 
-/* Floating New Chat Circular Action Button (46px size - Golden Yellow Theme) */
+/* Floating New Chat Action Button (Pill shape - Matches Profile Page Message Button) */
 .fb-chat-new-btn {
   position: relative;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
+  width: 50px;
+  height: 44px;
+  border-radius: 9999px;
   background: 
     linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 45%),
     linear-gradient(180deg, #FDE047 0%, #FBBF24 100%) !important;
@@ -469,7 +474,7 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: -4px;
   background: linear-gradient(to top, #6B21A8 0%, #D97706 10px, #FBBF24 100%);
-  border-radius: 50%;
+  border-radius: 9999px;
   z-index: -1;
   box-shadow: 0 6px 14px rgba(251, 191, 36, 0.5);
 }
@@ -486,7 +491,6 @@
 
 .fb-chat-new-btn svg {
   color: #78350F !important;
-  stroke-width: 2.3px !important;
 }
 
 /* New Message Modal Box */
