@@ -224,7 +224,7 @@ export const StudioDashboard: React.FC = () => {
                   <div className="story-row-stat-item" title="Lượt xem">
                     <Eye size={14} /> {story.viewCount || 0}
                   </div>
-                  <div className="story-row-stat-item" title="lượt Củ Khoai">
+                  <div className="story-row-stat-item" title="Củ Khoai">
                     <SweetPotatoIcon size={14} /> {story.favoriteCount || 0}
                   </div>
                   <div className="story-row-stat-item" title="Bình luận">

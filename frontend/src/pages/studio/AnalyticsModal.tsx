@@ -47,7 +47,7 @@ export const AnalyticsModal: React.FC<AnalyticsModalProps> = ({ story, onClose }
                 <SweetPotatoIcon size={24} />
               </div>
               <div className="stat-card-info">
-                <span className="stat-card-label">lượt Củ Khoai</span>
+                <span className="stat-card-label">Củ Khoai</span>
                 <span className="stat-card-value">{story.favoriteCount}</span>
               </div>
             </div>
