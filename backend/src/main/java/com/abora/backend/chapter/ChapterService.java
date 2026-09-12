@@ -515,7 +515,7 @@ public class ChapterService {
         Long authorId = story.getAuthor().getId();
         List<com.abora.backend.library.ReadingHistory> histories = readingHistoryRepository.findAllByStoryId(story.getId());
         String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getSlug();
-        String message = "Truyện \"" + story.getTitle() + "\" vừa cập nhật chương mới: " + chapter.getTitle();
+        String message = "Truyện \"" + story.getTitle() + "\" vừa được tác giả cập nhật chương mới.";
 
         for (com.abora.backend.library.ReadingHistory rh : histories) {
             Long readerId = rh.getUser().getId();

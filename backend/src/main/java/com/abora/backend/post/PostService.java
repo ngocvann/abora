@@ -82,7 +82,7 @@ public class PostService {
                                         com.abora.backend.notification.NotificationType.LIKE_POST,
                                         "POST",
                                         postId,
-                                        liker.getDisplayName() + " đã thích bài viết của bạn.",
+                                        liker.getDisplayName() + " đã tặng Khoai Lang cho bài viết của bạn.",
                                         "/post/" + postId
                                     );
                                 }

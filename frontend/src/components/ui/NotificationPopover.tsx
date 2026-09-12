@@ -35,19 +35,19 @@ const fetchUnreadCount = async (): Promise<UnreadCount> => {
 
 const typeIcon = (type: Notification['type']) => {
   switch (type) {
-    case 'SYSTEM_ALERT':  return <Info size={18} className="notif-icon" />;
-    case 'NEW_FOLLOWER':  return <UserPlus size={18} className="notif-icon" />;
-    case 'LIKE_COMMENT':
-    case 'LIKE_POST':     
-    case 'LIKE_STORY':    return <SweetPotatoIcon size={18} className="notif-icon" />;
-    case 'CONTENT_DELETED': return <Trash2 size={18} className="notif-icon" />;
-    case 'ACCOUNT_BANNED': return <Ban size={18} className="notif-icon" />;
-    case 'COMMENT_REPLY': return <MessageSquareReply size={18} className="notif-icon" />;
-    case 'NEW_COMMENT':   return <MessageSquare size={18} className="notif-icon" />;
-    case 'NEW_CHAPTER':   return <BookOpen size={18} className="notif-icon" />;
-    case 'NEW_STORY':     return <BookPlus size={18} className="notif-icon" />;
-    case 'ADD_TO_READING_LIST': return <ListPlus size={18} className="notif-icon" />;
-    default:              return <Bell size={18} className="notif-icon" />;
+    case 'LIKE_STORY':
+    case 'LIKE_POST':
+    case 'LIKE_COMMENT':     return <SweetPotatoIcon size={18} fill="#FBBF24" className="notif-icon potato-icon" />;
+    case 'SYSTEM_ALERT':  return <Info size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'NEW_FOLLOWER':  return <UserPlus size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'CONTENT_DELETED': return <Trash2 size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'ACCOUNT_BANNED': return <Ban size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'COMMENT_REPLY': return <MessageSquareReply size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'NEW_COMMENT':   return <MessageSquare size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'NEW_CHAPTER':   return <BookOpen size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'NEW_STORY':     return <BookPlus size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    case 'ADD_TO_READING_LIST': return <ListPlus size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
+    default:              return <Bell size={18} className="notif-icon yellow-icon" style={{ color: '#FBBF24' }} />;
   }
 };
 
@@ -57,6 +57,58 @@ const timeAgo = (dateStr: string): string => {
   if (diff < 3600) return `${Math.floor(diff / 60)} phút`;
   if (diff < 86400) return `${Math.floor(diff / 3600)} giờ`;
   return `${Math.floor(diff / 86400)} ngày`;
+};
+
+interface GroupedNotification extends Notification {
+  groupedCount?: number;
+}
+
+const groupNotifications = (list: Notification[]): GroupedNotification[] => {
+  if (!list || list.length === 0) return [];
+
+  const groups: { [key: string]: Notification[] } = {};
+  const order: string[] = [];
+
+  list.forEach((item) => {
+    let key = `${item.type}`;
+    if (item.type !== 'NEW_FOLLOWER' && item.entityType && item.entityId) {
+      key = `${item.type}_${item.entityType}_${item.entityId}`;
+    }
+
+    if (!groups[key]) {
+      groups[key] = [];
+      order.push(key);
+    }
+    groups[key].push(item);
+  });
+
+  return order.map((key) => {
+    const items = groups[key];
+    const latest = items[0];
+    const totalCount = items.length;
+    const othersCount = totalCount - 1;
+
+    if (othersCount <= 0) {
+      return { ...latest };
+    }
+
+    let formattedMessage = latest.message;
+    const match = latest.message.match(/^(.*?)(\s+(?:đã|vừa)\s+.*)$/);
+    if (match) {
+      const actorName = match[1];
+      const actionText = match[2];
+      formattedMessage = `${actorName} và ${othersCount} người khác${actionText}`;
+    }
+
+    const isAnyUnread = items.some((i) => !i.read);
+
+    return {
+      ...latest,
+      message: formattedMessage,
+      read: !isAnyUnread,
+      groupedCount: totalCount,
+    };
+  });
 };
 
 interface Props {
@@ -69,12 +121,14 @@ export const NotificationPopover: React.FC<Props> = ({ isOpen, onClose }) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const { data: notifications, isLoading } = useQuery({
+  const { data: rawNotifications, isLoading } = useQuery({
     queryKey: ['notifications'],
     queryFn: fetchNotifications,
     enabled: isOpen,
     staleTime: 30_000,
   });
+
+  const notifications = rawNotifications ? groupNotifications(rawNotifications) : [];
 
   const { data: unreadData } = useQuery({
     queryKey: ['notifications-unread'],
@@ -114,7 +168,7 @@ export const NotificationPopover: React.FC<Props> = ({ isOpen, onClose }) => {
 
   const unreadCount = unreadData?.count ?? 0;
 
-  const handleNotifClick = (n: Notification) => {
+  const handleNotifClick = (n: GroupedNotification) => {
     if (n.targetUrl) {
       navigate(n.targetUrl);
       onClose();

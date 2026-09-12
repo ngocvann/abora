@@ -73,7 +73,7 @@ public class ReadingListService {
                         NotificationType.ADD_TO_READING_LIST,
                         "STORY",
                         storyId,
-                        actor.getDisplayName() + " đã thêm truyện \"" + story.getTitle() + "\" của bạn vào danh sách đọc \"" + readingList.getName() + "\"",
+                        actor.getDisplayName() + " vừa thêm truyện \"" + story.getTitle() + "\" vào danh sách đọc \"" + readingList.getName() + "\" của họ.",
                         "/story/" + story.getId() + "-" + story.getSlug()
                 );
             }

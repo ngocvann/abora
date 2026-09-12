@@ -208,6 +208,27 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
       : comments
   ) : [];
 
+  useEffect(() => {
+    if (isOpen && window.location.hash && window.location.hash.startsWith('#comment-')) {
+      const targetId = window.location.hash.substring(1);
+      const timer = setTimeout(() => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+          el.style.border = '1px solid #FBBF24';
+          el.style.borderRadius = '8px';
+          el.style.boxShadow = '0 0 12px rgba(251, 191, 36, 0.5)';
+          setTimeout(() => {
+            el.style.border = '';
+            el.style.boxShadow = '';
+          }, 3000);
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, comments]);
+
   if (!isOpen) return null;
 
   const formatRelativeTime = (dateStr: string) => {
@@ -233,7 +254,7 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
   };
 
   const renderComment = (comment: Comment, isReply = false) => (
-    <div key={comment.id} className="reader-comment-item-container">
+    <div key={comment.id} id={`comment-${comment.id}`} className="reader-comment-item-container">
       <div className="reader-comment-item">
         <div className={`reader-comment-avatar ${isReply ? 'reply-avatar' : ''}`}>
           <img 

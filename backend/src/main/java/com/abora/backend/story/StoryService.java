@@ -489,7 +489,7 @@ public class StoryService {
             return;
         }
         String targetUrl = "/story/" + story.getSlug();
-        String message = "New story \"" + story.getTitle() + "\" posted by " + story.getAuthor().getDisplayName();
+        String message = story.getAuthor().getDisplayName() + " đã đăng một bộ truyện mới.";
         for (Long followerId : followerIds) {
             notificationService.createNotification(
                     followerId,

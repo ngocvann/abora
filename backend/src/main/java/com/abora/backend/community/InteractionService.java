@@ -60,7 +60,7 @@ public class InteractionService {
                             NotificationType.LIKE_STORY,
                             "STORY",
                             storyId,
-                            actor.getDisplayName() + " đã yêu thích (tim) truyện \"" + story.getTitle() + "\" của bạn",
+                            actor.getDisplayName() + " đã tặng Khoai Lang cho truyện \"" + story.getTitle() + "\" của bạn",
                             "/story/" + story.getId() + "-" + story.getSlug()
                     );
                 }

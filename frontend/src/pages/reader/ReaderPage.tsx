@@ -183,6 +183,13 @@ export const ReaderPage: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Auto-open comment sidebar if URL contains #comment- hash
+  useEffect(() => {
+    if (window.location.hash && window.location.hash.startsWith('#comment-')) {
+      setShowComments(true);
+    }
+  }, []);
+
   // Fetch Chapter
   const {
     data: chapter,

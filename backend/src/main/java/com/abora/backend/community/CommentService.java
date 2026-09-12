@@ -77,7 +77,7 @@ public class CommentService {
 
         String actorName = user.getDisplayName();
         String storyTitle = story.getTitle();
-        String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getSlug();
+        String targetUrl = "/story/" + story.getId() + "-" + story.getSlug() + "/chapter/" + chapter.getSlug() + "#comment-" + comment.getId();
 
         // 1. Gửi thông báo cho tác giả truyện (nếu người comment không phải là chính tác giả)
         Long authorId = story.getAuthor().getId();
@@ -88,7 +88,7 @@ public class CommentService {
                     NotificationType.NEW_COMMENT,
                     "COMMENT",
                     comment.getId(),
-                    actorName + " đã bình luận về truyện \"" + storyTitle + "\"",
+                    actorName + " đã bình luận vào truyện \"" + storyTitle + "\"",
                     targetUrl
             );
         }
@@ -103,7 +103,7 @@ public class CommentService {
                         NotificationType.COMMENT_REPLY,
                         "COMMENT",
                         comment.getParent().getId(),
-                        actorName + " đã trả lời bình luận của bạn trong truyện \"" + storyTitle + "\"",
+                        actorName + " đã trả lời bình luận của bạn.",
                         targetUrl
                 );
             }

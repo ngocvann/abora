@@ -47,7 +47,7 @@ public class FollowService {
             NotificationType.NEW_FOLLOWER,
             "USER",
             followerId,
-            follower.getDisplayName() + " đã bắt đầu theo dõi bạn.",
+            follower.getDisplayName() + " vừa theo dõi bạn.",
             "/" + follower.getUsername()
         );
     }
