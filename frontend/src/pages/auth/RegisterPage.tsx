@@ -86,7 +86,7 @@ export const RegisterPage: React.FC = () => {
           <Input
             label="Username (tuỳ chọn)"
             type="text"
-            placeholder="Chỉ gồm chữ, số và _ (VD: ngocvan_123)"
+            placeholder="Chỉ gồm chữ, số và _ (VD: bangtan_1306)"
             {...register('username')}
             error={errors.username?.message}
           />
