@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Bell, MessageSquareReply, BookOpen, BookPlus, CheckCheck, Loader2, Info, UserPlus, Trash2, Ban, MessageSquare, ListPlus } from 'lucide-react';
-import { RiNotificationLine, RiNotificationFill } from 'react-icons/ri';
+import { AiOutlineBell, AiFillBell } from 'react-icons/ai';
 import api from '../../services/api';
 import './NotificationPopover.css';
 
@@ -135,9 +135,9 @@ export const NotificationPopover: React.FC<Props> = ({ isOpen, onClose }) => {
         }}
       >
         {unreadCount > 0 ? (
-          <RiNotificationFill size={22} style={{ color: '#FBBF24', filter: 'drop-shadow(0 0 6px rgba(251, 191, 36, 0.7))' }} />
+          <AiFillBell size={22} style={{ color: '#FBBF24', filter: 'drop-shadow(0 0 6px rgba(251, 191, 36, 0.7))' }} />
         ) : (
-          <RiNotificationLine size={22} className="navbar-icon-purple" style={{ strokeWidth: 1 }} />
+          <AiOutlineBell size={22} className="navbar-icon-purple" />
         )}
         {unreadCount > 0 && (
           <span className="notif-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
