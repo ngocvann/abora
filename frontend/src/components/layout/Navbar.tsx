@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore, isAdmin } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { NotificationPopover } from '../ui/NotificationPopover';
-import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library } from 'lucide-react';
+import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Library } from 'lucide-react';
 import api from '../../services/api';
 import { getImageUrl } from '../../utils/image';
 import { useChatStore } from '../../store/chatStore';
@@ -690,11 +690,11 @@ export const Navbar: React.FC = () => {
 
       <div className="mobile-bottom-nav">
         <NavLink to="/" className="mobile-bottom-nav-item" end>
-          <Home size={20} />
+          <RiHome4Fill size={20} />
           <span>Trang chủ</span>
         </NavLink>
         <NavLink to="/explore" className="mobile-bottom-nav-item">
-          <Compass size={20} />
+          <TbChartBubbleFilled size={20} />
           <span>Khám phá</span>
         </NavLink>
         <NavLink to="/library" className="mobile-bottom-nav-item">
@@ -702,7 +702,7 @@ export const Navbar: React.FC = () => {
           <span>Thư viện</span>
         </NavLink>
         <NavLink to="/studio" className="mobile-bottom-nav-item">
-          <Book size={20} />
+          <FaPencil size={18} />
           <span>Viết truyện</span>
         </NavLink>
         {isAuthenticated ? (
