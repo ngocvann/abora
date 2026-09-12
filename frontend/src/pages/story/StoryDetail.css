@@ -45,10 +45,11 @@
   line-height: 1.2;
 }
 
-.story-header-author {
+.story-header-author,
+.story-header-author-section {
   font-size: 1.125rem;
   color: var(--text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 1.33rem;
   font-weight: 500;
 }
 
@@ -853,8 +854,9 @@
     padding-top: 0.5rem !important;
   }
 
-  .story-header-author {
-    margin-bottom: 0.85rem !important; /* Halved vertical gap between author name and stats row */
+  .story-header-author,
+  .story-header-author-section {
+    margin-bottom: 0.55rem !important; /* Reduced vertical gap between author section and stats row */
   }
 
   .story-header-stats {

@@ -284,7 +284,7 @@ export const StoryDetailPage: React.FC = () => {
         </div>
         <div className="story-header-info">
           <h1 className="story-header-title">{story.title}</h1>
-          <div className="story-header-author-section" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2rem' }}>
+          <div className="story-header-author-section" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to={`/${story.authorUsername}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div className="author-avatar-circle" style={{ width: '28px', height: '28px', borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, var(--primary), var(--secondary))', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
                 <img 
