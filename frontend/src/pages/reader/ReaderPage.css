@@ -642,8 +642,9 @@ body.in-reader-page .main-content,
   }
 
   body.in-reader-page.hide-reader-bars .reader-top-bar {
-    top: 0 !important;
-    transform: none !important;
+    top: var(--navbar-height, 56px) !important;
+    transform: translateY(-250%) !important;
+    pointer-events: none;
   }
 
   body.in-reader-page.hide-reader-bars .mobile-bottom-nav {
@@ -658,7 +659,7 @@ body.in-reader-page .main-content,
 
   body.in-reader-page:not(.hide-reader-bars) .reader-top-bar {
     top: var(--navbar-height, 56px) !important;
-    transform: none !important;
+    transform: translateY(0) !important;
   }
 
   body.in-reader-page:not(.hide-reader-bars) .mobile-bottom-nav {
