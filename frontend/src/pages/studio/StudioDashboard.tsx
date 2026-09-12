@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import type { Story } from "../../types/story";
 import { Button } from "../../components/ui/Button";
-import { BookOpen, Menu, Eye, MessageCircle, BarChart2, Share2, MoreHorizontal, ChevronRight, Copy, Check, Trash2, PowerOff, X } from 'lucide-react';
+import { Menu, Eye, MessageCircle, BarChart2, Share2, MoreHorizontal, ChevronRight, Copy, Check, Trash2, PowerOff, X } from 'lucide-react';
 import toast from "react-hot-toast";
 import { AnalyticsModal } from "./AnalyticsModal";
 import { getImageUrl } from "../../utils/image";
@@ -183,18 +183,10 @@ export const StudioDashboard: React.FC = () => {
         </div>
       ) : stories?.length === 0 ? (
         <div className="text-center p-12 glass-panel rounded-xl">
-          <BookOpen
-            size={48}
-            className="mx-auto text-secondary opacity-50"
-            style={{ marginTop: '1rem', marginBottom: '0.25rem' }}
-          />
           <h2 className="text-xl font-semibold" style={{ marginBottom: '0.25rem' }}>Chưa có tác phẩm nào</h2>
           <p className="text-secondary" style={{ marginBottom: '0.5rem' }}>
             Hãy bắt đầu hành trình sáng tác của bạn ngay hôm nay.
           </p>
-          <Button onClick={() => navigate("/studio/story/new")} style={{ marginBottom: '1rem' }}>
-            Bắt đầu viết
-          </Button>
         </div>
       ) : (
         <div className="story-list">
