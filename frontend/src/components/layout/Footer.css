@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
 
 .site-footer {
   margin-top: auto;
@@ -158,11 +158,14 @@
 }
 
 .footer-quote {
-  font-family: 'Dancing Script', cursive !important;
-  font-size: 1.15rem !important; /* reduced font-size slightly from 1.35rem */
-  color: #a78bfa !important;
-  text-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
+  font-family: 'Satisfy', cursive !important;
+  font-size: 1.25rem !important;
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 40%, #FBBF24 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4)) !important;
   letter-spacing: 0.5px;
+  display: inline-block;
 }
 
 /* Responsive */
