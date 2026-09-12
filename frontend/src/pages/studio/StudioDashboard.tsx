@@ -178,13 +178,13 @@ export const StudioDashboard: React.FC = () => {
           <span className="spinner"></span>
         </div>
       ) : activeTab === 'series' ? (
-        <div className="text-center p-12 glass-panel rounded-xl">
-          <p className="text-secondary">Tính năng Series đang được phát triển.</p>
+        <div className="empty-state-simple text-center py-8 px-4">
+          <p className="empty-state-subtitle">Tính năng Series đang được phát triển.</p>
         </div>
       ) : stories?.length === 0 ? (
-        <div className="text-center p-12 glass-panel rounded-xl">
-          <h2 className="text-xl font-semibold" style={{ marginBottom: '0.25rem' }}>Chưa có tác phẩm nào</h2>
-          <p className="text-secondary" style={{ marginBottom: '0.5rem' }}>
+        <div className="empty-state-simple text-center py-8 px-4">
+          <h2 className="empty-state-title">Chưa có tác phẩm nào</h2>
+          <p className="empty-state-subtitle">
             Hãy bắt đầu hành trình sáng tác của bạn ngay hôm nay.
           </p>
         </div>
