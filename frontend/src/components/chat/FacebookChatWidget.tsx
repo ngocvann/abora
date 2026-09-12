@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
-  Minus, X, Send, Loader2, SquarePen, Image as ImageIcon, 
-  MoreVertical, BellOff, UserX, Edit2 
+  Minus, X, Send, Loader2, Image as ImageIcon, 
+  MoreVertical, BellOff, UserX, Edit2, MessageCircle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
@@ -371,25 +371,37 @@ export const FacebookChatWidget: React.FC = () => {
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [userSearchQuery, setUserSearchQuery] = useState('');
 
-  // Vertical Drag & Drop state
-  const [dockBottomPx, setDockBottomPx] = useState<number | null>(null);
+  // 2D Drag & Drop state (Left & Bottom)
+  const [dockPos, setDockPos] = useState<{ left: number; bottom: number } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [showHideBtn, setShowHideBtn] = useState(false);
-  const dragStartYRef = useRef<number>(0);
-  const initialBottomRef = useRef<number>(20);
+  const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const initialPosRef = useRef<{ left: number; bottom: number }>({ left: 20, bottom: 20 });
+  const hasMovedRef = useRef<boolean>(false);
   const longPressTimerRef = useRef<any>(null);
 
-  const handleDragStart = (clientY: number) => {
+  const handleDragStart = (clientX: number, clientY: number) => {
     setIsDragging(true);
-    dragStartYRef.current = clientY;
-    initialBottomRef.current = dockBottomPx ?? (window.innerWidth <= 600 ? 85 : 20);
+    hasMovedRef.current = false;
+    dragStartRef.current = { x: clientX, y: clientY };
+    const currentLeft = dockPos?.left ?? 20;
+    const currentBottom = dockPos?.bottom ?? (window.innerWidth <= 600 ? 85 : 20);
+    initialPosRef.current = { left: currentLeft, bottom: currentBottom };
   };
 
-  const handleDragMove = (clientY: number) => {
+  const handleDragMove = (clientX: number, clientY: number) => {
     if (!isDragging) return;
-    const deltaY = dragStartYRef.current - clientY;
-    const newBottom = Math.max(10, Math.min(window.innerHeight - 100, initialBottomRef.current + deltaY));
-    setDockBottomPx(newBottom);
+    const deltaX = clientX - dragStartRef.current.x;
+    const deltaY = dragStartRef.current.y - clientY;
+
+    if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
+      hasMovedRef.current = true;
+    }
+
+    const newLeft = Math.max(10, Math.min(window.innerWidth - 60, initialPosRef.current.left + deltaX));
+    const newBottom = Math.max(10, Math.min(window.innerHeight - 80, initialPosRef.current.bottom + deltaY));
+
+    setDockPos({ left: newLeft, bottom: newBottom });
   };
 
   const handleDragEnd = () => {
@@ -398,13 +410,13 @@ export const FacebookChatWidget: React.FC = () => {
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
-      if (isDragging) handleDragMove(e.clientY);
+      if (isDragging) handleDragMove(e.clientX, e.clientY);
     };
     const onMouseUp = () => {
       if (isDragging) handleDragEnd();
     };
     const onTouchMove = (e: TouchEvent) => {
-      if (isDragging && e.touches.length > 0) handleDragMove(e.touches[0].clientY);
+      if (isDragging && e.touches.length > 0) handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
     };
     const onTouchEnd = () => {
       if (isDragging) handleDragEnd();
@@ -424,8 +436,8 @@ export const FacebookChatWidget: React.FC = () => {
     };
   }, [isDragging]);
 
-  const handleTouchStartLongPress = (clientY: number) => {
-    handleDragStart(clientY);
+  const handleTouchStartLongPress = (clientX: number, clientY: number) => {
+    handleDragStart(clientX, clientY);
     longPressTimerRef.current = setTimeout(() => {
       setShowHideBtn(true);
     }, 450);
@@ -550,14 +562,14 @@ export const FacebookChatWidget: React.FC = () => {
         ))}
       </div>
 
-      {/* Minimized Floating Chat Bubbles & Action Dock (Supports Vertical Drag & Drop) */}
+      {/* Minimized Floating Chat Bubbles & Action Dock (Supports 2D Drag & Drop) */}
       {isDockVisible && (
         <div
           className={`fb-chat-bubbles-col ${isDragging ? 'dragging' : ''}`}
-          style={dockBottomPx !== null ? { bottom: `${dockBottomPx}px` } : undefined}
-          onMouseDown={(e) => handleDragStart(e.clientY)}
+          style={dockPos !== null ? { left: `${dockPos.left}px`, bottom: `${dockPos.bottom}px` } : undefined}
+          onMouseDown={(e) => handleDragStart(e.clientX, e.clientY)}
           onTouchStart={(e) => {
-            if (e.touches.length > 0) handleTouchStartLongPress(e.touches[0].clientY);
+            if (e.touches.length > 0) handleTouchStartLongPress(e.touches[0].clientX, e.touches[0].clientY);
           }}
           onTouchEnd={handleTouchEndLongPress}
         >
@@ -579,11 +591,13 @@ export const FacebookChatWidget: React.FC = () => {
               className="fb-chat-new-btn"
               onClick={(e) => {
                 e.stopPropagation();
-                setIsNewChatOpen((v) => !v);
+                if (!hasMovedRef.current) {
+                  setIsNewChatOpen((v) => !v);
+                }
               }}
               title="Tin nhắn mới"
             >
-              <SquarePen size={18} />
+              <MessageCircle size={20} />
             </button>
             <span className="sparkle-star" style={{ top: '-4px', left: '-4px', width: '9px', height: '9px', animationDelay: '0s', zIndex: 10 }}></span>
             <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '11px', height: '11px', animationDelay: '0.7s', zIndex: 10 }}></span>
