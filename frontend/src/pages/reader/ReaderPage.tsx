@@ -11,7 +11,7 @@ import { useAuthStore } from "../../store/authStore";
 import { CommentSidebar } from "../../components/reader/CommentSidebar";
 import { QuoteGeneratorModal } from "../../components/reader/QuoteGeneratorModal";
 import { ReportModal } from "../../components/ui/ReportModal";
-import { ChevronDown, Plus, MessageCircle, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check, MoreVertical, Share2 } from 'lucide-react';
+import { ChevronDown, Plus, MessageCircle, MessageSquare, Link as LinkIcon, Eye, ArrowLeft, Library, List, Globe, Lock, Check, MoreVertical, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getImageUrl } from "../../utils/image";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
@@ -561,7 +561,7 @@ export const ReaderPage: React.FC = () => {
               }}
               title="Bình luận về đoạn này"
             >
-              <MessageCircle size={14} />
+              <MessageSquare size={15} />
               {hasComments && <span className="badge">{totalCommentsCount}</span>}
             </button>
           )}
