@@ -22,11 +22,12 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(88, 28, 135, 0.6) 0%, rgba(126, 34, 206, 0.45) 50%, rgba(107, 33, 168, 0.55) 100%) !important;
-  border: 1px solid rgba(168, 85, 247, 0.25) !important;
+  background: linear-gradient(135deg, rgba(88, 28, 135, 0.25) 0%, rgba(126, 34, 206, 0.18) 50%, rgba(76, 29, 149, 0.22) 100%) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* Banner / Decorative Top background */
@@ -36,8 +37,8 @@
   left: 0;
   right: 0;
   height: 100px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(192, 132, 252, 0.15));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(192, 132, 252, 0.05));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .profile-header-content {
