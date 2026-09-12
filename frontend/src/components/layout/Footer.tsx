@@ -53,7 +53,7 @@ export const Footer: React.FC = () => {
             <a href="https://www.facebook.com/ngocvan04" target="_blank" rel="noopener noreferrer" className="footer-link">
               <ExternalLink size={14} /> Facebook
             </a>
-            <a href="https://discord.gg/VXxatXyQNw" target="_blank" rel="noopener noreferrer" className="footer-link">
+            <a href="https://discord.gg/keH6nnWHD4" target="_blank" rel="noopener noreferrer" className="footer-link">
               <ExternalLink size={14} /> Discord
             </a>
             <a href="#" className="footer-link footer-link-disabled">
