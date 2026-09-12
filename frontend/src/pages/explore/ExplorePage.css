@@ -283,7 +283,7 @@
     overflow-y: hidden !important;
     white-space: nowrap !important;
     gap: 0.5rem !important;
-    padding-bottom: 0px !important; /* Set to 0 since scrollbar is hidden */
+    padding-bottom: 0px !important;
     width: 100% !important;
     padding-right: 0 !important;
     -webkit-overflow-scrolling: touch;
@@ -291,10 +291,13 @@
     -ms-overflow-style: none !important; /* Hide scrollbar for IE/Edge */
   }
 
-  .category-scroll-inner::-webkit-scrollbar {
-    display: none !important; /* Hide scrollbar for Chrome/Safari/Edge */
+  .category-scroll-inner::-webkit-scrollbar,
+  .category-scroll-inner::-webkit-scrollbar-thumb,
+  .category-scroll-inner::-webkit-scrollbar-track {
+    display: none !important; /* Hide scrollbar for Chrome/Safari/Edge on mobile */
     width: 0 !important;
     height: 0 !important;
+    background: transparent !important;
   }
 
   .category-item {
@@ -534,20 +537,22 @@
   scrollbar-color: rgba(251, 191, 36, 0.5) transparent !important;
 }
 
-.category-scroll-inner::-webkit-scrollbar {
-  width: 3px !important;
-}
-.category-scroll-inner::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-radius: 999px !important;
-}
-.category-scroll-inner::-webkit-scrollbar-thumb {
-  background: rgba(251, 191, 36, 0.5) !important; /* yellow scrollbar thumb */
-  border-radius: 999px !important;
-  transition: background 0.2s;
-}
-.category-scroll-inner::-webkit-scrollbar-thumb:hover {
-  background: rgba(251, 191, 36, 0.8) !important; /* brighter yellow on hover */
+@media (min-width: 769px) {
+  .category-scroll-inner::-webkit-scrollbar {
+    width: 3px !important;
+  }
+  .category-scroll-inner::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-radius: 999px !important;
+  }
+  .category-scroll-inner::-webkit-scrollbar-thumb {
+    background: rgba(251, 191, 36, 0.5) !important; /* yellow scrollbar thumb */
+    border-radius: 999px !important;
+    transition: background 0.2s;
+  }
+  .category-scroll-inner::-webkit-scrollbar-thumb:hover {
+    background: rgba(251, 191, 36, 0.8) !important; /* brighter yellow on hover */
+  }
 }
 
 .category-item {
