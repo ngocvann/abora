@@ -498,10 +498,10 @@
 }
 
 .post-type-toggle-switch .toggle-option.active {
-  color: #ffffff;
-  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
-  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.4);
-  font-weight: 600;
+  color: #78350F !important;
+  background: linear-gradient(180deg, #FDE047 0%, #FBBF24 100%) !important;
+  box-shadow: 0 2px 10px rgba(251, 191, 36, 0.45) !important;
+  font-weight: 700 !important;
 }
 
 .post-type-toggle-switch .toggle-option:hover:not(.active) {
