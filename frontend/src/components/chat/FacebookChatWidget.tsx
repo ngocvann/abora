@@ -11,6 +11,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useChatStore } from '../../store/chatStore';
 import type { ChatPartner } from '../../store/chatStore';
 import { getImageUrl } from '../../utils/image';
+import { Button } from '../ui/Button';
 import './FacebookChatWidget.css';
 
 interface Message {
@@ -605,10 +606,13 @@ export const FacebookChatWidget: React.FC = () => {
             <Minus size={14} />
           </button>
 
-          {/* Floating New Chat Action Button (Matches Profile Message Button style) */}
-          <div style={{ position: 'relative', display: 'inline-block' }}>
-            <button
-              className="fb-chat-new-btn"
+          {/* Floating New Chat Action Button (Exact 100% match with Profile Page Message Button) */}
+          <div className="profile-msg-btn-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
+            <Button
+              variant="primary"
+              size="sm"
+              className="profile-msg-btn-custom fb-chat-new-btn"
+              style={{ padding: '0.55rem 0.9rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={(e) => {
                 e.stopPropagation();
                 if (!hasMovedRef.current) {
@@ -617,11 +621,10 @@ export const FacebookChatWidget: React.FC = () => {
               }}
               title="Tin nhắn mới"
             >
-              <AiOutlineMessage size={20} style={{ color: '#78350F' }} />
-            </button>
-            <span className="sparkle-star" style={{ top: '-4px', left: '-4px', width: '9px', height: '9px', animationDelay: '0s', zIndex: 10 }}></span>
-            <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '11px', height: '11px', animationDelay: '0.7s', zIndex: 10 }}></span>
-            <span className="sparkle-star" style={{ top: '4px', left: '40%', width: '8px', height: '8px', animationDelay: '1.4s', zIndex: 10 }}></span>
+              <AiOutlineMessage size={18} style={{ color: '#78350F' }} />
+            </Button>
+            <span className="sparkle-star" style={{ top: '-4px', left: '-4px', width: '9px', height: '9px', animationDelay: '0.2s', zIndex: 10 }}></span>
+            <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '11px', height: '11px', animationDelay: '0.8s', zIndex: 10 }}></span>
           </div>
 
           {minimizedChats.map((chat) => (
