@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { X, MessageCircle, Pin, PinOff, MoreHorizontal } from 'lucide-react';
+import { X, Pin, PinOff, MoreHorizontal } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
 import { getImageUrl } from '../../utils/image';
@@ -484,13 +484,7 @@ export const CommentSidebar: React.FC<CommentSidebarProps> = ({
             filteredComments.map(comment => renderComment(comment))
           ) : (
             <div className="text-center text-secondary mt-8">
-              <MessageCircle size={48} className="mx-auto mb-4 opacity-50" />
               <p>Chưa có bình luận nào.</p>
-              {paragraphHash ? (
-                <p className="text-sm mt-1">Hãy là người đầu tiên bình luận về đoạn này!</p>
-              ) : (
-                <p className="text-sm mt-1">Hãy là người đầu tiên chia sẻ cảm nghĩ!</p>
-              )}
             </div>
           )}
         </div>
