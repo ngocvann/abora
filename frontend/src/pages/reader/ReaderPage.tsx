@@ -254,16 +254,21 @@ export const ReaderPage: React.FC = () => {
       if (context?.previousChapterData) {
         queryClient.setQueryData(["chapter", slug, chapterSlug], context.previousChapterData);
       }
-      toast.error("Không thể cập nhật lượt tặng củ khoai");
+      toast.error("Ném Khoai Lang từ từ thôi shop!", { id: "spam-like-toast" });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["chapter", slug, chapterSlug] });
     }
   });
 
-  const handleToggleLike = () => {
+  const handleToggleLike = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (!isAuthenticated) {
       navigate('/login', { state: { returnUrl: `/story/${slug}/chapter/${chapterSlug}` } });
+      return;
+    }
+    if (toggleLikeMutation.isPending) {
+      toast.error("Ném Khoai Lang từ từ thôi shop!", { id: "spam-like-toast" });
       return;
     }
     toggleLikeMutation.mutate();
