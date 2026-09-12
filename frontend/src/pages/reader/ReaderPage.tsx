@@ -561,7 +561,7 @@ export const ReaderPage: React.FC = () => {
               }}
               title="Bình luận về đoạn này"
             >
-              <MessageSquare size={15} />
+              <MessageCircle size={16} />
               {hasComments && <span className="badge">{totalCommentsCount}</span>}
             </button>
           )}

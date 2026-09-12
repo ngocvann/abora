@@ -788,18 +788,18 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
   bottom: 2px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  background: transparent;
-  border: none;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: var(--reader-text);
   opacity: 0;
   cursor: pointer;
-  width: auto;
-  height: auto;
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
+  width: 22px;
+  height: 22px;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  transition: opacity 0.2s ease;
 }
 
 .paragraph-wrapper:hover .paragraph-comment-indicator {
@@ -817,23 +817,26 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 
 .paragraph-comment-indicator.has-comments {
   color: var(--primary-color, #9d4edd);
-  background: transparent;
+  background: transparent !important;
 }
 
 .paragraph-comment-indicator:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background: transparent !important;
   color: var(--primary-color, #9d4edd);
 }
 
 .paragraph-comment-indicator .badge {
-  position: static;
-  font-size: 0.75rem;
-  font-weight: 700;
+  position: absolute;
+  top: -4px;
+  right: -5px;
+  font-size: 0.6rem;
+  font-weight: 800;
   color: var(--primary-color, #9d4edd);
-  background: transparent;
-  box-shadow: none;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
   padding: 0;
-  margin-left: 2px;
+  margin: 0;
   min-width: auto;
   height: auto;
   border-radius: 0;
