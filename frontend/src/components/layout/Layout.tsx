@@ -9,7 +9,15 @@ export const Layout: React.FC = () => {
   const isChapterEditorPage = /\/studio\/story\/[^/]+\/chapters\/[^/]+/.test(pathname);
 
   useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [pathname]);
 
   const isHomeOrExplore = pathname === '/' || pathname === '/explore';

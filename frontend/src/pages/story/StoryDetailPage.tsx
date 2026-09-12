@@ -189,6 +189,20 @@ export const StoryDetailPage: React.FC = () => {
     .slice(0, 15);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [slug]);
+
+  useEffect(() => {
+    if (story) {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [story]);
+
+  useEffect(() => {
     if (libraryItems && story) {
       const isInLibrary = libraryItems.some((item: any) => item.storyId === story.id);
       setAddedToLibrary(isInLibrary);
