@@ -1218,6 +1218,11 @@
   transition: all 0.2s ease;
 }
 
+.notif-bell-btn svg,
+.notif-bell-btn .navbar-icon-purple {
+  stroke-width: 1px !important;
+}
+
 .notif-bell-btn:hover .navbar-icon-purple,
 .messenger-bell-btn:hover .navbar-icon-purple {
   color: #FDE047 !important;
