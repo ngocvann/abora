@@ -540,7 +540,7 @@
   display: none;
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: #FBBF24 !important;
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -550,9 +550,20 @@
   transition: all 0.2s;
 }
 
+.mobile-menu-toggle svg {
+  color: #FBBF24 !important;
+  stroke-width: 3.2px !important;
+  filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6));
+}
+
 .mobile-menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
+  background: rgba(251, 191, 36, 0.12);
+  color: #FDE047 !important;
+}
+
+.mobile-menu-toggle:hover svg {
+  color: #FDE047 !important;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.85));
 }
 
 .mobile-search-toggle {

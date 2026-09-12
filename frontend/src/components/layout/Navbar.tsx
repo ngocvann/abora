@@ -179,7 +179,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMobileMenuOpen ? <X size={22} strokeWidth={3} /> : <Menu size={22} strokeWidth={3} />}
             </button>
             <Link to="/" className="navbar-logo-link">
               <img src="/logo.png" alt="Abora Logo" className="navbar-logo-img" />
