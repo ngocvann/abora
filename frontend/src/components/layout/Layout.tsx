@@ -27,7 +27,7 @@ export const Layout: React.FC = () => {
     <div className={`app-container ${isReaderPage ? 'in-reader-page' : ''} ${isHomeOrExplore ? 'is-home-explore' : 'is-other-page'}`} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <div className="ambient-glow"></div>
       <Navbar />
-      <main className={`main-content fade-in ${isReaderPage ? 'reader-main-content' : ''}`} style={{ flex: 1 }}>
+      <main className={`main-content ${isReaderPage ? 'reader-main-content' : 'fade-in'}`} style={{ flex: 1 }}>
         <Outlet />
       </main>
       {!shouldHideFooter && <Footer />}
