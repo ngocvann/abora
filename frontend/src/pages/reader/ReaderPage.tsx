@@ -320,10 +320,39 @@ export const ReaderPage: React.FC = () => {
     }
   });
 
+  // Guard for mobile / browser back button to trigger library prompt modal
+  const isGuardActiveRef = useRef(false);
+
+  useEffect(() => {
+    if (!isAuthenticated || addedToLibrary || !story?.id) {
+      isGuardActiveRef.current = false;
+      return;
+    }
+
+    // Push dummy history entry to intercept popstate
+    window.history.pushState({ page: 'reader_guard' }, '');
+    isGuardActiveRef.current = true;
+
+    const handlePopState = () => {
+      if (isGuardActiveRef.current && !addedToLibrary) {
+        setShowLibraryPrompt(true);
+        // Push state back so browser stays on ReaderPage while prompt is open
+        window.history.pushState({ page: 'reader_guard' }, '');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isAuthenticated, addedToLibrary, story?.id]);
+
   const handleExitReader = () => {
     if (isAuthenticated && !addedToLibrary) {
       setShowLibraryPrompt(true);
     } else {
+      isGuardActiveRef.current = false;
       navigate('/library');
     }
   };
@@ -1153,6 +1182,7 @@ export const ReaderPage: React.FC = () => {
                 className="btn btn-primary" 
                 style={{ width: '100%', padding: '10px', borderRadius: '8px', fontWeight: 600 }}
                 onClick={async () => {
+                  isGuardActiveRef.current = false;
                   try {
                     await api.post('/user/reading-history/add', { storyId: story?.id, status: 'READ_LATER' });
                     queryClient.invalidateQueries({ queryKey: ["library"] });
@@ -1170,6 +1200,7 @@ export const ReaderPage: React.FC = () => {
                 className="btn btn-secondary" 
                 style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 onClick={() => {
+                  isGuardActiveRef.current = false;
                   setShowLibraryPrompt(false);
                   navigate('/library');
                 }}
