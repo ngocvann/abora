@@ -812,15 +812,15 @@
   }
 
   .navbar-container {
-    padding: 0.5rem 0.75rem !important; /* Save horizontal space on mobile */
+    padding: 0.35rem 0.5rem !important; /* Save horizontal space on mobile */
   }
 
   .navbar-actions {
-    gap: 0.45rem !important; /* Tighten gaps between action buttons on mobile */
+    gap: 0.25rem !important; /* Tighten gaps between action buttons on mobile */
   }
 
   .user-menu {
-    gap: 0.45rem !important; /* Tighten gaps inside user menu on mobile */
+    gap: 0.25rem !important; /* Tighten gaps inside user menu on mobile */
   }
 
   .chevron-icon {
@@ -830,7 +830,12 @@
   .avatar-trigger {
     gap: 0 !important;
     padding: 0 !important;
-    margin-right: 5px !important; /* Keep the 5px spacing from right edge/adjacent elements */
+    margin-right: 0 !important;
+  }
+
+  .avatar-circle {
+    width: 26px !important;
+    height: 26px !important;
   }
 
   .admin-btn-text,
@@ -842,14 +847,14 @@
     display: inline-block !important;
     color: #581C87 !important;
     font-weight: 900 !important;
-    font-size: 0.95rem !important;
+    font-size: 0.85rem !important;
     line-height: 1 !important;
   }
 
   .navbar-admin-btn {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
     border-radius: 50% !important;
     background: #FBBF24 !important;
     border: none !important;
@@ -862,12 +867,19 @@
   }
 
   .mobile-menu-toggle {
-    padding: 0.35rem !important;
-    margin-right: 0.25rem !important;
+    padding: 0.25rem !important;
+    margin-right: 0.15rem !important;
   }
 
   .mobile-search-toggle {
-    padding: 0.35rem !important;
+    padding: 0.25rem !important;
+  }
+
+  .navbar-logo-img {
+    height: 52px !important;
+    margin-top: -6px !important;
+    margin-bottom: -6px !important;
+    margin-right: 0 !important;
   }
 }
 
@@ -882,24 +894,26 @@
 
 @media (max-width: 480px) {
   .navbar-logo-img {
-    height: 70px;
-    margin-top: -15px;
-    margin-bottom: -15px;
-    margin-right: -5px;
+    height: 46px !important;
+    margin-top: -4px !important;
+    margin-bottom: -4px !important;
+    margin-right: 0 !important;
   }
 
   .navbar-actions {
-    gap: 0.3rem !important;
+    gap: 0.2rem !important;
   }
 
   .user-menu {
-    gap: 0.3rem !important;
+    gap: 0.2rem !important;
   }
 
   .navbar-admin-btn {
-    padding: 4px 6px !important;
-    font-size: 0.7rem !important;
-    gap: 2px !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
   }
 }
 

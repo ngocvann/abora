@@ -532,6 +532,12 @@ export const Navbar: React.FC = () => {
             <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', right: '35px', width: '8px', height: '8px', animationDelay: '1.8s' }}></span>
             <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '50%', right: '-4px', width: '7px', height: '7px', animationDelay: '2.4s' }}></span>
           </NavLink>
+          {isAdmin(user) && (
+            <NavLink to="/admin" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
+              <Shield size={18} />
+              <span>Trang quản trị</span>
+            </NavLink>
+          )}
         </div>
       </div>
 
