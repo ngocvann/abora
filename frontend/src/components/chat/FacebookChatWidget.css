@@ -344,11 +344,11 @@
   cursor: not-allowed;
 }
 
-/* Minimized Bubbles Column (Right 25px margin, Bottom 20px by default, Draggable with magnetic edge snap) */
+/* Minimized Bubbles Column (Right 5px margin, Bottom 10px by default, Draggable with magnetic edge snap) */
 .fb-chat-bubbles-col {
   position: fixed;
-  left: calc(100vw - 80px);
-  bottom: 20px;
+  left: calc(100vw - 60px);
+  bottom: 10px;
   z-index: 9992;
   display: flex;
   flex-direction: column;

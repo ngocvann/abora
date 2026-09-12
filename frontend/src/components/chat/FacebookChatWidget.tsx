@@ -388,8 +388,8 @@ export const FacebookChatWidget: React.FC = () => {
     setIsSnapping(false);
     hasMovedRef.current = false;
     dragStartRef.current = { x: clientX, y: clientY };
-    const defaultLeft = window.innerWidth - 80;
-    const defaultBottom = window.innerWidth <= 600 ? 85 : 20;
+    const defaultLeft = window.innerWidth - 60;
+    const defaultBottom = window.innerWidth <= 600 ? 85 : 10;
     const currentLeft = dockPos?.left ?? defaultLeft;
     const currentBottom = dockPos?.bottom ?? defaultBottom;
     initialPosRef.current = { left: currentLeft, bottom: currentBottom };
@@ -404,8 +404,10 @@ export const FacebookChatWidget: React.FC = () => {
       hasMovedRef.current = true;
     }
 
-    const newLeft = Math.max(10, Math.min(window.innerWidth - 75, initialPosRef.current.left + deltaX));
-    const newBottom = Math.max(5, Math.min(window.innerHeight - 75, initialPosRef.current.bottom + deltaY));
+    const buttonWidth = 55;
+    const buttonHeight = 44;
+    const newLeft = Math.max(10, Math.min(window.innerWidth - buttonWidth - 5, initialPosRef.current.left + deltaX));
+    const newBottom = Math.max(10, Math.min(window.innerHeight - buttonHeight - 10, initialPosRef.current.bottom + deltaY));
 
     setDockPos({ left: newLeft, bottom: newBottom });
   };
@@ -415,16 +417,17 @@ export const FacebookChatWidget: React.FC = () => {
     setIsSnapping(true);
 
     setDockPos((prev) => {
-      const defaultLeft = window.innerWidth - 80;
+      const buttonWidth = 55;
+      const buttonHeight = 44;
+      const defaultLeft = window.innerWidth - buttonWidth - 5;
       const currentLeft = prev?.left ?? defaultLeft;
-      const currentBottom = prev?.bottom ?? 20;
+      const currentBottom = prev?.bottom ?? 10;
 
       const midX = window.innerWidth / 2;
-      const snapMarginRight = 25;
-      const snapMarginLeft = 20;
-      const buttonWidth = 55;
-      const snapLeft = currentLeft < midX ? snapMarginLeft : Math.max(20, window.innerWidth - buttonWidth - snapMarginRight);
-      const snapBottom = Math.max(15, Math.min(window.innerHeight - 80, currentBottom));
+      const snapMarginRight = 5;
+      const snapMarginLeft = 10;
+      const snapLeft = currentLeft < midX ? snapMarginLeft : Math.max(10, window.innerWidth - buttonWidth - snapMarginRight);
+      const snapBottom = Math.max(10, Math.min(window.innerHeight - buttonHeight - 10, currentBottom));
 
       return { left: snapLeft, bottom: snapBottom };
     });
