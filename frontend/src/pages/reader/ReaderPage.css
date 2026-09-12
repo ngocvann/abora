@@ -28,7 +28,7 @@
   color: var(--reader-text);
   min-height: 100vh;
   margin-top: 0 !important; /* Negated via body.in-reader-page .main-content rule */
-  padding-top: calc(var(--navbar-height, 56px) + 50px); /* Push content below navbar + top bar */
+  padding-top: 50px; /* Push content below top bar */
   padding-bottom: 4rem; 
   transition: background-color 0.3s ease, color 0.3s ease;
   width: 100%;
@@ -37,7 +37,7 @@
 /* Top Sticky Bar */
 .reader-top-bar {
   position: fixed;
-  top: var(--navbar-height, 56px); /* Automatically align precisely with navbar bottom */
+  top: 0; /* Aligned to top 0 since navbar is hidden on reader page */
   left: 0;
   right: 0;
   z-index: 40;
@@ -642,8 +642,8 @@ body.in-reader-page .main-content,
   }
 
   body.in-reader-page.hide-reader-bars .reader-top-bar {
-    top: var(--navbar-height, 56px) !important;
-    transform: translateY(-250%) !important;
+    top: 0 !important;
+    transform: translateY(-100%) !important;
     pointer-events: none;
   }
 
@@ -658,7 +658,7 @@ body.in-reader-page .main-content,
   }
 
   body.in-reader-page:not(.hide-reader-bars) .reader-top-bar {
-    top: var(--navbar-height, 56px) !important;
+    top: 0 !important;
     transform: translateY(0) !important;
   }
 
