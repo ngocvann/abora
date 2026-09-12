@@ -1,7 +1,7 @@
 import { SweetPotatoIcon } from '../../components/ui/SweetPotatoIcon';
 import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, MessageSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X, Image as ImageIcon, Globe, Lock } from 'lucide-react';
+import { Loader2, MessageSquare, Send, Award, MoreHorizontal, MoreVertical, Flag, Edit3, Trash2, X, Image as ImageIcon } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuthStore, isAdmin } from '../../store/authStore';
@@ -98,7 +98,8 @@ export const ForumPage: React.FC = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setMediaUrl(res.data.url);
-      setMediaType(res.data.mediaType === 'VIDEO' ? 'VIDEO' : 'IMAGE');
+      const isVideo = file.type.startsWith('video/') || res.data.mediaType === 'VIDEO';
+      setMediaType(isVideo ? 'VIDEO' : 'IMAGE');
     } catch {
       alert('Tải tập tin đa phương tiện thất bại.');
     } finally {
@@ -326,7 +327,6 @@ export const ForumPage: React.FC = () => {
                       className={`toggle-option ${postType === 'FORUM' ? 'active' : ''}`}
                       onClick={() => setPostType('FORUM')}
                     >
-                      <Globe size={13} />
                       <span>Công khai</span>
                     </button>
                     <button
@@ -334,7 +334,6 @@ export const ForumPage: React.FC = () => {
                       className={`toggle-option ${postType === 'PERSONAL' ? 'active' : ''}`}
                       onClick={() => setPostType('PERSONAL')}
                     >
-                      <Lock size={13} />
                       <span>Cá nhân</span>
                     </button>
                   </div>
@@ -380,41 +379,46 @@ export const ForumPage: React.FC = () => {
                     onClick={() => mediaInputRef.current?.click()}
                     disabled={isUploadingMedia}
                     style={{
-                      background: mediaUrl ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.06)',
-                      border: `1px solid ${mediaUrl ? '#a855f7' : 'rgba(255, 255, 255, 0.12)'}`,
-                      color: mediaUrl ? '#d8b4fe' : 'rgba(255, 255, 255, 0.8)',
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
+                      background: 'none',
+                      border: 'none',
+                      color: mediaUrl ? '#FBBF24' : 'rgba(255, 255, 255, 0.75)',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      padding: '0.25rem',
                       transition: 'all 0.2s ease'
                     }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#FDE047')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = mediaUrl ? '#FBBF24' : 'rgba(255, 255, 255, 0.75)')}
                   >
-                    {isUploadingMedia ? <Loader2 className="animate-spin" size={18} /> : <ImageIcon size={18} />}
+                    {isUploadingMedia ? <Loader2 className="animate-spin" size={20} /> : <ImageIcon size={20} />}
                   </button>
                   <input
                     type="file"
                     ref={mediaInputRef}
                     style={{ display: 'none' }}
-                    accept="image/*,video/*"
+                    accept="image/*,video/*,video/mp4,video/webm,video/ogg,video/quicktime"
                     onChange={handleMediaUpload}
                   />
 
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="publish-btn"
-                    disabled={createPostMutation.isPending || (!newPostContent.trim() && !mediaUrl)}
-                  >
-                    {createPostMutation.isPending ? (
-                      <><Loader2 className="animate-spin mr-2" size={16} /> Đang đăng...</>
-                    ) : (
-                      'Đăng bài'
-                    )}
-                  </Button>
+                  <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      className="publish-btn"
+                      disabled={createPostMutation.isPending || (!newPostContent.trim() && !mediaUrl)}
+                    >
+                      {createPostMutation.isPending ? (
+                        <><Loader2 className="animate-spin mr-2" size={16} /> Đang đăng...</>
+                      ) : (
+                        'Đăng bài'
+                      )}
+                    </Button>
+                    <span className="sparkle-star" style={{ top: '-4px', left: '-6px', width: '10px', height: '10px', animationDelay: '0s', zIndex: 10 }}></span>
+                    <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '12px', height: '12px', animationDelay: '0.6s', zIndex: 10 }}></span>
+                    <span className="sparkle-star" style={{ top: '6px', left: '45%', width: '8px', height: '8px', animationDelay: '1.2s', zIndex: 10 }}></span>
+                  </div>
                 </div>
               </form>
             </div>
