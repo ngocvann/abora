@@ -323,7 +323,7 @@ const StoryDetailsForm: React.FC<{ story: StoryDetail; storyId: string }> = ({ s
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span style={{ fontSize: '0.85rem', color: isCompleted ? '#a78bfa' : 'rgba(255, 255, 255, 0.5)', fontWeight: 600 }}>
-            Hoàn thành?
+            Đã hoàn?
           </span>
           <label className="toggle-switch">
             <input 
@@ -715,7 +715,7 @@ export const ChapterManagementPage: React.FC = () => {
                                       <span className="chapter-meta-stat" title="Lượt xem">
                                         <Eye size={15} /> {chapter.viewCount || 0}
                                       </span>
-                                      <span className="chapter-meta-stat" title="Lượt khoai">
+                                      <span className="chapter-meta-stat" title="lượt củ khoai">
                                         <SweetPotatoIcon size={15} /> {chapter.likeCount || 0}
                                       </span>
                                       <span className="chapter-meta-stat" title="Bình luận">

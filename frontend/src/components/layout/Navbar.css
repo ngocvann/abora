@@ -1171,3 +1171,18 @@
   box-shadow: 0 1px 0 #7C3AED; /* Layer tím mảnh như bóng đổ */
   border-radius: 1px;
 }
+
+/* Navbar Icon Styling */
+.navbar-icon-purple {
+  color: #a855f7 !important;
+  stroke-width: 1.5px !important;
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.8)) !important;
+  transition: all 0.2s ease;
+}
+
+.notif-bell-btn:hover .navbar-icon-purple,
+.messenger-bell-btn:hover .navbar-icon-purple {
+  color: #c084fc !important;
+  filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.95)) !important;
+  transform: scale(1.08);
+}

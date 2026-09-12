@@ -22,7 +22,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
         />
         <div className="story-overlay">
           <span className="story-status">
-            {story.status === "COMPLETED" ? "Hoàn thành" : "Đang ra"}
+            {story.status === "COMPLETED" ? "Đã hoàn" : "Đang ra"}
           </span>
           <span className="story-chapters">{story.chapterCount} Chương</span>
         </div>

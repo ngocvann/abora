@@ -225,7 +225,7 @@ export const ExplorePage: React.FC = () => {
                 </div>
                 <div className="carousel-meta-item">
                   <SweetPotatoIcon size={16} fill="#FBBF24" />
-                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> Củ khoai</span></span>
+                  <span>{currentRecommendation.favoriteCount.toLocaleString()}<span className="meta-text"> củ khoai</span></span>
                 </div>
                 <div className="carousel-meta-item">
                   <BookOpen size={16} />
@@ -368,8 +368,18 @@ export const ExplorePage: React.FC = () => {
               )}
             </div>
             <div className="view-toggle-group">
-              {(searchQuery.trim() !== "" || selectedCategorySlug !== "" || selectedStatus !== "" || selectedTags.length > 0 || excludedTags.length > 0) && (
-                <button className="clear-search-btn" onClick={() => { clearSearch(); setSelectedCategorySlug(""); setSelectedStatus(""); setSelectedTags([]); setExcludedTags([]); }}>
+              {(selectedCategorySlug || searchQuery || selectedStatus) && (
+                <button 
+                  className="clear-search-btn"
+                  onClick={() => {
+                    setSelectedCategorySlug("");
+                    clearSearch();
+                    setSelectedStatus("");
+                    setSelectedTags([]);
+                    setExcludedTags([]);
+                  }}
+                  title="Xóa tất cả bộ lọc"
+                >
                   Xóa bộ lọc
                 </button>
               )}
@@ -381,21 +391,21 @@ export const ExplorePage: React.FC = () => {
               >
                 <option value="">Tất cả trạng thái</option>
                 <option value="ONGOING">Đang ra</option>
-                <option value="COMPLETED">Hoàn thành</option>
+                <option value="COMPLETED">Đã hoàn</option>
               </select>
               <button
                 className={`view-toggle-btn ${viewMode === "card" ? "active" : ""}`}
                 onClick={() => setViewMode("card")}
                 title="Dạng card"
               >
-                <LayoutGrid size={16} />
+                <LayoutGrid size={20} />
               </button>
               <button
                 className={`view-toggle-btn ${viewMode === "list" ? "active" : ""}`}
                 onClick={() => setViewMode("list")}
                 title="Dạng danh sách"
               >
-                <List size={16} />
+                <List size={20} />
               </button>
             </div>
           </div>
@@ -423,7 +433,7 @@ export const ExplorePage: React.FC = () => {
                       loading="lazy"
                     />
                     <span className="story-card-badge">
-                      {story.status === "COMPLETED" ? "Hoàn tất" : "Đang ra"}
+                      {story.status === "COMPLETED" ? "Đã hoàn" : "Đang ra"}
                     </span>
                   </div>
                   <div className="story-card-details">
@@ -458,7 +468,7 @@ export const ExplorePage: React.FC = () => {
                     <div className="list-item-top">
                       <h3 className="list-item-title">{story.title}</h3>
                       <span className={`list-item-badge ${story.status === "COMPLETED" ? "completed" : "ongoing"}`}>
-                        {story.status === "COMPLETED" ? "Hoàn tất" : "Đang ra"}
+                        {story.status === "COMPLETED" ? "Đã hoàn" : "Đang ra"}
                       </span>
                     </div>
                     <p className="list-item-author">{story.authorName}</p>
@@ -467,7 +477,7 @@ export const ExplorePage: React.FC = () => {
                     )}
                     <div className="list-item-meta">
                       <span className="list-meta-item"><Eye size={13} /> {formatCount(story.viewCount)} lượt đọc</span>
-                      <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} Củ khoai</span>
+                      <span className="list-meta-item"><SweetPotatoIcon size={13} fill="#FBBF24" /> {formatCount(story.favoriteCount)} củ khoai</span>
                       <span className="list-meta-item"><BookOpen size={13} /> {story.chapterCount} chương</span>
                     </div>
                   </div>

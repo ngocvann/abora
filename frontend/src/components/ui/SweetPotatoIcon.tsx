@@ -13,19 +13,20 @@ export const SweetPotatoIcon: React.FC<IconProps> = ({
   ...props 
 }) => {
   const isFilled = fill !== "none" && fill !== "transparent";
+  const numericSize = typeof size === 'number' ? Math.round(size * 1.25) : (typeof size === 'string' && !isNaN(Number(size)) ? Math.round(Number(size) * 1.25) : size);
   
   return (
     <img 
       key={isFilled ? 'filled' : 'outline'}
       src={isFilled ? "/khoai-filled.png" : "/khoai-outline.png"} 
-      width={size} 
-      height={size} 
+      width={numericSize} 
+      height={numericSize} 
       className={`sweet-potato-icon ${isFilled ? 'filled' : 'outline'} ${className}`}
       style={{
         objectFit: 'contain',
         ...style
       }}
-      alt="Khoai"
+      alt="củ khoai"
       {...props}
     />
   );

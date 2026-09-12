@@ -8,6 +8,7 @@ import api from '../../services/api';
 import { getImageUrl } from '../../utils/image';
 import { useChatStore } from '../../store/chatStore';
 import { MessengerDropdown } from '../chat/MessengerDropdown';
+import { AiOutlineMessage, AiFillMessage } from 'react-icons/ai';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
@@ -373,7 +374,11 @@ export const Navbar: React.FC = () => {
                     }}
                     title="Tin nhắn"
                   >
-                    <MessageCircle size={20} />
+                    {totalUnreadCount > 0 ? (
+                      <AiFillMessage size={22} style={{ color: '#FBBF24', filter: 'drop-shadow(0 0 6px rgba(251, 191, 36, 0.7))' }} />
+                    ) : (
+                      <AiOutlineMessage size={22} className="navbar-icon-purple" />
+                    )}
                     {totalUnreadCount > 0 && (
                       <span className="messenger-badge">
                         {totalUnreadCount > 99 ? '99+' : totalUnreadCount}

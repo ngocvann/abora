@@ -855,7 +855,7 @@ export const ReaderPage: React.FC = () => {
             <Plus size={18} /> Thêm
           </button>
           <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={handleToggleLike}>
-            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} /> Khoai
+            <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} /> củ khoai
           </button>
           
           <button className="action-btn icon-only" onClick={handleCopyLink} title="Sao chép liên kết">
