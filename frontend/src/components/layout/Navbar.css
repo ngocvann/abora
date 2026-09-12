@@ -1074,31 +1074,47 @@
 
 .mobile-drawer-link.active {
   background: linear-gradient(180deg, #FDE047 0%, #FBBF24 100%) !important;
-  color: #6B21A8 !important;
+  color: #c2410c !important;
   font-weight: 800 !important;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.6),
     inset 0 -2px 4px rgba(217, 119, 6, 0.3),
-    0 4px 12px rgba(251, 191, 36, 0.35) !important;
+    0 6px 20px rgba(168, 85, 247, 0.8),
+    0 0 15px rgba(168, 85, 247, 0.5) !important;
   border-radius: 9999px !important;
   position: relative !important;
   overflow: visible !important;
 }
 
 .mobile-drawer-link.active span {
-  color: #6B21A8 !important;
+  color: #c2410c !important;
+  font-weight: 800 !important;
 }
 
 .mobile-drawer-link.active svg {
-  color: #6B21A8 !important;
+  color: #c2410c !important;
   stroke-width: 2.5px !important;
 }
 
 .mobile-drawer-link.active .mobile-drawer-sparkle {
   display: block !important;
   background: #FFFFFF !important;
-  filter: drop-shadow(0 0 3px rgba(107, 33, 168, 0.8)) !important;
+  filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.8)) !important;
   z-index: 10 !important;
+}
+
+.search-btn-decor.mobile-version {
+  height: 36px !important;
+  width: 36px !important;
+  right: 2px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.search-btn-decor.mobile-version svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke-width: 3.5px !important;
 }
 
 /* ========================================= */

@@ -263,7 +263,34 @@ export const ExplorePage: React.FC = () => {
       <div className="explore-main">
         {/* Left Sidebar: Categories — sticky */}
         <aside className="category-sidebar">
-          <h2 className="category-sidebar-title">Thể loại</h2>
+          <div className="category-sidebar-header">
+            <h2 className="category-sidebar-title">Thể loại</h2>
+            <div className="mobile-toolbar-controls">
+              <select 
+                className="form-select mobile-status-select" 
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="">Tất cả</option>
+                <option value="ONGOING">Đang ra</option>
+                <option value="COMPLETED">Đã hoàn</option>
+              </select>
+              <button
+                className={`view-toggle-btn ${viewMode === "card" ? "active" : ""}`}
+                onClick={() => setViewMode("card")}
+                title="Dạng card"
+              >
+                <LayoutGrid size={18} />
+              </button>
+              <button
+                className={`view-toggle-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+                title="Dạng danh sách"
+              >
+                <List size={18} />
+              </button>
+            </div>
+          </div>
           
           <div className="category-scroll-inner">
             {isCategoriesLoading ? (
@@ -276,7 +303,13 @@ export const ExplorePage: React.FC = () => {
                   className={`category-item ${selectedCategorySlug === "" ? "active" : ""}`}
                   onClick={() => setSelectedCategorySlug("")}
                 >
-                  Tất cả thể loại
+                  <span>Tất cả thể loại</span>
+                  {selectedCategorySlug === "" && (
+                    <>
+                      <span className="sparkle-star category-sparkle" style={{ top: '-3px', left: '12px', width: '7px', height: '7px', animationDelay: '0s' }}></span>
+                      <span className="sparkle-star category-sparkle" style={{ bottom: '-3px', right: '12px', width: '8px', height: '8px', animationDelay: '0.8s' }}></span>
+                    </>
+                  )}
                 </button>
                 {categories.map((cat: any) => (
                   <button
@@ -285,7 +318,13 @@ export const ExplorePage: React.FC = () => {
                     onClick={() => setSelectedCategorySlug(cat.slug)}
                     title={cat.description}
                   >
-                    {cat.name}
+                    <span>{cat.name}</span>
+                    {selectedCategorySlug === cat.slug && (
+                      <>
+                        <span className="sparkle-star category-sparkle" style={{ top: '-3px', left: '12px', width: '7px', height: '7px', animationDelay: '0s' }}></span>
+                        <span className="sparkle-star category-sparkle" style={{ bottom: '-3px', right: '12px', width: '8px', height: '8px', animationDelay: '0.8s' }}></span>
+                      </>
+                    )}
                   </button>
                 ))}
               </>
@@ -389,7 +428,7 @@ export const ExplorePage: React.FC = () => {
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
               >
-                <option value="">Tất cả trạng thái</option>
+                <option value="">Tất cả</option>
                 <option value="ONGOING">Đang ra</option>
                 <option value="COMPLETED">Đã hoàn</option>
               </select>

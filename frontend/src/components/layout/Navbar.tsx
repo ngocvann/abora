@@ -3,12 +3,16 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore, isAdmin } from '../../store/authStore';
 import { Button } from '../ui/Button';
 import { NotificationPopover } from '../ui/NotificationPopover';
-import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library, MessageCircle } from 'lucide-react';
+import { Search, Menu, ChevronDown, User as UserIcon, Book, Settings, Palette, HelpCircle, LogOut, Shield, Loader2, X, Home, Compass, Library } from 'lucide-react';
 import api from '../../services/api';
 import { getImageUrl } from '../../utils/image';
 import { useChatStore } from '../../store/chatStore';
 import { MessengerDropdown } from '../chat/MessengerDropdown';
 import { AiOutlineMessage, AiFillMessage } from 'react-icons/ai';
+import { RiHome4Fill } from 'react-icons/ri';
+import { TbChartBubbleFilled } from 'react-icons/tb';
+import { MdSunny } from 'react-icons/md';
+import { FaPencil } from 'react-icons/fa6';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
@@ -484,39 +488,49 @@ export const Navbar: React.FC = () => {
         </div>
         <div className="mobile-drawer-links">
           <NavLink to="/" end className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <Home size={18} />
+            <RiHome4Fill size={20} />
             <span>Trang chủ</span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-4px', left: '8px', width: '9px', height: '9px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-4px', left: '25px', width: '11px', height: '11px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-5px', right: '20px', width: '10px', height: '10px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', right: '35px', width: '8px', height: '8px', animationDelay: '1.8s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '50%', right: '-4px', width: '7px', height: '7px', animationDelay: '2.4s' }}></span>
           </NavLink>
           <NavLink to="/explore" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <Compass size={18} />
+            <TbChartBubbleFilled size={20} />
             <span>Khám phá</span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-4px', left: '8px', width: '9px', height: '9px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-4px', left: '25px', width: '11px', height: '11px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-5px', right: '20px', width: '10px', height: '10px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', right: '35px', width: '8px', height: '8px', animationDelay: '1.8s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '50%', right: '-4px', width: '7px', height: '7px', animationDelay: '2.4s' }}></span>
           </NavLink>
           <NavLink to="/forum" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <MessageCircle size={18} />
+            <MdSunny size={20} />
             <span>Diễn đàn</span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-4px', left: '8px', width: '9px', height: '9px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-4px', left: '25px', width: '11px', height: '11px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-5px', right: '20px', width: '10px', height: '10px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', right: '35px', width: '8px', height: '8px', animationDelay: '1.8s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '50%', right: '-4px', width: '7px', height: '7px', animationDelay: '2.4s' }}></span>
           </NavLink>
           <NavLink to="/library" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <Library size={18} />
+            <Library size={20} />
             <span>Thư viện</span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-4px', left: '8px', width: '9px', height: '9px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-4px', left: '25px', width: '11px', height: '11px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-5px', right: '20px', width: '10px', height: '10px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', right: '35px', width: '8px', height: '8px', animationDelay: '1.8s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '50%', right: '-4px', width: '7px', height: '7px', animationDelay: '2.4s' }}></span>
           </NavLink>
           <NavLink to="/studio" className={({ isActive }) => `mobile-drawer-link ${isActive ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
-            <Book size={18} />
+            <FaPencil size={18} />
             <span>Viết truyện</span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-3px', right: '15px', width: '10px', height: '10px', animationDelay: '0s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', left: '20px', width: '12px', height: '12px', animationDelay: '0.6s' }}></span>
-            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '8px', right: '40%', width: '8px', height: '8px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-4px', left: '8px', width: '9px', height: '9px', animationDelay: '0s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-4px', left: '25px', width: '11px', height: '11px', animationDelay: '0.6s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '-5px', right: '20px', width: '10px', height: '10px', animationDelay: '1.2s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ bottom: '-3px', right: '35px', width: '8px', height: '8px', animationDelay: '1.8s' }}></span>
+            <span className="sparkle-star mobile-drawer-sparkle" style={{ top: '50%', right: '-4px', width: '7px', height: '7px', animationDelay: '2.4s' }}></span>
           </NavLink>
         </div>
       </div>
