@@ -160,6 +160,8 @@ export const ReaderPage: React.FC = () => {
     text: string;
   }>({ range: null, coords: null, text: '' });
 
+  const initialScrollChapterIdRef = useRef<number | null>(null);
+
   // Quote modal states
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [quoteModalText, setQuoteModalText] = useState("");
@@ -436,20 +438,22 @@ export const ReaderPage: React.FC = () => {
   }, [isLoading]);
 
   useEffect(() => {
-    if (chapter) {
+    if (chapter && initialScrollChapterIdRef.current !== chapter.id) {
+      initialScrollChapterIdRef.current = chapter.id;
+
       if (chapter.lastReadPosition && chapter.lastReadPosition > 0) {
         window.scrollTo(0, chapter.lastReadPosition);
       } else {
         window.scrollTo(0, 0);
       }
-    }
 
-    if (isAuthenticated && chapter) {
-      saveHistoryMutation.mutate({
-        storyId: chapter.storyId,
-        chapterId: chapter.id,
-        lastReadPosition: chapter.lastReadPosition || 0
-      });
+      if (isAuthenticated) {
+        saveHistoryMutation.mutate({
+          storyId: chapter.storyId,
+          chapterId: chapter.id,
+          lastReadPosition: chapter.lastReadPosition || 0
+        });
+      }
     }
   }, [chapter, isAuthenticated]);
 
@@ -770,7 +774,7 @@ export const ReaderPage: React.FC = () => {
             <Eye size={18} />
             <span>{formatNumber(chapter.viewCount || 0)}</span>
           </div>
-          <button className={`reader-btn has-text ${chapter.hasLiked ? 'active' : ''}`} title="Bình chọn" onClick={handleToggleLike}>
+          <button className={`reader-btn has-text ${chapter.hasLiked ? 'active' : ''}`} title="Bình chọn" onClick={(e) => { e.stopPropagation(); handleToggleLike(); }}>
             <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} />
             <span>{formatNumber(chapter.likeCount || 0)}</span>
           </button>
@@ -919,7 +923,7 @@ export const ReaderPage: React.FC = () => {
         
         <div className="reader-action-icons">
           {/* 1. Củ Khoai */}
-          <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={handleToggleLike} title="Củ Khoai">
+          <button className={`action-btn ${chapter.hasLiked ? 'liked' : ''}`} onClick={(e) => { e.stopPropagation(); handleToggleLike(); }} title="Củ Khoai">
             <SweetPotatoIcon size={18} fill={chapter.hasLiked ? 'url(#purple-ombre)' : 'none'} />
             <span className="action-btn-text">Củ Khoai</span>
           </button>
