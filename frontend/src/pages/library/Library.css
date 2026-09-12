@@ -442,7 +442,9 @@
 
 .list-cover-wrapper {
   width: 95px;
-  align-self: stretch;
+  aspect-ratio: 2/3;
+  height: auto;
+  align-self: flex-start;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
@@ -916,7 +918,36 @@
   }
 
   .library-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+  }
+
+  .library-list-item {
+    gap: 0.85rem !important;
+    align-items: flex-start !important;
+  }
+
+  .list-cover-wrapper {
+    width: 85px !important;
+    aspect-ratio: 2/3 !important;
+    height: auto !important;
+    align-self: flex-start !important;
+    flex-shrink: 0 !important;
+  }
+
+  .list-title {
+    font-size: 0.95rem !important;
+    white-space: normal !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .list-description {
+    font-size: 0.78rem !important;
+    -webkit-line-clamp: 2 !important;
   }
 }
 
