@@ -352,7 +352,7 @@
 .see-more-btn {
   background: transparent !important;
   border: none !important;
-  color: #A855F7 !important;
+  color: #FBBF24 !important;
   border-radius: 99px !important;
   padding: 0.6rem 2.5rem !important;
   font-size: 0.9rem !important;
@@ -365,8 +365,8 @@
 .see-more-btn:hover {
   background: transparent !important;
   border: none !important;
-  color: #FBBF24 !important;
+  color: #FDE047 !important;
   transform: translateY(-2px) !important;
   box-shadow: none !important;
-  text-shadow: 0 0 12px rgba(168, 85, 247, 0.9), 0 0 20px rgba(124, 58, 237, 0.7) !important;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.9), 0 0 20px rgba(245, 158, 11, 0.7) !important;
 }

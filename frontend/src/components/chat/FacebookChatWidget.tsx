@@ -574,16 +574,21 @@ export const FacebookChatWidget: React.FC = () => {
           </button>
 
           {/* Floating New Chat Circular Action Button */}
-          <button
-            className="fb-chat-new-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsNewChatOpen((v) => !v);
-            }}
-            title="Tin nhắn mới"
-          >
-            <SquarePen size={18} />
-          </button>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <button
+              className="fb-chat-new-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsNewChatOpen((v) => !v);
+              }}
+              title="Tin nhắn mới"
+            >
+              <SquarePen size={18} />
+            </button>
+            <span className="sparkle-star" style={{ top: '-4px', left: '-4px', width: '9px', height: '9px', animationDelay: '0s', zIndex: 10 }}></span>
+            <span className="sparkle-star" style={{ bottom: '-2px', right: '-4px', width: '11px', height: '11px', animationDelay: '0.7s', zIndex: 10 }}></span>
+            <span className="sparkle-star" style={{ top: '4px', left: '40%', width: '8px', height: '8px', animationDelay: '1.4s', zIndex: 10 }}></span>
+          </div>
 
           {minimizedChats.map((chat) => (
             <div key={chat.user.id} className="fb-chat-bubble-wrapper">
