@@ -662,6 +662,22 @@ body.editor-scrolled .navbar {
   color: var(--text-main, #f8fafc) !important;
 }
 
+.distraction-free-editor .ql-editor .ql-align-center {
+  text-align: center !important;
+}
+
+.distraction-free-editor .ql-editor .ql-align-right {
+  text-align: right !important;
+}
+
+.distraction-free-editor .ql-editor .ql-align-justify {
+  text-align: justify !important;
+}
+
+.distraction-free-editor .ql-editor .ql-align-left {
+  text-align: left !important;
+}
+
 .distraction-free-editor .ql-snow .ql-stroke {
   stroke: #e2e8f0 !important;
 }

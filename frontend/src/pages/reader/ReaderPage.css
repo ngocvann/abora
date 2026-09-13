@@ -367,15 +367,19 @@
 }
 
 .chapter-content .ql-align-center {
-  text-align: center;
+  text-align: center !important;
 }
 
 .chapter-content .ql-align-right {
-  text-align: right;
+  text-align: right !important;
 }
 
 .chapter-content .ql-align-justify {
-  text-align: justify;
+  text-align: justify !important;
+}
+
+.chapter-content .ql-align-left {
+  text-align: left !important;
 }
 
 /* Bottom Actions */

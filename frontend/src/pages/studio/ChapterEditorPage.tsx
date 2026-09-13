@@ -21,7 +21,7 @@ const modules = {
   toolbar: {
     container: [
       ['bold', 'italic', 'underline', 'strike'],
-      [{ 'align': [] }],
+      [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
       ['undo', 'redo'],
       [{ 'header': [2, 3, false] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
