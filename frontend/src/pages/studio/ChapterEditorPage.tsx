@@ -21,6 +21,7 @@ const modules = {
   toolbar: {
     container: [
       ['bold', 'italic', 'underline', 'strike'],
+      [{ 'align': [] }],
       ['undo', 'redo'],
       [{ 'header': [2, 3, false] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -140,19 +141,33 @@ export const ChapterEditorPage: React.FC = () => {
     enabled: !!storyId
   });
 
-  // Set form data when chapter is loaded
+  // Set form data when chapter is loaded (with local storage draft recovery)
   useEffect(() => {
+    const draftKey = `abora_draft_${storyId}_${chapterId}`;
+    const localDraftRaw = localStorage.getItem(draftKey);
+    let localDraft: { title?: string; content?: string; chapterNumber?: number; timestamp?: number } | null = null;
+    if (localDraftRaw) {
+      try {
+        localDraft = JSON.parse(localDraftRaw);
+      } catch (e) {
+        console.error('Lỗi đọc bản nháp local:', e);
+      }
+    }
+
     if (isEditMode && chapter && initializedChapterId !== chapterId) {
-      setTitle(chapter.title || '');
-      setContent(chapter.content || '');
+      if (localDraft && localDraft.content && localDraft.content !== chapter.content) {
+        setTitle(localDraft.title ?? chapter.title ?? '');
+        setContent(localDraft.content ?? chapter.content ?? '');
+      } else {
+        setTitle(chapter.title || '');
+        setContent(chapter.content || '');
+      }
       setChapterNumber(chapter.chapterNumber);
       setStatus(chapter.status as 'DRAFT' | 'PUBLISHED');
       setInitializedChapterId(chapterId || null);
       
-      // Wait for state updates to propagate before enabling autosave
       const timer = setTimeout(() => {
         isLoadedRef.current = true;
-        // Clear history stack so the initial loading is not undoable!
         if (quillRef.current) {
           const quillInstance = quillRef.current.getEditor();
           const history = quillInstance?.getModule('history') as any;
@@ -160,18 +175,22 @@ export const ChapterEditorPage: React.FC = () => {
             history.clear();
           }
         }
-      }, 100);
+      }, 50);
       return () => clearTimeout(timer);
     } else if (!isEditMode && initializedChapterId !== 'new') {
-      // Switch to create mode - reset all form states to avoid carrying over content from previously edited chapter
-      setTitle('');
-      setContent('');
       const nextNum = chapters && chapters.length > 0 ? chapters[chapters.length - 1].chapterNumber + 1 : 1;
       setChapterNumber(nextNum);
       setStatus('DRAFT');
       setInitializedChapterId('new');
       
-      isLoadedRef.current = false;
+      if (localDraft && (localDraft.title || localDraft.content)) {
+        setTitle(localDraft.title || '');
+        setContent(localDraft.content || '');
+      } else {
+        setTitle('');
+        setContent('');
+      }
+      
       const timer = setTimeout(() => {
         isLoadedRef.current = true;
         if (quillRef.current) {
@@ -181,10 +200,26 @@ export const ChapterEditorPage: React.FC = () => {
             history.clear();
           }
         }
-      }, 100);
+      }, 50);
       return () => clearTimeout(timer);
     }
-  }, [chapter, isEditMode, chapterId, initializedChapterId, chapters]);
+  }, [chapter, isEditMode, chapterId, initializedChapterId, chapters, storyId]);
+
+  // Synchronize content to local storage instantly on every edit
+  useEffect(() => {
+    if (!storyId || !currentChapterId) return;
+    if (!isLoadedRef.current) return;
+
+    const draftKey = `abora_draft_${storyId}_${currentChapterId}`;
+    if (title || content) {
+      localStorage.setItem(draftKey, JSON.stringify({
+        title,
+        content,
+        chapterNumber,
+        timestamp: Date.now()
+      }));
+    }
+  }, [title, content, storyId, currentChapterId, chapterNumber]);
 
   // Kiểm tra xem có sự thay đổi nào so với dữ liệu gốc trên server hay không
   const hasChanges = isEditMode
@@ -193,6 +228,16 @@ export const ChapterEditorPage: React.FC = () => {
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (storyId && currentChapterId && (title || content)) {
+        const draftKey = `abora_draft_${storyId}_${currentChapterId}`;
+        localStorage.setItem(draftKey, JSON.stringify({
+          title,
+          content,
+          chapterNumber,
+          timestamp: Date.now()
+        }));
+      }
+
       if (hasChanges) {
         e.preventDefault();
         e.returnValue = 'Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn rời đi?';
@@ -201,9 +246,7 @@ export const ChapterEditorPage: React.FC = () => {
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasChanges]);
-
-
+  }, [hasChanges, storyId, currentChapterId, title, content, chapterNumber]);
 
   // Fetch story details for header info (title, cover)
   const { data: story } = useQuery({
@@ -277,7 +320,7 @@ export const ChapterEditorPage: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Debounced Auto Save Effect
+  // Debounced Auto Save Effect (700ms)
   useEffect(() => {
     if (!isLoadedRef.current) return;
     if (status === 'PUBLISHED') return; // Không tự động lưu khi chương đã được đăng tải để tác giả chủ động bấm "Đăng các thay đổi"
@@ -300,6 +343,7 @@ export const ChapterEditorPage: React.FC = () => {
 
         if (currentChapterId === 'new') {
           const { data } = await api.post(`/stories/${storyId}/chapters`, payload);
+          localStorage.removeItem(`abora_draft_${storyId}_new`);
           queryClient.setQueryData(['chapter', storyId, data.id.toString()], data);
           setInitializedChapterId(data.id.toString()); 
           setCurrentChapterId(data.id.toString());
@@ -307,6 +351,7 @@ export const ChapterEditorPage: React.FC = () => {
           navigate(`/studio/story/${storyId}/chapters/${data.id}`, { replace: true });
         } else {
           await api.put(`/stories/${storyId}/chapters/${currentChapterId}`, payload);
+          localStorage.removeItem(`abora_draft_${storyId}_${currentChapterId}`);
           queryClient.setQueryData(['chapter', storyId, currentChapterId], (oldData: any) => ({
              ...oldData,
              title: payload.title,
@@ -321,10 +366,10 @@ export const ChapterEditorPage: React.FC = () => {
         console.error('Lỗi tự động lưu:', error);
         setSaveStatus('ERROR');
       }
-    }, 1500); // 1.5s debounce
+    }, 700); // 700ms debounce
 
     return () => clearTimeout(delayDebounceFn);
-  }, [title, content, currentChapterId, storyId, chapterNumber, navigate, queryClient, chapter]);
+  }, [title, content, currentChapterId, storyId, chapterNumber, navigate, queryClient, chapter, status]);
 
   const saveMutation = useMutation({
     mutationFn: async (status: 'DRAFT' | 'PUBLISHED') => {
@@ -343,6 +388,10 @@ export const ChapterEditorPage: React.FC = () => {
       }
     },
     onSuccess: () => {
+      if (storyId && currentChapterId) {
+        localStorage.removeItem(`abora_draft_${storyId}_${currentChapterId}`);
+        localStorage.removeItem(`abora_draft_${storyId}_new`);
+      }
       queryClient.invalidateQueries({ queryKey: ['management-chapters', storyId] });
       navigate(`/studio/story/${storyId}/chapters`);
     }
@@ -495,11 +544,11 @@ export const ChapterEditorPage: React.FC = () => {
                   <span className="editor-status-dot-separator">•</span>
                   <div className="editor-save-status">
                     {saveStatus === 'SAVED' && (
-                      <span style={{ color: 'rgba(16, 185, 129, 0.85)', fontWeight: 500 }}>Đã lưu</span>
+                      <span style={{ color: '#10b981', fontWeight: 600 }}>Đã lưu</span>
                     )}
                     {saveStatus === 'SAVING' && (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        <span className="spinner-sm" style={{ borderColor: 'rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.1)' }}></span> Đang lưu...
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'rgba(255, 255, 255, 0.75)', fontWeight: 500 }}>
+                        <span className="spinner-sm" style={{ borderColor: 'rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.1)' }}></span> Đang lưu...
                       </span>
                     )}
                     {saveStatus === 'ERROR' && (

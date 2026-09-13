@@ -366,6 +366,18 @@
   border-radius: 8px;
 }
 
+.chapter-content .ql-align-center {
+  text-align: center;
+}
+
+.chapter-content .ql-align-right {
+  text-align: right;
+}
+
+.chapter-content .ql-align-justify {
+  text-align: justify;
+}
+
 /* Bottom Actions */
 .reader-bottom-actions {
   max-width: 800px;

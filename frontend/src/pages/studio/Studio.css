@@ -500,10 +500,10 @@ body.editor-scrolled .navbar {
 @media (min-width: 1025px) {
   .distraction-free-editor .ql-toolbar.ql-snow {
     position: fixed;
-    /* Định vị động cách block nội dung chính 800px ở giữa đúng 20px */
+    /* Định vị cố định ở giữa màn hình (viewport) theo chiều dọc */
     left: max(16px, calc(50vw - 400px - 20px - 36px)) !important;
-    top: calc(50% + 78px) !important;
-    transform: translateY(-50%) !important; /* Căn giữa hoàn hảo theo chiều dọc so với phần nội dung */
+    top: 50% !important;
+    transform: translateY(-50%) !important; /* Căn giữa hoàn hảo theo chiều dọc so với màn hình */
     z-index: 40;
     display: flex;
     flex-direction: column;
@@ -523,7 +523,7 @@ body.editor-scrolled .navbar {
   }
 
   body.editor-scrolled .distraction-free-editor .ql-toolbar.ql-snow {
-    top: calc(50% + 38px) !important;
+    top: 50% !important;
   }
 
   .distraction-free-editor .ql-toolbar.ql-snow .ql-formats {
@@ -588,6 +588,26 @@ body.editor-scrolled .navbar {
   
   .distraction-free-editor .ql-toolbar.ql-snow .ql-picker.ql-header .ql-picker-label svg {
     display: none !important;
+  }
+
+  .distraction-free-editor .ql-toolbar.ql-snow .ql-picker.ql-align {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .distraction-free-editor .ql-toolbar.ql-snow .ql-picker.ql-align .ql-picker-label {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .distraction-free-editor .ql-toolbar.ql-snow .ql-picker.ql-align .ql-picker-label svg {
+    width: 14px !important;
+    height: 14px !important;
   }
 
   /* Đưa bảng tùy chọn dropdown hiển thị bung ra bên phải */
