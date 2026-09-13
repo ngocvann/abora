@@ -4,10 +4,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
-// Register custom icons for undo and redo in Quill
+// Register custom icons for undo, redo, alignToggle in Quill
 const icons = Quill.import('ui/icons') as any;
 icons['undo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ql-stroke" d="M9 14 4 9l5-5"/><path class="ql-stroke" d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>`;
 icons['redo'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ql-stroke" d="m15 14 5-5-5-5"/><path class="ql-stroke" d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/></svg>`;
+icons['alignToggle'] = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line class="ql-stroke" x1="21" x2="3" y1="6" y2="6"/><line class="ql-stroke" x1="17" x2="7" y1="12" y2="12"/><line class="ql-stroke" x1="19" x2="5" y1="18" y2="18"/></svg>`;
 
 // Register SmartBreak for Shift+Enter soft newlines
 const Embed = Quill.import('blots/embed') as any;
@@ -21,7 +22,7 @@ const modules = {
   toolbar: {
     container: [
       ['bold', 'italic', 'underline', 'strike'],
-      [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
+      ['alignToggle'],
       ['undo', 'redo'],
       [{ 'header': [2, 3, false] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -33,6 +34,19 @@ const modules = {
       },
       redo: function(this: any) {
         this.quill.history.redo();
+      },
+      alignToggle: function(this: any) {
+        const range = this.quill.getSelection();
+        if (!range) return;
+        const currentFormat = this.quill.getFormat(range);
+        const currentAlign = currentFormat.align;
+        if (!currentAlign || currentAlign === 'left') {
+          this.quill.format('align', 'center', 'user');
+        } else if (currentAlign === 'center') {
+          this.quill.format('align', 'right', 'user');
+        } else {
+          this.quill.format('align', false, 'user');
+        }
       }
     }
   },
@@ -318,6 +332,30 @@ export const ChapterEditorPage: React.FC = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Update alignToggle button active state based on current selection format
+  useEffect(() => {
+    if (quillRef.current) {
+      const quill = quillRef.current.getEditor();
+      const updateAlignButtonState = () => {
+        const format = quill.getFormat();
+        const btn = document.querySelector('.ql-alignToggle');
+        if (btn) {
+          if (format.align && format.align !== 'left') {
+            btn.classList.add('ql-active');
+          } else {
+            btn.classList.remove('ql-active');
+          }
+        }
+      };
+      quill.on('selection-change', updateAlignButtonState);
+      quill.on('text-change', updateAlignButtonState);
+      return () => {
+        quill.off('selection-change', updateAlignButtonState);
+        quill.off('text-change', updateAlignButtonState);
+      };
+    }
   }, []);
 
   // Debounced Auto Save Effect (700ms)
