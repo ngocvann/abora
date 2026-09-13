@@ -311,7 +311,7 @@
 
 /* Custom scrollbar for library modal list */
 .library-modal-list::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 .library-modal-list::-webkit-scrollbar-track {
   background: transparent;

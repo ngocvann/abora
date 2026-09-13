@@ -251,12 +251,17 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-color, #9d4edd) rgba(14, 18, 33, 0.4);
+}
+
+@supports (-moz-appearance: none) {
+  .toc-popover-list {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color, #9d4edd) rgba(14, 18, 33, 0.4);
+  }
 }
 
 .toc-popover-list::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .toc-popover-list::-webkit-scrollbar-track {
@@ -717,7 +722,7 @@ body.in-reader-page .main-content,
 
 /* Custom Scrollbars matching the purple-navy theme (Request 4) */
 body.in-reader-page::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
 }
 
 body.in-reader-page::-webkit-scrollbar-track {
@@ -727,7 +732,7 @@ body.in-reader-page::-webkit-scrollbar-track {
 body.in-reader-page::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #9d4edd, #5a189a); /* Elegant purple gradient thumb */
   border-radius: 5px;
-  border: 2px solid #090b14;
+  border: 1px solid #090b14;
 }
 
 body.in-reader-page::-webkit-scrollbar-thumb:hover {
@@ -735,7 +740,7 @@ body.in-reader-page::-webkit-scrollbar-thumb:hover {
 }
 
 .reader-wrapper ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .reader-wrapper ::-webkit-scrollbar-track {

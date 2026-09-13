@@ -1589,7 +1589,7 @@ input:checked + .toggle-slider:before {
 }
 
 .chapter-toc-list::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .chapter-toc-list::-webkit-scrollbar-thumb {

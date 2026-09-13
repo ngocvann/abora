@@ -100,7 +100,7 @@
 
 /* Scrollbar customization for comment list */
 .comment-list-container::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 .comment-list-container::-webkit-scrollbar-track {
   background: transparent;
